@@ -47,7 +47,9 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\PlanetRotationScript.cs" />
+     <Compile Include="Assets\Scripts\btnHangar.cs" />
      <Compile Include="Assets\Scripts\btnPlay.cs" />
+     <Compile Include="Assets\Scripts\btnQuickmatch.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
  </Reference>
