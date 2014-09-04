@@ -11,7 +11,7 @@ public class login : MonoBehaviour {
 
 	//private variables
 	//private string CreateAccountLink = "";
-	private string LoginLink = "";
+	private string LoginLink = "http://deco3801-06.uqcloud.net/LoginAccount.php";
 
 	//GUI variables
 	public float X;
@@ -60,28 +60,31 @@ public class login : MonoBehaviour {
 			//DO Nothing for now
 		}
 		if (GUI.Button (new Rect (777,503,160,27), "Log In")) {
-
+			StartCoroutine(LoginAccount());
 		}
 		GUI.Label (new Rect(513, 173, 80, 20), "Username:");
-		username = GUI.TextField (new Rect(513, 207, 440, 23), username);
+		username = GUI.TextField(new Rect(513, 207, 440, 23), username);
 
 		GUI.Label (new Rect(513, 255, 80, 20), "Password:");
-		password = GUI.TextField (new Rect(513, 287, 440, 23), password);
+		password = GUI.PasswordField(new Rect(513, 287, 440, 23), password, '*');
 
 	}
 
 	IEnumerator LoginAccount(){
 		WWWForm Form = new WWWForm ();
-		Form.AddField ("Username", username);
-		Form.AddField ("Password", password);
+		Form.AddField ("username", username);
+		Form.AddField ("password", password);
 		WWW LoginAccountWWW = new WWW (LoginLink, Form);
 		yield return LoginAccountWWW;
 
-		if (LoginAccountWWW.error != null) {
-			Debug.LogError ("Cannot connect to Login.");
+		if (LoginAccountWWW.error == null) {
+			if(LoginAccountWWW.text == "login-SUCCESS")
+			{
+				PlayerPrefs.SetString("username", username);
+				Debug.Log("Yes");
+			}
 		} else {
-			string LogText = LoginAccountWWW.text;
-			Debug.Log(LogText);
+			Debug.Log("Error: " + LoginAccountWWW.ToString() + "(Unable to connect)");
 		}
 	}
 
