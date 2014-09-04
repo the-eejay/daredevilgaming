@@ -11,7 +11,7 @@ public class login : MonoBehaviour {
 
 	//private variables
 	//private string CreateAccountLink = "";
-	//private string LoginLink = "";
+	private string LoginLink = "";
 
 	//GUI variables
 	public float X;
@@ -68,6 +68,21 @@ public class login : MonoBehaviour {
 		GUI.Label (new Rect(513, 255, 80, 20), "Password:");
 		password = GUI.TextField (new Rect(513, 287, 440, 23), password);
 
+	}
+
+	IEnumerator LoginAccount(){
+		WWWForm Form = new WWWForm ();
+		Form.AddField ("Username", username);
+		Form.AddField ("Password", password);
+		WWW LoginAccountWWW = new WWW (LoginLink, Form);
+		yield return LoginAccountWWW;
+
+		if (LoginAccountWWW.error != null) {
+			Debug.LogError ("Cannot connect to Login.");
+		} else {
+			string LogText = LoginAccountWWW.text;
+			Debug.Log(LogText);
+		}
 	}
 
 	// Update is called once per frame
