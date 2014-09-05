@@ -33,6 +33,7 @@ public class playerController : MonoBehaviour {
 				vel.Normalize();
 				vel = vel * bulletSpeed;
 				GameObject tmp = (GameObject)Instantiate(bullet);
+				Physics.IgnoreCollision(this.collider, tmp.collider, true);
 				tmp.transform.position = this.transform.position;
 				tmp.rigidbody.AddForce(vel);
 			}
@@ -88,6 +89,8 @@ public class playerController : MonoBehaviour {
 		} else if (d) {
 			this.transform.Translate(motionSpeed * dt, 0, 0);
 		}
+
+		Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -100);
 	}
 
 }
