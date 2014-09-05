@@ -1,10 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/enemyScript.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\login.cs">
     <Files>
-      <File FileName="Assets/Scripts/playerController.cs" Line="90" Column="4" />
-      <File FileName="Assets/Scripts/PlanetRotationScript.cs" Line="12" Column="2" />
-      <File FileName="Assets/Scripts/enemyScript.cs" Line="13" Column="52" />
+      <File FileName="Assets\Scripts\Login\login.cs" Line="9" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

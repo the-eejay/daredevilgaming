@@ -78,7 +78,7 @@ public class login : MonoBehaviour {
 		yield return LoginAccountWWW;
 
 		if (LoginAccountWWW.error == null) {
-			if(LoginAccountWWW.text == "login-SUCCESS")
+			if(LoginAccountWWW.text == "Success")
 			{
 				PlayerPrefs.SetString("username", username);
 				Debug.Log("Yes");
