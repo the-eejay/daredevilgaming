@@ -11,7 +11,7 @@ public class login : MonoBehaviour {
 
 	//private variables
 	//private string CreateAccountLink = "";
-	private string LoginLink = "http://localhost/unity/LoginAccount.php";
+	private string LoginLink = "http://deco3801-06.uqcloud.net/LoginAccount.php";
 
 	//GUI variables
 	public float X;
@@ -78,11 +78,10 @@ public class login : MonoBehaviour {
 		yield return LoginAccountWWW;
 
 		if (LoginAccountWWW.error == null) {
-			if(LoginAccountWWW.text == "Success")
+			if(LoginAccountWWW.text == "login-SUCCESS")
 			{
 				PlayerPrefs.SetString("username", username);
 				Debug.Log("Yes");
-				Application.LoadLevel ("MainMenu");
 			}
 		} else {
 			Debug.Log("Error: " + LoginAccountWWW.ToString() + "(Unable to connect)");
