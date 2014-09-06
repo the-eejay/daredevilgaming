@@ -82,6 +82,7 @@ public class login : MonoBehaviour {
 			{
 				PlayerPrefs.SetString("username", username);
 				Debug.Log("Yes");
+				Application.LoadLevel ("MainMenu");
 			}
 		} else {
 			Debug.Log("Error: " + LoginAccountWWW.ToString() + "(Unable to connect)");

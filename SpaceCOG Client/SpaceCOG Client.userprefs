@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\login.cs">
     <Files>
-      <File FileName="Assets\Scripts\Login\login.cs" Line="9" Column="37" />
+      <File FileName="Assets\Scripts\Login\login.cs" Line="69" Column="76" />
+      <File FileName="Assets\Scripts\Login\login.cs" Line="97" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
