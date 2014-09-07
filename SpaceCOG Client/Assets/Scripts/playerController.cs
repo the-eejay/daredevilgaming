@@ -6,6 +6,8 @@ public class playerController : MonoBehaviour {
 	float motionSpeed = 100.0f;
 	float m45Speed = 70.7f;
 	float bulletSpeed = 10000.0f;
+	float force = 100.0f;
+	float angleForce = 70.7f;
 
 	GameObject bullet;
 	Plane targettingPlane;
@@ -18,8 +20,12 @@ public class playerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Move ();
 		Shoot ();
+	}
+
+	void FixedUpdate() {
+		Move ();
+		this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y, 0);
 	}
 
 	void Shoot() {
@@ -33,6 +39,7 @@ public class playerController : MonoBehaviour {
 				vel.Normalize();
 				vel = vel * bulletSpeed;
 				GameObject tmp = (GameObject)Instantiate(bullet);
+				Physics.IgnoreCollision(this.collider, tmp.collider, true);
 				tmp.transform.position = this.transform.position;
 				tmp.rigidbody.AddForce(vel);
 			}
@@ -72,22 +79,24 @@ public class playerController : MonoBehaviour {
 		float dt = Time.deltaTime;
 
 		if (w && a) {
-			this.transform.Translate(-m45Speed * dt, m45Speed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(-angleForce, angleForce, 0));
 		} else if (w && d) {
-			this.transform.Translate(m45Speed * dt, m45Speed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(angleForce, angleForce, 0));
 		} else if (w) {
-			this.transform.Translate(0, motionSpeed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(0, force, 0));
 		} else if (a && s) {
-			this.transform.Translate(-m45Speed * dt, -m45Speed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(-angleForce, -angleForce, 0));
 		} else if (a) {
-			this.transform.Translate(-motionSpeed * dt, 0, 0);
+			this.rigidbody.AddForce(new Vector3(-force, 0, 0));
 		} else if (s && d) {
-			this.transform.Translate(m45Speed * dt, -m45Speed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(angleForce, -angleForce, 0));
 		} else if (s) {
-			this.transform.Translate(0, -motionSpeed * dt, 0);
+			this.rigidbody.AddForce(new Vector3(0, -force, 0));
 		} else if (d) {
-			this.transform.Translate(motionSpeed * dt, 0, 0);
+			this.rigidbody.AddForce(new Vector3(force, 0, 0));
 		}
+
+		Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -100);
 	}
 
 }

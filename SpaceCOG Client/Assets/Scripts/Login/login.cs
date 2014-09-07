@@ -78,10 +78,11 @@ public class login : MonoBehaviour {
 		yield return LoginAccountWWW;
 
 		if (LoginAccountWWW.error == null) {
-			if(LoginAccountWWW.text == "login-SUCCESS")
+			if(LoginAccountWWW.text == "Success")
 			{
 				PlayerPrefs.SetString("username", username);
 				Debug.Log("Yes");
+				Application.LoadLevel ("MainMenu");
 			}
 		} else {
 			Debug.Log("Error: " + LoginAccountWWW.ToString() + "(Unable to connect)");

@@ -51,6 +51,8 @@
      <Compile Include="Assets\Scripts\btnHangar.cs" />
      <Compile Include="Assets\Scripts\btnPlay.cs" />
      <Compile Include="Assets\Scripts\btnQuickmatch.cs" />
+     <Compile Include="Assets\Scripts\bulletScript.cs" />
+     <Compile Include="Assets\Scripts\enemyScript.cs" />
      <Compile Include="Assets\Scripts\playerController.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
