@@ -4,16 +4,16 @@ using System.Collections;
 public class btnPlay : MonoBehaviour {
 
 	private float startTime = 0.0f;
-	private float animDuration = 0.5f;
+	private float animDuration = 0.25f;
 	private bool animated = false;
 	private float startAngle = 0.0f;
-	private float endAngle = Mathf.PI / 4;
+	private float endAngle = 0.45f * Mathf.PI;
 	private float Z = 0;
 	private float M = 0;
 
 	// Use this for initialization
 	void Start () {
-		
+	
 	}
 	
 	// Update is called once per frame
@@ -31,7 +31,7 @@ public class btnPlay : MonoBehaviour {
 		}
 	}
 
-	void OnMouseUpAsButton () {
+	public void PlayShift () {
 		startAngle = Mathf.Atan2(Camera.main.transform.position.y, Camera.main.transform.position.x);
 		Z = Camera.main.transform.position.z;
 		M = Mathf.Sqrt(Mathf.Pow(Camera.main.transform.position.x, 2) + Mathf.Pow(Camera.main.transform.position.y, 2));
@@ -39,3 +39,4 @@ public class btnPlay : MonoBehaviour {
 		animated = true;
 	}
 }
+
