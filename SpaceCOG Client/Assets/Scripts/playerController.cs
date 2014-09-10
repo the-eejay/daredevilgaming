@@ -99,4 +99,8 @@ public class playerController : MonoBehaviour {
 		Camera.main.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -100);
 	}
 
+	public Vector3 getPos() {
+		return this.transform.position;
+	}
+
 }
