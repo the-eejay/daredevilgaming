@@ -59,6 +59,8 @@ public class MainMenuScript : MonoBehaviour {
 	// when a client successfully connects to this server.
 	private void OnPlayerConnected (NetworkPlayer player) {
 		Debug.Log (player.ToString () + " has joined the server.");
+		Debug.Log ("Loading game...");
+		networkView.RPC ("Game", RPCMode.All);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
@@ -76,7 +78,7 @@ public class MainMenuScript : MonoBehaviour {
 	// This function transitions the game into the actual gameplay.
 	[RPC] // This function can be called remotely over the network.
 	private void Game () {
-	
+		Application.LoadLevel ("Game");
 	}
 	
 	// Function to be called when the 'Quit' button is pressed.
