@@ -14,8 +14,7 @@ public class bulletScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Time.time - spawnTime > lifetime) {
-			Destroy (this);
-			Destroy (gameObject);
+			Network.Destroy (gameObject);
 		}
 	}
 }

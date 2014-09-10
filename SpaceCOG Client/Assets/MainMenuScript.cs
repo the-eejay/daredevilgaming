@@ -75,6 +75,12 @@ public class MainMenuScript : MonoBehaviour {
 		Debug.Log ("Disconnected from the server: " + info.ToString ());
 	}
 	
+	// Overriding MonoBehaviour method that is automatically called
+	// when a client disconnects from this server.
+	private void OnPlayerDisconnected (NetworkPlayer player) {
+		Debug.Log ("Player disconnected.");
+	}
+	
 	// This function transitions the game into the actual gameplay.
 	[RPC] // This function can be called remotely over the network.
 	private void Game () {
