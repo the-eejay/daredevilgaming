@@ -4,13 +4,13 @@ using System.Collections;
 public class enemyScript : MonoBehaviour {
 
 	public int scoreValue;
-	private GameController gameController;
+	private GameScript gameController;
 
 	// Use this for initialization
 	void Start () {
 		GameObject gameControllerObject = GameObject.FindWithTag("GameController");
 		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameController>();
+			gameController = gameControllerObject.GetComponent<GameScript>();
 		}
 		if (gameController == null) {
 			Debug.Log ("Cannot find 'GameController' script");
@@ -26,13 +26,13 @@ public class enemyScript : MonoBehaviour {
 	void OnCollisionEnter (Collision col) {
 		if (col.gameObject.name == "prefabBullet(Clone)") {
 
-			Destroy (col.gameObject);
-			Destroy (gameObject);
+			Network.Destroy(col.gameObject);
+			Network.Destroy (gameObject);
 			Destroy (this);
 			gameController.AddScore (scoreValue);
-		} else if (col.gameObject.name == "PlayerSphere") {
-			Destroy (col.gameObject);
-			Destroy (gameObject);
+		} else if (col.gameObject.name == "Magpie(Clone)") {
+			// Network.Destroy (col.gameObject);
+			Network.Destroy (gameObject);
 			Destroy (this);
 		}
 	}

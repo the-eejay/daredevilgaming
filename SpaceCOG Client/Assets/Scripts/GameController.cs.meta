@@ -1,9 +1,0 @@
-fileFormatVersion: 2
-guid: e8c57a2a27eb7314ca9e544af3f297af
-MonoImporter:
-  serializedVersion: 2
-  defaultReferences:
-  - hazard: {fileID: 100002, guid: ccba54328099dd54ab02fa69a5335e8f, type: 3}
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData: 
