@@ -23,6 +23,12 @@ public class GameScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		// Simulate a network if this scene was loaded directly in the simulator.
+		if (Network.connections.Length == 0) {
+			Debug.Log ("Loading scene in singleplayer mode...");
+			Network.InitializeServer (0, 0, false);
+		}
+		
 		// Object instantiation
 		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
 		
@@ -77,8 +83,8 @@ public class GameScript : MonoBehaviour {
 	void Shoot() {
 		if (Input.GetMouseButtonDown(0)) {
 			GameObject tmp = (GameObject) Network.Instantiate (bullet, ship.transform.position, Quaternion.identity, 0);
-			Physics.IgnoreCollision(ship.collider, tmp.collider, true);
 			tmp.collider.enabled = true;
+			Physics.IgnoreCollision(ship.collider, tmp.collider, true);
 			tmp.transform.position = ship.transform.position;
 			tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
 			tmp.rigidbody.AddForce(ship.transform.forward * bulletForce);
