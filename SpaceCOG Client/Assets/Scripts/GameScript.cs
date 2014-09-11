@@ -57,7 +57,6 @@ public class GameScript : MonoBehaviour {
 		if (Network.isServer) {
 			gameObject.AddComponent ("HostScript");
 		}
-		SpawnAsteroid ();
 		StartCoroutine (SpawnWaves());
 		score = 0;
 	}
@@ -197,6 +196,7 @@ public class GameScript : MonoBehaviour {
 				Network.Instantiate (hazard, spawnPosition, spawnRotation, 0);
 				yield return new WaitForSeconds (spawnWait);
 			}
+			hazardCount += 1;
 			yield return new WaitForSeconds(waveWait);
 		}
 	}

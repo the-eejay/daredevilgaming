@@ -188,9 +188,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hazard: {fileID: 100000, guid: 8b0b9b4bd9acb124286cafc38d7b18cc, type: 2}
-  spawnDist: 10
-  hazardCount: 10
-  spawnWait: .200000003
+  spawnDist: 15
+  hazardCount: 1
+  spawnWait: 1
   startWait: 1
   waveWait: 1
 --- !u!4 &1027193280
