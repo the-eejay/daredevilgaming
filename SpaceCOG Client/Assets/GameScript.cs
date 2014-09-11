@@ -1,28 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*	GameScript dictates all of the major game functionality. */
 public class GameScript : MonoBehaviour {
 
-	GameObject shipPrefab;
-	GameObject ship;
-	GameObject bullet;
+	// GameObject Prefabs for cloning purposes.
+	private static GameObject shipPrefab;
+	private static GameObject bullet;
 	
-	float force = 10000.0f;
-	float angleForce = 7070.0f;
-	float bulletSpeed = 1000.0f;
+	// A specific reference to the player's ship.
+	private GameObject ship;
 	
-	Plane targettingPlane;
+	// Misc mathematical constructs
+	private static Plane targettingPlane; // Used for projecting cursor coordinates to 3D space.
+	
+	// Ship stats & attributes
+	private const float thrust = 10000f; // Thrust applied to ship moving along axis.
+	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
+	
+	// Weapon stats & attributed
+	private const float bulletForce = 1000f; // Force applied to bullet when fired.
 
 	// Use this for initialization
 	void Start () {
-		targettingPlane = new Plane (new Vector3(0,0,1), new Vector3(0,0,0));
-		bullet = (GameObject)Resources.Load ("prefabBullet");
+		// Object instantiation
+		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
+		
+		// Load prefabs
+		shipPrefab = (GameObject) Resources.Load ("Magpie");
+		bullet = (GameObject) Resources.Load ("prefabBullet");
+		
 		// Spawn player ship
 		Debug.Log ("Game Loaded.");
-		shipPrefab = (GameObject) Resources.Load ("Magpie");
-		ship = (GameObject) Network.Instantiate (shipPrefab, new Vector3 (-2f, 0f, 0f), new Quaternion (0f, 0f, 0f, 0f), 0);
+		ship = (GameObject) Network.Instantiate (shipPrefab, new Vector3 (-2f, 0f, 0f), Quaternion.identity, 0);
 		
-		// Launch master host script
+		// Launch master host script (if acting as host)
 		if (Network.isServer) {
 			gameObject.AddComponent ("HostScript");
 		}
@@ -33,26 +45,35 @@ public class GameScript : MonoBehaviour {
 		Shoot ();
 	}
 	
+	// FixedUpdate is called at consistent time intervals.
+	// It is useful for physics effecting functionality, since
+	// the player's framerate won't impact the results.
 	void FixedUpdate () {
 		Move ();
 		Turn ();
 	}
 	
-	[RPC]
+	// SetInitialLocation allows the server to set the location of this player's ship.
+	[RPC] // This function can be called remotely over the network.
 	public void SetInitialLocation (float x, float y) {
-		Debug.Log ("RPC WORKING!!!");
 		ship.transform.localPosition = new Vector3 (x, y, 0f);
 	}
 	
+	// Turn to be called during FixedUpdate in order to orient the player's ship towards
+	// the player's cursor. Currently moves instantaneously, but the aim is to include
+	// turn-rates and torque / angular momentum to limit the rapidness of a turn.
 	void Turn () {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		float dist = 2000.0f;
+		float dist = 2000f;
 		if (targettingPlane.Raycast(ray, out dist)) {
 			Vector3 targetCoordinates = ray.GetPoint(dist);
 			ship.transform.LookAt (targetCoordinates);
 		}
 	}
 	
+	// Shoot to be called during Update in order to spawn a bullet whenever the player
+	// clicks the left mouse button. Eventually this function will need to change to
+	// allow more advanced weapon types, and may need to be moved to FixedUpdate instead.
 	void Shoot() {
 		if (Input.GetMouseButtonDown(0)) {
 			GameObject tmp = (GameObject) Network.Instantiate (bullet, ship.transform.position, Quaternion.identity, 0);
@@ -60,59 +81,48 @@ public class GameScript : MonoBehaviour {
 			tmp.collider.enabled = true;
 			tmp.transform.position = ship.transform.position;
 			tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
-			tmp.rigidbody.AddForce(ship.transform.forward * bulletSpeed);
+			tmp.rigidbody.AddForce(ship.transform.forward * bulletForce);
 		}
 	}
 	
+	// Move to be called during FixedUpdate in order to control the player's ship.
+	// Uses force and momentum to move.
 	void Move () {
+		bool w = Input.GetKey ("w");
+		bool a = Input.GetKey ("a");
+		bool s = Input.GetKey ("s");
+		bool d = Input.GetKey ("d");
 		
-		bool w = false;
-		bool a = false;
-		bool s = false;
-		bool d = false;
-		
-		if (Input.GetKey ("w")) {
-			w = true;
-		}
-		if (Input.GetKey ("a")) {
-			a = true;
-		}
-		if (Input.GetKey ("s")) {
-			s = true;
-		}
-		if (Input.GetKey ("d")) {
-			d = true;
-		}
-		
+		// Cancel out opposing directions
 		if (w && s) {
 			w = false;
 			s = false;
 		}
-		
 		if (a && d) {
 			a = false;
 			d = false;
 		}
 		
-		if (w && a) {
-			ship.rigidbody.AddForce(new Vector3(-angleForce, angleForce, 0));
-		} else if (w && d) {
-			ship.rigidbody.AddForce(new Vector3(angleForce, angleForce, 0));
-		} else if (w) {
-			ship.rigidbody.AddForce(new Vector3(0, force, 0));
-		} else if (a && s) {
-			ship.rigidbody.AddForce(new Vector3(-angleForce, -angleForce, 0));
-		} else if (a) {
-			ship.rigidbody.AddForce(new Vector3(-force, 0, 0));
-		} else if (s && d) {
-			ship.rigidbody.AddForce(new Vector3(angleForce, -angleForce, 0));
-		} else if (s) {
-			ship.rigidbody.AddForce(new Vector3(0, -force, 0));
-		} else if (d) {
-			ship.rigidbody.AddForce(new Vector3(force, 0, 0));
-		}
+		// Apply thrust
+		if (w && a)
+			ship.rigidbody.AddForce(new Vector3(-angleThrust, angleThrust, 0));
+		else if (w && d)
+			ship.rigidbody.AddForce(new Vector3(angleThrust, angleThrust, 0));
+		else if (w)
+			ship.rigidbody.AddForce(thrust * Vector3.up);
+		else if (a && s)
+			ship.rigidbody.AddForce(new Vector3(-angleThrust, -angleThrust, 0));
+		else if (a)
+			ship.rigidbody.AddForce(thrust * Vector3.left);
+		else if (s && d)
+			ship.rigidbody.AddForce(new Vector3(angleThrust, -angleThrust, 0));
+		else if (s)
+			ship.rigidbody.AddForce(thrust * Vector3.down);
+		else if (d)
+			ship.rigidbody.AddForce(thrust * Vector3.right);
 
-		Camera.main.transform.position = new Vector3(ship.transform.position.x, ship.transform.position.y, -10);
+		// Move the player's camera to keep the ship centred.
+		Camera.main.transform.position = ship.transform.position - 10 * Vector3.forward;
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
@@ -129,6 +139,7 @@ public class GameScript : MonoBehaviour {
 		EndGame ();
 	}
 	
+	// EndGame quits back to the main menu. 
 	private void EndGame () {
 		Application.LoadLevel ("Menu");
 	}

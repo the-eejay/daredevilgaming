@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*	MainMenuScript contains all functionality required by the main menu
+ *	scene in the game. It only needs to be attached to a single object
+ *	in the scene. Buttons can trigger public functions as necessary. */
 public class MainMenuScript : MonoBehaviour {
 
+	// These instance variables will be obsolete by the final release
 	private const int MAX_CONNECTIONS = 1;
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
