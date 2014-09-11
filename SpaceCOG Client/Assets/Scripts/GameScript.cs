@@ -76,7 +76,7 @@ public class GameScript : MonoBehaviour {
 	void FixedUpdate () {
 		try {
 			Move ();
-			// Turn ();
+			Turn ();
 		} catch (MissingReferenceException e) {
 			Debug.Log (e.ToString ());
 			// Unity runs many scripts and function calls asynchronously. It's probable that this function is
@@ -99,7 +99,11 @@ public class GameScript : MonoBehaviour {
 		float dist = 2000f;
 		if (targettingPlane.Raycast(ray, out dist)) {
 			Vector3 targetCoordinates = ray.GetPoint(dist);
-			ship.transform.LookAt (targetCoordinates);
+			Vector3 diff = targetCoordinates - ship.transform.position;
+			diff.Normalize ();
+			float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
+			rot -= 90f;
+			ship.transform.rotation = Quaternion.Euler (0f, 0f, rot);
 		}
 	}
 	
