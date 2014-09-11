@@ -5,6 +5,8 @@ public class enemyScript : MonoBehaviour {
 
 	public int speed;
 	private GameScript gameController;
+	float duration = 10f;
+	float startTime;
 
 	// Use this for initialization
 	void Start () {
@@ -18,12 +20,18 @@ public class enemyScript : MonoBehaviour {
 
 		Vector3 targetPos = gameController.GetPos ();
 		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
+		
+		startTime = Time.time;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		transform.Rotate (Vector3.up * Time.deltaTime * 500);
 		this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y, 0);
+		
+		if (Time.time - startTime > duration) {
+			Network.Destroy (gameObject);
+		}
 	}
 
 	void OnCollisionEnter (Collision col) {

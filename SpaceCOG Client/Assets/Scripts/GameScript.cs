@@ -17,6 +17,10 @@ public class GameScript : MonoBehaviour {
 	private static GameObject bullet;
 	private static GameObject asteroid;
 	
+	// Ship Colours
+	public Material red;
+	public Material blue;
+	
 	// A specific reference to the player's ship.
 	private GameObject ship;
 	
@@ -28,7 +32,7 @@ public class GameScript : MonoBehaviour {
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
 	
 	// Weapon stats & attributed
-	private const float bulletForce = 5000f; // Force applied to bullet when fired.
+	private const float bulletForce = 8000f; // Force applied to bullet when fired.
 
 	// Use this for initialization
 	void Start () {
@@ -49,6 +53,7 @@ public class GameScript : MonoBehaviour {
 		// Spawn player ship
 		Debug.Log ("Game Loaded.");
 		ship = (GameObject) Network.Instantiate (shipPrefab, new Vector3 (-5f, 0f, 0f), Quaternion.identity, 0);
+		ship.renderer.material = red;
 		
 		// Launch master host script (if acting as host)
 		if (Network.isServer) {
@@ -116,6 +121,7 @@ public class GameScript : MonoBehaviour {
 			tmp.collider.enabled = true;
 			Physics.IgnoreCollision(ship.collider, tmp.collider, true);
 			tmp.transform.position = ship.transform.position;
+			tmp.transform.rotation = ship.transform.rotation;
 			tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
 			tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
 		}

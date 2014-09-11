@@ -22,6 +22,8 @@ public class HostScript : MonoBehaviour {
 			networkView.RPC ("SetInitialLocation", Network.connections[0], 5f, 0f);
 		}
 		
+		
+		
 		startTime = Time.time;
 	}	
 	
