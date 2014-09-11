@@ -3,7 +3,7 @@ using System.Collections;
 
 public class enemyScript : MonoBehaviour {
 
-	public int scoreValue;
+	public int speed;
 	private GameScript gameController;
 
 	// Use this for initialization
@@ -15,6 +15,9 @@ public class enemyScript : MonoBehaviour {
 		if (gameController == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
+
+		Vector3 targetPos = gameController.GetPos ();
+		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
 	}
 	
 	// Update is called once per frame
@@ -25,12 +28,13 @@ public class enemyScript : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col) {
 		if (col.gameObject.name == "prefabBullet(Clone)") {
+			// Asteroid collided with bullet
 
 			Network.Destroy(col.gameObject);
 			Network.Destroy (gameObject);
 			Destroy (this);
-			gameController.AddScore (scoreValue);
 		} else if (col.gameObject.name == "Magpie(Clone)") {
+			// Asteroid collided with player
 			// Network.Destroy (col.gameObject);
 			Network.Destroy (gameObject);
 			Destroy (this);

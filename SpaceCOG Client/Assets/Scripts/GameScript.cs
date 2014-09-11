@@ -4,6 +4,7 @@ using System.Collections;
 /*	GameScript dictates all of the major game functionality. */
 public class GameScript : MonoBehaviour {
 
+	// Parameters for wave spawning
 	public GameObject hazard;
 	public int spawnDist;
 	public int hazardCount;
@@ -28,10 +29,6 @@ public class GameScript : MonoBehaviour {
 	
 	// Weapon stats & attributed
 	private const float bulletForce = 5000f; // Force applied to bullet when fired.
-
-
-	
-	private int score;
 
 	// Use this for initialization
 	void Start () {
@@ -58,7 +55,6 @@ public class GameScript : MonoBehaviour {
 			gameObject.AddComponent ("HostScript");
 		}
 		StartCoroutine (SpawnWaves());
-		score = 0;
 	}
 	
 	// Update is called once per frame
@@ -93,13 +89,6 @@ public class GameScript : MonoBehaviour {
 	[RPC] // This function can be called remotely over the network.
 	public void SetInitialLocation (float x, float y) {
 		ship.transform.localPosition = new Vector3 (x, y, 0f);
-	}
-
-	[RPC]
-	public void SpawnAsteroid () {
-		Vector3 currentPos = ship.transform.localPosition;
-		currentPos.x += 5;
-		Network.Instantiate (asteroid, currentPos, Quaternion.identity, 0);
 	}
 	
 	// Turn to be called during FixedUpdate in order to orient the player's ship towards
@@ -190,13 +179,18 @@ public class GameScript : MonoBehaviour {
 		Application.LoadLevel ("Menu");
 	}
 
+	// Spawns waves of asteroids that start flying towards the player.
 	IEnumerator SpawnWaves() {
-		
+
+		// Wait a short time before we spawn
 		yield return new WaitForSeconds(startWait);
+
 		while (true) {
+			// Spawn a wave
 			for (int i = 0; i < hazardCount; i++) {
 				Vector3 playerPosition = ship.transform.position;
 
+				// Get a point on the unit circle
 				Vector2 randomPointOnCircle = Random.insideUnitCircle;
 				randomPointOnCircle.Normalize();
 				randomPointOnCircle *= spawnDist;
@@ -210,25 +204,12 @@ public class GameScript : MonoBehaviour {
 				Network.Instantiate (hazard, spawnPosition, spawnRotation, 0);
 				yield return new WaitForSeconds (spawnWait);
 			}
+			// Increase the number of asteroids for next time.
 			hazardCount += 1;
+
+			// Wait a short time before spawning the next wave
 			yield return new WaitForSeconds(waveWait);
 		}
-	}
-	
-	void onGUI() {
-		GUI.Label (new Rect (10, 10, 100, 20), "Score: " + score);
-	}
-	
-	public void AddScore(int scoreValue) {
-		score += scoreValue;
-	}
-	
-	public int GetScore() {
-		return this.score;
-	}
-
-	public void kill() {
-		Network.Destroy (ship);
 	}
 
 	public Vector3 GetPos() {
@@ -239,7 +220,7 @@ public class GameScript : MonoBehaviour {
 	// client that the game has ended.
 	[RPC]
 	public void ServerEndsGame () {
-		if (Network.connections.Length != 0) {
+		if (Network.peerType != NetworkPeerType.Disconnected) {
 			Network.Disconnect ();
 		}
 		EndGame ();
