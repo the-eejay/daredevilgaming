@@ -12,11 +12,11 @@ public class PlayerShipScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//this.transform.position = new Vector3 (this.transform.position.x, 0.0f, 0.0f);
+		
 	}
 	
 	void FixedUpdate () {
-		//this.transform.position = new Vector3 (this.transform.position.x, 0.0f, 0.0f);
+	
 	}
 	
 	// Temporarily programmed to cause the player's death whenever it is knocked by anything.

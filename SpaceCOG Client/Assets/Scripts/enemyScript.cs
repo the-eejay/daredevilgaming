@@ -31,7 +31,7 @@ public class enemyScript : MonoBehaviour {
 			Destroy (this);
 			gameController.AddScore (scoreValue);
 		} else if (col.gameObject.name == "Magpie(Clone)") {
-			Network.Destroy (col.gameObject);
+			// Network.Destroy (col.gameObject);
 			Network.Destroy (gameObject);
 			Destroy (this);
 		}

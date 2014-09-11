@@ -63,16 +63,30 @@ public class GameScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Shoot ();
-		CentreCamera ();
+		try {
+			Shoot ();
+			CentreCamera ();
+		} catch (MissingReferenceException e) {
+			Debug.Log (e.ToString ());
+			// Unity runs many scripts and function calls asynchronously. It's probable that this function is
+			// executing at the time when the server tells the game to end. This causes nonfatal MissingReferenceExceptions.
+			// This catch is designed to prevent these exceptions.
+		}
 	}
 	
 	// FixedUpdate is called at consistent time intervals.
 	// It is useful for physics effecting functionality, since
 	// the player's framerate won't impact the results.
 	void FixedUpdate () {
-		Move ();
-		// Turn ();
+		try {
+			Move ();
+			// Turn ();
+		} catch (MissingReferenceException e) {
+			Debug.Log (e.ToString ());
+			// Unity runs many scripts and function calls asynchronously. It's probable that this function is
+			// executing at the time when the server tells the game to end. This causes nonfatal MissingReferenceExceptions.
+			// This catch is designed to prevent these exceptions.
+		}
 	}
 	
 	// SetInitialLocation allows the server to set the location of this player's ship.
@@ -220,6 +234,7 @@ public class GameScript : MonoBehaviour {
 	public Vector3 GetPos() {
 		return ship.transform.position;
 	}
+	
 	// ServerEndsGame is a remote procedure call that allows the server to tell the
 	// client that the game has ended.
 	[RPC]
@@ -232,7 +247,9 @@ public class GameScript : MonoBehaviour {
 	
 	// ReportDeath should be called when the player's ship is destroyed.
 	public void ReportDeath () {
-		networkView.RPC ("KillPlayer", RPCMode.All, Network.player);
+		if (Network.peerType != NetworkPeerType.Disconnected) {
+			networkView.RPC ("KillPlayer", RPCMode.All, Network.player);
+		}
 	}
 	
 

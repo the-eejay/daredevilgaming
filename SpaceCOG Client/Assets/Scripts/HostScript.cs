@@ -8,6 +8,9 @@ public class HostScript : MonoBehaviour {
 
 	int pCount;
 	bool[] playerAlive;
+	
+	float startTime;
+	float immuneTime = 3.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +21,8 @@ public class HostScript : MonoBehaviour {
 		if (pCount > 1) {
 			networkView.RPC ("SetInitialLocation", Network.connections[0], 5f, 0f);
 		}
+		
+		startTime = Time.time;
 	}	
 	
 	// Update is called once per frame
@@ -29,16 +34,18 @@ public class HostScript : MonoBehaviour {
 	// they have been killed. At this point a dead player means Game Over.
 	[RPC] 
 	void KillPlayer (NetworkPlayer player) {
-		Debug.Log ("Player Killed.");
-		if (player == Network.player) {
-			playerAlive[0] = false;
-			GameOver ();
-		} else {
-			for (int i = 0; i < pCount - 1; ++i) {
-				if (player == Network.connections[i]) {
-					playerAlive[i + 1] = false;
-					GameOver ();
-				 } 
+		if (Time.time - startTime > immuneTime) {
+			Debug.Log ("Player Killed.");
+			if (player == Network.player) {
+				playerAlive[0] = false;
+				GameOver ();
+			} else {
+				for (int i = 0; i < pCount - 1; ++i) {
+					if (player == Network.connections[i]) {
+						playerAlive[i + 1] = false;
+						GameOver ();
+					 } 
+				}
 			}
 		}
 	}
@@ -47,5 +54,4 @@ public class HostScript : MonoBehaviour {
 	void GameOver () {
 		networkView.RPC ("ServerEndsGame", RPCMode.All);
 	}
-	
 }
