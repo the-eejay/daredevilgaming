@@ -23,10 +23,13 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																						GlobalSection(MonoDevelopProperties) = preSolution
+																																								GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																																GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> origin/master
+=======
+																																																											GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> networking
 =======
 																																					GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> c2062427a3b594c66eae600de9ce21f635b80a25
