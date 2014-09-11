@@ -85,7 +85,7 @@ GameObject:
   - 222: {fileID: 5733928}
   - 114: {fileID: 5733927}
   m_Layer: 5
-  m_Name: Text -- Hangar
+  m_Name: Text - Join
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,7 +133,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hangar
+  m_Text: Join
 --- !u!222 &5733928
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ GameObject:
   - 222: {fileID: 49875861}
   - 114: {fileID: 49875860}
   m_Layer: 5
-  m_Name: Text -- Quickmatch
+  m_Name: Text - Host
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -199,7 +199,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Quickmatch
+  m_Text: 'Host
+
+'
 --- !u!222 &49875861
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -416,9 +418,8 @@ GameObject:
   - 222: {fileID: 846782361}
   - 114: {fileID: 846782360}
   - 114: {fileID: 846782359}
-  - 114: {fileID: 846782362}
   m_Layer: 5
-  m_Name: Button -- Hangar
+  m_Name: Button - Join
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,8 +482,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 846782362}
-        m_MethodName: HangarShift
+      - m_Target: {fileID: 1323489985}
+        m_MethodName: JoinServer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -522,17 +523,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 846782357}
---- !u!114 &846782362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 846782357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be043a2720db85343a8f1eab1c601320, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &863659221
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,7 +536,7 @@ GameObject:
   - 114: {fileID: 863659223}
   - 114: {fileID: 863659226}
   m_Layer: 5
-  m_Name: Button -- Play
+  m_Name: Button - Quick start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -609,8 +599,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 863659226}
-        m_MethodName: PlayShift
+      - m_Target: {fileID: 863659221}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -619,6 +609,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Playing
+          m_BoolArgument: 0
+        m_Enabled: 0
+      - m_Target: {fileID: 863659226}
+        m_MethodName: loadGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_Enabled: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -658,7 +660,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 863659221}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acc526eb0a1791e4bb0dcc7b4abbba2b, type: 3}
+  m_Script: {fileID: 11500000, guid: a4dfad93d37dca041be4c09b8b546e7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &947065019
@@ -959,7 +961,7 @@ GameObject:
   - 222: {fileID: 1322934721}
   - 114: {fileID: 1322934720}
   m_Layer: 5
-  m_Name: Text -- Play
+  m_Name: Text - Single Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1007,7 +1009,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play
+  m_Text: Single Player
 --- !u!222 &1322934721
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1024,6 +1026,8 @@ GameObject:
   - 224: {fileID: 1323489982}
   - 223: {fileID: 1323489984}
   - 114: {fileID: 1323489983}
+  - 148: {fileID: 1323489986}
+  - 114: {fileID: 1323489985}
   m_Layer: 5
   m_Name: Canvas -- MainMenu
   m_TagString: Untagged
@@ -1081,6 +1085,29 @@ Canvas:
   m_ReceivesEvents: 1
   m_SortingLayerID: 0
   m_SortingOrder: 0
+--- !u!114 &1323489985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1323489981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa7fe6c1051e94391893a01a317528c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!148 &1323489986
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1323489981}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 1323489982}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
 --- !u!1 &1366043579
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1120,7 @@ GameObject:
   - 114: {fileID: 1366043582}
   - 114: {fileID: 1366043581}
   m_Layer: 5
-  m_Name: Button -- Quit
+  m_Name: Button - Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1351,9 +1378,8 @@ GameObject:
   - 222: {fileID: 1511394886}
   - 114: {fileID: 1511394885}
   - 114: {fileID: 1511394884}
-  - 114: {fileID: 1511394887}
   m_Layer: 5
-  m_Name: Button -- Quickmatch
+  m_Name: Button - Host
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1416,8 +1442,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1511394887}
-        m_MethodName: Prototype
+      - m_Target: {fileID: 1323489985}
+        m_MethodName: HostServer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1428,6 +1454,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_Enabled: 1
+      - m_Target: {fileID: 0}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_Enabled: 0
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1511394885
@@ -1457,17 +1494,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1511394882}
---- !u!114 &1511394887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1511394882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4dfad93d37dca041be4c09b8b546e7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1672365046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,7 +1639,7 @@ GameObject:
   - 114: {fileID: 1857764521}
   - 114: {fileID: 1857764520}
   m_Layer: 5
-  m_Name: Button -- Settings
+  m_Name: Button - Settings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

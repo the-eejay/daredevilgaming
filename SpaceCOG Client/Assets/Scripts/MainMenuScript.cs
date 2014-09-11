@@ -97,4 +97,8 @@ public class MainMenuScript : MonoBehaviour {
 		Debug.Log ("Application terminated by player.");
 		Application.Quit ();
 	}
+
+	public void loadSinglePlayer() {
+		Application.LoadLevel ("Game");
+	}
 }

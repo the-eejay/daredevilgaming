@@ -9,8 +9,9 @@ public class HostScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// Initialize player ship locations (only 1 other player at the moment).
+
 		if (Network.connections.Length > 0) {
-			networkView.RPC ("SetInitialLocation", Network.connections[0], 2f, 0f);
+			networkView.RPC ("SetInitialLocation", Network.connections[0], 5f, 0f);
 		}
 	}	
 	

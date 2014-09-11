@@ -171,7 +171,7 @@ GameObject:
   - 148: {fileID: 1027193281}
   m_Layer: 0
   m_Name: WorldScriptObject
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -184,9 +184,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1027193278}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c5a4c835a6c742999b85d4e5d0223d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a768fddeeb4b3c43b8e701b12576ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hazard: {fileID: 100000, guid: 8b0b9b4bd9acb124286cafc38d7b18cc, type: 2}
+  spawnDist: 10
+  hazardCount: 10
+  spawnWait: .200000003
+  startWait: 1
+  waveWait: 1
 --- !u!4 &1027193280
 Transform:
   m_ObjectHideFlags: 0

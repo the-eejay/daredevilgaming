@@ -13,7 +13,7 @@ public class btnQuickmatch : MonoBehaviour {
 	
 	}
 
-	public void Prototype() {
+	public void loadGame() {
 		Application.LoadLevel ("GameScene");
 	}
 }

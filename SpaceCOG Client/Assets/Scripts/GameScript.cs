@@ -4,9 +4,17 @@ using System.Collections;
 /*	GameScript dictates all of the major game functionality. */
 public class GameScript : MonoBehaviour {
 
+	public GameObject hazard;
+	public int spawnDist;
+	public int hazardCount;
+	public float spawnWait;
+	public float startWait;
+	public float waveWait;
+
 	// GameObject Prefabs for cloning purposes.
 	private static GameObject shipPrefab;
 	private static GameObject bullet;
+	private static GameObject asteroid;
 	
 	// A specific reference to the player's ship.
 	private GameObject ship;
@@ -20,6 +28,10 @@ public class GameScript : MonoBehaviour {
 	
 	// Weapon stats & attributed
 	private const float bulletForce = 1000f; // Force applied to bullet when fired.
+
+
+	
+	private int score;
 
 	// Use this for initialization
 	void Start () {
@@ -35,15 +47,19 @@ public class GameScript : MonoBehaviour {
 		// Load prefabs
 		shipPrefab = (GameObject) Resources.Load ("Magpie");
 		bullet = (GameObject) Resources.Load ("prefabBullet");
+		asteroid = (GameObject)Resources.Load ("pentagon_asteroid");
 		
 		// Spawn player ship
 		Debug.Log ("Game Loaded.");
-		ship = (GameObject) Network.Instantiate (shipPrefab, new Vector3 (-2f, 0f, 0f), Quaternion.identity, 0);
+		ship = (GameObject) Network.Instantiate (shipPrefab, new Vector3 (-5f, 0f, 0f), Quaternion.identity, 0);
 		
 		// Launch master host script (if acting as host)
 		if (Network.isServer) {
 			gameObject.AddComponent ("HostScript");
 		}
+		SpawnAsteroid ();
+		StartCoroutine (SpawnWaves());
+		score = 0;
 	}
 	
 	// Update is called once per frame
@@ -63,6 +79,13 @@ public class GameScript : MonoBehaviour {
 	[RPC] // This function can be called remotely over the network.
 	public void SetInitialLocation (float x, float y) {
 		ship.transform.localPosition = new Vector3 (x, y, 0f);
+	}
+
+	[RPC]
+	public void SpawnAsteroid () {
+		Vector3 currentPos = ship.transform.localPosition;
+		currentPos.x += 5;
+		Network.Instantiate (asteroid, currentPos, Quaternion.identity, 0);
 	}
 	
 	// Turn to be called during FixedUpdate in order to orient the player's ship towards
@@ -149,5 +172,48 @@ public class GameScript : MonoBehaviour {
 	private void EndGame () {
 		Application.LoadLevel ("Menu");
 	}
+	
+	IEnumerator SpawnWaves() {
+		
+		yield return new WaitForSeconds(startWait);
+		while (true) {
+			for (int i = 0; i < hazardCount; i++) {
+				Vector3 playerPosition = ship.transform.position;
 
+				Vector2 randomPointOnCircle = Random.insideUnitCircle;
+				randomPointOnCircle.Normalize();
+				randomPointOnCircle *= spawnDist;
+
+				float randomX = randomPointOnCircle.x;
+				float randomY = randomPointOnCircle.y;
+
+				
+				Vector3 spawnPosition = new Vector3(playerPosition.x + randomX, playerPosition.y + randomY, 0);
+				Quaternion spawnRotation = Quaternion.identity;
+				Network.Instantiate (hazard, spawnPosition, spawnRotation, 0);
+				yield return new WaitForSeconds (spawnWait);
+			}
+			yield return new WaitForSeconds(waveWait);
+		}
+	}
+	
+	void onGUI() {
+		GUI.Label (new Rect (10, 10, 100, 20), "Score: " + score);
+	}
+	
+	public void AddScore(int scoreValue) {
+		score += scoreValue;
+	}
+	
+	public int GetScore() {
+		return this.score;
+	}
+
+	public void kill() {
+		Network.Destroy (ship);
+	}
+
+	public Vector3 GetPos() {
+		return ship.transform.position;
+	}
 }
