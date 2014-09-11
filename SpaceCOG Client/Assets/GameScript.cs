@@ -19,7 +19,7 @@ public class GameScript : MonoBehaviour {
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
 	
 	// Weapon stats & attributed
-	private const float bulletForce = 1000f; // Force applied to bullet when fired.
+	private const float bulletForce = 5000f; // Force applied to bullet when fired.
 
 	// Use this for initialization
 	void Start () {
@@ -49,6 +49,7 @@ public class GameScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Shoot ();
+		CentreCamera ();
 	}
 	
 	// FixedUpdate is called at consistent time intervals.
@@ -56,7 +57,7 @@ public class GameScript : MonoBehaviour {
 	// the player's framerate won't impact the results.
 	void FixedUpdate () {
 		Move ();
-		Turn ();
+		// Turn ();
 	}
 	
 	// SetInitialLocation allows the server to set the location of this player's ship.
@@ -87,7 +88,7 @@ public class GameScript : MonoBehaviour {
 			Physics.IgnoreCollision(ship.collider, tmp.collider, true);
 			tmp.transform.position = ship.transform.position;
 			tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
-			tmp.rigidbody.AddForce(ship.transform.forward * bulletForce);
+			tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
 		}
 	}
 	
@@ -126,8 +127,11 @@ public class GameScript : MonoBehaviour {
 			ship.rigidbody.AddForce(thrust * Vector3.down);
 		else if (d)
 			ship.rigidbody.AddForce(thrust * Vector3.right);
-
-		// Move the player's camera to keep the ship centred.
+	}
+	
+	// CentreCamera to be called during Update in order to ensure that the player's
+	// ship is always in the middle of the screen.
+	private void CentreCamera () {
 		Camera.main.transform.position = ship.transform.position - 10 * Vector3.forward;
 	}
 	
@@ -149,5 +153,21 @@ public class GameScript : MonoBehaviour {
 	private void EndGame () {
 		Application.LoadLevel ("Menu");
 	}
-
+	
+	// ServerEndsGame is a remote procedure call that allows the server to tell the
+	// client that the game has ended.
+	[RPC]
+	public void ServerEndsGame () {
+		if (Network.connections.Length != 0) {
+			Network.Disconnect ();
+		}
+		EndGame ();
+	}
+	
+	// ReportDeath should be called when the player's ship is destroyed.
+	public void ReportDeath () {
+		networkView.RPC ("KillPlayer", RPCMode.All, Network.player);
+	}
+	
+	
 }
