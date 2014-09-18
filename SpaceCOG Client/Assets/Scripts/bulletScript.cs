@@ -13,9 +13,9 @@ public class bulletScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Limit bullet lifetime to prevent memory leaks.
 		if (Time.time - spawnTime > lifetime) {
-			Destroy (this);
-			Destroy (gameObject);
+			Network.Destroy (gameObject);
 		}
 	}
 }
