@@ -89,6 +89,7 @@ public class GameScript : MonoBehaviour {
 			// This catch is designed to prevent these exceptions.
 		}
 		Compass ();
+		BoundsCheck ();
 	}
 	
 	void Compass () {
@@ -100,6 +101,13 @@ public class GameScript : MonoBehaviour {
 				dir.Normalize ();
 				compassHead.transform.localPosition = dir * 100;
 			}
+		}
+	}
+	
+	void BoundsCheck () {
+		Vector3 pos = ship.transform.position;
+		if (pos.magnitude > 1000f) {
+			gameOver = true;
 		}
 	}
 	

@@ -432,8 +432,8 @@ ParticleSystem:
     angle: 25
     length: 5
     boxX: 1000
-    boxY: 1000
-    boxZ: 2000
+    boxY: 3000
+    boxZ: 5000
     placementMode: 0
     m_Mesh: {fileID: 0}
     randomDirection: 0
