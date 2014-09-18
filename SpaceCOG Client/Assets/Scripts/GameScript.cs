@@ -36,7 +36,7 @@ public class GameScript : MonoBehaviour {
 
 	// For keeping track of player's score
 	private int score;
-	//public GameObject scoreText;
+	public GUIElement scoreText;
 
 	// Use this for initialization
 	void Start () {
@@ -246,6 +246,10 @@ public class GameScript : MonoBehaviour {
 
 	public void updateScore() {
 		//((GUIText) scoreText).text = "Score: " + score;
+	}
+
+	public void OnGUI() {
+		GUI.Label (new Rect (10, 10, 100, 30), "Score: " + score.ToString ());
 	}
 	
 	// ServerEndsGame is a remote procedure call that allows the server to tell the
