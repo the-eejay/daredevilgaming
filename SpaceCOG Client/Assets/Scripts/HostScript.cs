@@ -8,6 +8,7 @@ public class HostScript : MonoBehaviour {
 
 	int pCount;
 	bool[] playerAlive;
+	int[] scores;
 	
 	float startTime;
 	float immuneTime = 3.0f;

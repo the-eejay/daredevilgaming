@@ -38,12 +38,17 @@ public class GameScript : MonoBehaviour {
 	private int score;
 	public GUIElement scoreText;
 
+	// Set this to true when a player dies
+	private bool gameOver = false;
+
 	// Use this for initialization
 	void Start () {
 
 		score = 0;
 
 		updateScore ();
+
+		Time.timeScale = 1.0f;
 
 		// Simulate a network if this scene was loaded directly in the simulator.
 		if (Network.connections.Length == 0) {
@@ -195,7 +200,9 @@ public class GameScript : MonoBehaviour {
 	
 	// EndGame quits back to the main menu. 
 	private void EndGame () {
-		Application.LoadLevel ("Menu");
+		Debug.Log ("Game Over");
+
+		gameOver = true;
 	}
 
 	// Spawns waves of asteroids that start flying towards the player.
@@ -224,7 +231,7 @@ public class GameScript : MonoBehaviour {
 				yield return new WaitForSeconds (spawnWait);
 			}
 			// Increase the number of asteroids for next time.
-			hazardCount += 1;
+			//hazardCount += 1;
 
 			// Wait a short time before spawning the next wave
 			yield return new WaitForSeconds(waveWait);
@@ -250,6 +257,14 @@ public class GameScript : MonoBehaviour {
 
 	public void OnGUI() {
 		GUI.Label (new Rect (10, 10, 100, 30), "Score: " + score.ToString ());
+
+		if (gameOver) {
+			Time.timeScale = 0.0f;
+			GUI.Label (new Rect((Screen.width-150)/2, (Screen.height-150)/2, 300, 300), "Game Over! Your score: " + score.ToString ());
+			if (GUI.Button(new Rect((Screen.width-150)/2, (Screen.height+100)/2, 250, 100), "Continue"))
+				Application.LoadLevel ("Menu");
+		}
+
 	}
 	
 	// ServerEndsGame is a remote procedure call that allows the server to tell the
