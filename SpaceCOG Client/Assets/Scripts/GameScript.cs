@@ -34,8 +34,17 @@ public class GameScript : MonoBehaviour {
 	// Weapon stats & attributed
 	private const float bulletForce = 8000f; // Force applied to bullet when fired.
 
+	// For keeping track of player's score
+	private int score;
+	//public GameObject scoreText;
+
 	// Use this for initialization
 	void Start () {
+
+		score = 0;
+
+		updateScore ();
+
 		// Simulate a network if this scene was loaded directly in the simulator.
 		if (Network.connections.Length == 0) {
 			Debug.Log ("Loading scene in singleplayer mode...");
@@ -224,6 +233,19 @@ public class GameScript : MonoBehaviour {
 
 	public Vector3 GetPos() {
 		return ship.transform.position;
+	}
+
+	public void AddScore(int scoreValue) {
+		score += scoreValue;
+		updateScore ();
+	}
+	
+	public int GetScore() {
+		return this.score;
+	}
+
+	public void updateScore() {
+		//((GUIText) scoreText).text = "Score: " + score;
 	}
 	
 	// ServerEndsGame is a remote procedure call that allows the server to tell the

@@ -18,6 +18,11 @@ public class Mover : MonoBehaviour {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 
+
+
+	}
+
+	void Update() {
 		Vector3 targetPos = gameController.GetPos ();
 		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
 	}

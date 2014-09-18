@@ -4,6 +4,7 @@ using System.Collections;
 public class enemyScript : MonoBehaviour {
 
 	public int speed;
+	public int score;
 	private GameScript gameController;
 	float duration = 10f;
 	float startTime;
@@ -41,6 +42,7 @@ public class enemyScript : MonoBehaviour {
 			Network.Destroy(col.gameObject);
 			Network.Destroy (gameObject);
 			Destroy (this);
+			gameController.AddScore(score);
 		} else if (col.gameObject.name == "Magpie(Clone)") {
 			// Asteroid collided with player
 			// Network.Destroy (col.gameObject);
