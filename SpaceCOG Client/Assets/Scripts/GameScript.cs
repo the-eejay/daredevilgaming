@@ -76,6 +76,7 @@ public class GameScript : MonoBehaviour {
 		StartCoroutine (SpawnWaves());
 	}
 	
+	
 	// Update is called once per frame
 	void Update () {
 		try {
@@ -86,6 +87,19 @@ public class GameScript : MonoBehaviour {
 			// Unity runs many scripts and function calls asynchronously. It's probable that this function is
 			// executing at the time when the server tells the game to end. This causes nonfatal MissingReferenceExceptions.
 			// This catch is designed to prevent these exceptions.
+		}
+		Compass ();
+	}
+	
+	void Compass () {
+		GameObject compassHead = GameObject.Find ("CompassHead");
+		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
+		foreach (GameObject p in players) {
+			if (p != ship) {
+				Vector3 dir = p.transform.position - ship.transform.position;
+				dir.Normalize ();
+				compassHead.transform.localPosition = dir * 100;
+			}
 		}
 	}
 	

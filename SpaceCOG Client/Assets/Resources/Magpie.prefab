@@ -17,7 +17,7 @@ GameObject:
   - 122: {fileID: 12200000}
   m_Layer: 0
   m_Name: Magpie
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
