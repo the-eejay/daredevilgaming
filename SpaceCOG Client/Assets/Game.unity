@@ -1276,7 +1276,7 @@ MonoBehaviour:
   hazardCount: 1
   spawnWait: 1
   startWait: 1
-  waveWait: 10
+  waveWait: 1
   red: {fileID: 2100000, guid: 9559bc3059d7b4de48b51202ebf9b946, type: 2}
   blue: {fileID: 2100000, guid: ea606188942a04abaa2256ba7171003b, type: 2}
   scoreText: {fileID: 0}
