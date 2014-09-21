@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5400000}
   - 148: {fileID: 14800000}
   - 122: {fileID: 12200000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: Magpie
   m_TagString: Player
@@ -28,7 +29,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 218.177872, y: 132.643036, z: -8.5394268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,6 +89,23 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 7c61c5358f78dc54abda904828e97d6c, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 209507a06606f4544ab92e4efa1e9148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  w: 0
+  a: 0
+  s: 0
+  d: 0
+  mb1: 0
+  cursor: {x: 0, y: 0, z: 0}
 --- !u!122 &12200000
 Halo:
   m_ObjectHideFlags: 1
@@ -107,7 +125,7 @@ NetworkView:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_StateSynchronization: 1
-  m_Observed: {fileID: 400000}
+  m_Observed: {fileID: 11400000}
   m_ViewID:
     m_ID: 0
     m_Type: 0

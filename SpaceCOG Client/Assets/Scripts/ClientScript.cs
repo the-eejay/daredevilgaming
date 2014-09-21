@@ -17,9 +17,11 @@ public class ClientScript : MonoBehaviour {
 	void Start() {
 		cursor = new Vector3();
 		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
+		Debug.Log ("ClientScript started");
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
+		Debug.Log ("OnSerializeNetworkView ClientScript");
 		UpdateSerializedVars();
 		stream.Serialize(ref w);
 		stream.Serialize(ref a);

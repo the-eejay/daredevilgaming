@@ -48,10 +48,10 @@ public class ServerGameScript : MonoBehaviour {
 
 	public void Move () {
 		// Update logic here
-		for (int i = 0; i < pCount - 1; ++i) {
+		for (int i = 0; i < pCount; ++i) {
 			if (player[i].w && player[i].a)
 				playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, angleThrust, 0));
-			else if (player[i].w && player[i].d)
+			if (player[i].w && player[i].d)
 				playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, angleThrust, 0));
 			else if (player[i].w)
 				playerShips[i].rigidbody.AddForce(thrust * Vector3.up);
@@ -69,7 +69,7 @@ public class ServerGameScript : MonoBehaviour {
 	}
 
 	public void Shoot() {
-		for (int i = 0; i < pCount - 1; ++i) {
+		for (int i = 0; i < pCount; ++i) {
 			if (player[i].mb1) {
 				Rigidbody ship = player[i].rigidbody;
 				GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
