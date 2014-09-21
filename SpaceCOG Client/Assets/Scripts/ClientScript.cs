@@ -20,9 +20,7 @@ public class ClientScript : MonoBehaviour {
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
-		if (stream.isWriting) {
-			UpdateSerializedVars();
-		}
+		UpdateSerializedVars();
 		stream.Serialize(ref w);
 		stream.Serialize(ref a);
 		stream.Serialize(ref s);
@@ -36,6 +34,11 @@ public class ClientScript : MonoBehaviour {
 		a = Input.GetKey("a");
 		s = Input.GetKey ("s");
 		d = Input.GetKey ("d");
+
+		if (w)
+						Debug.Log ("w");
+				else
+						Debug.Log ("not w");
 		
 		// Cursor
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
