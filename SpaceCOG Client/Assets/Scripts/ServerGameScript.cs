@@ -84,7 +84,7 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (!Network.isServer) {
+		if (!initialized || !Network.isServer) {
 			return;
 		}
 		Move ();

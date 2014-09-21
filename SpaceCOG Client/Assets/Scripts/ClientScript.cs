@@ -20,11 +20,14 @@ public class ClientScript : MonoBehaviour {
 	}
 
 	void Update() {
-		UpdateSerializedVars();
+		if (Network.connections.Length == 0) {
+			UpdateSerializedVars ();
+		}
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
 		if (stream.isWriting) {
+			UpdateSerializedVars();
 			stream.Serialize (ref w);
 			stream.Serialize (ref a);
 			stream.Serialize (ref s);
