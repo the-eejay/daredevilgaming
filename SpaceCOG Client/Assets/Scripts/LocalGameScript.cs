@@ -16,13 +16,17 @@ public class LocalGameScript : MonoBehaviour {
 			Network.InitializeServer(0, 0, false);
 		}
 		// Launch server script if server
-		if (Network.isServer) {
+		//if (Network.isServer) {
 			gameObject.AddComponent("ServerGameScript");
-		}
+		//}
 		
 		pScriptPrefab = (GameObject) Resources.Load("PlayerScriptObject");
 		pScript = (GameObject) Network.Instantiate(pScriptPrefab, Vector3.zero, Quaternion.identity, 0);
-		networkView.RPC("LocatePlayerScript", RPCMode.Server, Network.player, pScript.networkView.viewID);
+		if (Network.peerType == NetworkPeerType.Server) {
+			((ServerGameScript)gameObject.GetComponent("ServerGameScript")).LocatePlayerScript(Network.player, pScript.networkView.viewID);
+		} else {
+			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID);
+		}
 	}
 	
 	void CentreCamera () {
@@ -42,4 +46,5 @@ public class LocalGameScript : MonoBehaviour {
 		initialized = true;
 		this.ship = NetworkView.Find(ship).gameObject;
 	}
+	
 }

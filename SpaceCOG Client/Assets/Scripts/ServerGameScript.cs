@@ -3,50 +3,54 @@ using System.Collections;
 
 public class ServerGameScript : MonoBehaviour {
 	//
-	int pCount;
-	int initCount;
-	bool initialized;
+	int pCount = 1 + Network.connections.Length;
+	int initCount = 0;
+	bool initialized = false;
 	
 	// Prefabs
 	GameObject shipPrefab;
 	
 	// Game Objects
-	GameObject[] playerShips;
+	GameObject[] playerShips = new GameObject[4];
 	
 	// Client Scripts
-	ClientScript[] player;
+	ClientScript[] player = new ClientScript[4];
 	
 	void Start() {
-		// Initialize variables
-		pCount = 1 + Network.connections.Length;
-		initCount = 0;
-		initialized = false;
-		
-		// Load prefabs
+		// Put initialization stuff into InitializeGame() instead of here
+	}
+	
+	void InitializeGame() {
+		CreatePlayerShips();
+	}
+	
+	void Update() {
+		if (!initialized || !Network.isServer) {
+			return;
+		}
+		// Update logic here
+	}
+	
+	void FixedUpdate() {
+		if (!Network.isServer) {
+			return;
+		}
+		// Logic here
+	}
+	
+	void CreatePlayerShips() {
 		shipPrefab = (GameObject) Resources.Load("Magpie");
-		
-		// Spawn players
-		playerShips = new GameObject[pCount];
-		player = new ClientScript[pCount];
-		
-		// Send Successful Initialization Messages
 		playerShips[0] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 (-5f, -5f, 0f), Quaternion.identity, 0);
 		for (int i = 1; i < pCount; ++i) {
 			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 		}
 	}
 	
-	void Update() {
-		if (!initialized) {
-			return;
-		}
-		// Update logic here
-	}
-	
 	[RPC]
 	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript) {
 		if (pScript.isMine) {
-			player[0] = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent(typeof(ClientScript));
+			ClientScript cs = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent("ClientScript");
+			player[0] = cs;
 			initCount++;
 		} else {
 			for (int i = 1; i < pCount; ++i) {
@@ -59,8 +63,9 @@ public class ServerGameScript : MonoBehaviour {
 		}
 		
 		if (initCount == pCount) {
+			InitializeGame();
 			initialized = true;
-			networkView.RPC("ServerSuccessfullyInitialized", RPCMode.Server, playerShips[0].networkView.viewID);
+			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID);
 			for (int i = 1; i < pCount; ++i) {
 				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID);
 			}
