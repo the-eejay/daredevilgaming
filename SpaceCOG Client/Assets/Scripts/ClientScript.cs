@@ -19,16 +19,22 @@ public class ClientScript : MonoBehaviour {
 		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
 		Debug.Log ("ClientScript started");
 	}
+
+	void Update() {
+		UpdateSerializedVars(); // Is now here.
+	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
 		Debug.Log ("OnSerializeNetworkView ClientScript");
-		UpdateSerializedVars();
-		stream.Serialize(ref w);
-		stream.Serialize(ref a);
-		stream.Serialize(ref s);
-		stream.Serialize(ref d);
-		stream.Serialize(ref mb1);
-		stream.Serialize(ref cursor);
+		// UpdateSerializedVars() Was here
+		if (stream.isWriting) {
+			stream.Serialize (ref w);
+			stream.Serialize (ref a);
+			stream.Serialize (ref s);
+			stream.Serialize (ref d);
+			stream.Serialize (ref mb1);
+			stream.Serialize (ref cursor);
+		}
 	}
 	
 	void UpdateSerializedVars() {
@@ -37,10 +43,7 @@ public class ClientScript : MonoBehaviour {
 		s = Input.GetKey ("s");
 		d = Input.GetKey ("d");
 
-		if (w)
-						Debug.Log ("w");
-				else
-						Debug.Log ("not w");
+		mb1 = Input.GetMouseButtonDown (0);
 		
 		// Cursor
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

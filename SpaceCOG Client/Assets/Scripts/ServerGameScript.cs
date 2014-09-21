@@ -71,7 +71,7 @@ public class ServerGameScript : MonoBehaviour {
 	public void Shoot() {
 		for (int i = 0; i < pCount; ++i) {
 			if (player[i].mb1) {
-				Rigidbody ship = player[i].rigidbody;
+				Rigidbody ship = playerShips[i].rigidbody;
 				GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
 				tmp.collider.enabled = true;
 				Physics.IgnoreCollision(ship.collider, tmp.collider, true);
