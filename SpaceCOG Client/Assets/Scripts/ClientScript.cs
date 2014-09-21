@@ -42,8 +42,8 @@ public class ClientScript : MonoBehaviour {
 		a = Input.GetKey("a");
 		s = Input.GetKey ("s");
 		d = Input.GetKey ("d");
-
-		mb1 = Input.GetMouseButtonDown (0);
+		
+		mb1 = Input.GetMouseButton(0);
 		
 		// Cursor
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -3,17 +3,11 @@ using System.Collections;
 
 public class ServerGameScript : MonoBehaviour {
 
-	// Parameters for wave spawning
-	public GameObject hazard;
-	public int spawnDist;
-	public int hazardCount;
-	public float spawnWait;
-	public float startWait;
-	public float waveWait;
-
 	int pCount = 1 + Network.connections.Length;
 	int initCount = 0;
 	bool initialized = false;
+	
+	float[] lastShotTime = new float[4];
 	
 	// Prefabs
 	GameObject shipPrefab;
@@ -28,8 +22,8 @@ public class ServerGameScript : MonoBehaviour {
 	// Ship stats & attributes
 	private const float thrust = 10000f; // Thrust applied to ship moving along axis.
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
-
 	private const float bulletForce = 8000f;
+	private const float minShotInterval = 0.1f;
 
 	void Start() {
 		// Put initialization stuff into InitializeGame() instead of here
@@ -67,18 +61,32 @@ public class ServerGameScript : MonoBehaviour {
 				playerShips[i].rigidbody.AddForce(thrust * Vector3.right);
 		}
 	}
+	
+	void Turn () {
+		for (int i = 0; i < pCount; ++i) {
+			Vector3 diff = player[i].cursor - playerShips[i].transform.position;
+			diff.Normalize();
+			float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
+			rot -= 90f;
+			playerShips[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+		}
+	}
 
 	public void Shoot() {
 		for (int i = 0; i < pCount; ++i) {
 			if (player[i].mb1) {
-				Rigidbody ship = playerShips[i].rigidbody;
-				GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
-				tmp.collider.enabled = true;
-				Physics.IgnoreCollision(ship.collider, tmp.collider, true);
-				tmp.transform.position = ship.transform.position;
-				tmp.transform.rotation = ship.transform.rotation;
-				tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
-				tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+				float tmpTime = Time.time;
+				if (tmpTime - lastShotTime[i] > minShotInterval) {
+					lastShotTime[i] = tmpTime;
+					Rigidbody ship = playerShips[i].rigidbody;
+					GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
+					tmp.collider.enabled = true;
+					Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+					tmp.transform.position = ship.transform.position;
+					tmp.transform.rotation = ship.transform.rotation;
+					tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
+					tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+				}
 			}
 		}
 	}
@@ -88,6 +96,7 @@ public class ServerGameScript : MonoBehaviour {
 			return;
 		}
 		Move ();
+		Turn ();
 		Shoot ();
 	}
 	
@@ -123,39 +132,6 @@ public class ServerGameScript : MonoBehaviour {
 			for (int i = 1; i < pCount; ++i) {
 				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID);
 			}
-		}
-	}
-
-	IEnumerator SpawnWaves() {
-		// Wait a short time before we spawn
-		yield return new WaitForSeconds (startWait);
-
-		while (true) {
-				// Spawn a wave
-			for (int i = 0; i < hazardCount; i++) {
-				for (int j = 0; j < pCount - 1; j++) {
-					Vector3 playerPosition = player[i].rigidbody.transform.position;
-	
-					// Get a point on the unit circle
-					Vector2 randomPointOnCircle = Random.insideUnitCircle;
-					randomPointOnCircle.Normalize ();
-					randomPointOnCircle *= spawnDist;
-	
-					float randomX = randomPointOnCircle.x;
-					float randomY = randomPointOnCircle.y;
-	
-	
-					Vector3 spawnPosition = new Vector3 (playerPosition.x + randomX, playerPosition.y + randomY, 0);
-					Quaternion spawnRotation = Quaternion.identity;
-					Network.Instantiate (hazard, spawnPosition, spawnRotation, 0);
-					yield return new WaitForSeconds (spawnWait);
-				}
-			}
-			// Increase the number of asteroids for next time.
-			//hazardCount += 1;
-
-			// Wait a short time before spawning the next wave
-			yield return new WaitForSeconds (waveWait);
 		}
 	}
 }
