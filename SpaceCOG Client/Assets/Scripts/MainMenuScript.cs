@@ -7,7 +7,7 @@ using System.Collections;
 public class MainMenuScript : MonoBehaviour {
 
 	// These instance variables will be obsolete by the final release
-	private const int MAX_CONNECTIONS = 1;
+	private const int MAX_CONNECTIONS = 3;
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
 
