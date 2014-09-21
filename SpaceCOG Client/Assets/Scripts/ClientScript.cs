@@ -28,13 +28,13 @@ public class ClientScript : MonoBehaviour {
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
 		if (stream.isWriting) {
 			UpdateSerializedVars();
-			stream.Serialize (ref w);
-			stream.Serialize (ref a);
-			stream.Serialize (ref s);
-			stream.Serialize (ref d);
-			stream.Serialize (ref mb1);
-			stream.Serialize (ref cursor);
 		}
+		stream.Serialize (ref w);
+		stream.Serialize (ref a);
+		stream.Serialize (ref s);
+		stream.Serialize (ref d);
+		stream.Serialize (ref mb1);
+		stream.Serialize (ref cursor);
 	}
 	
 	void UpdateSerializedVars() {
