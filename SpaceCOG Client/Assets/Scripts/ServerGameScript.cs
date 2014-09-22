@@ -128,9 +128,12 @@ public class ServerGameScript : MonoBehaviour {
 		if (initCount == pCount) {
 			InitializeGame();
 			initialized = true;
-			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID);
+			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID, pCount);
 			for (int i = 1; i < pCount; ++i) {
-				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID);
+				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID, pCount);
+			}
+			for (int i = 0; i < pCount; ++i) {
+					networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
 		}
 	}
