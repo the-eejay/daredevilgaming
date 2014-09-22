@@ -10,10 +10,15 @@ public class MainMenuScript : MonoBehaviour {
 	private const int MAX_CONNECTIONS = 3;
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
+	private int slots = 3;
+	
+	public GameObject ConOverlay;
+	public GameObject ConAddress;
+	public GameObject ConButton;
 
 	// Use this for initialization
 	void Start () {
-	
+		ConOverlay.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -41,16 +46,20 @@ public class MainMenuScript : MonoBehaviour {
 		}
 	}
 	
-	// Function to be called when the 'Join' button is pressed.
-	// Attempts to connect to a server on the local machine.
-	public void JoinServer () {
+	public void ConnectServer () {
 		Debug.Log ("Attempting to connect to server...");
 		NetworkConnectionError e;
-		e = Network.Connect (HOST_IP, PORT_NO);
-		
+		ConButton.SetActive (false);
+		e = Network.Connect (ConAddress.GetComponent<UnityEngine.UI.Text>().text, PORT_NO);
 		if (e != NetworkConnectionError.NoError) {
 			Debug.Log ("Connection Error: " + e.ToString ());
 		}
+	}
+	
+	// Function to be called when the 'Join' button is pressed.
+	// Attempts to connect to a server on the local machine.
+	public void JoinServer () {
+		ConOverlay.SetActive(true);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
@@ -63,14 +72,18 @@ public class MainMenuScript : MonoBehaviour {
 	// when a client successfully connects to this server.
 	private void OnPlayerConnected (NetworkPlayer player) {
 		Debug.Log (player.ToString () + " has joined the server.");
-		Debug.Log ("Loading game...");
-		networkView.RPC ("Game", RPCMode.All);
+		if (Network.connections.Length == slots) {
+			Debug.Log ("Loading game...");
+			networkView.RPC ("Game", RPCMode.All);
+		}
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
 	// when this client successfully connects to a server.
 	private void OnConnectedToServer () {
 		Debug.Log ("Successfully connected to the server.");
+		ConButton.SetActive (true);
+		ConOverlay.SetActive (false);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
