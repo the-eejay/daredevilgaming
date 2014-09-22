@@ -26,10 +26,11 @@ public class ServerGameScript : MonoBehaviour {
 	ClientScript[] player = new ClientScript[4];
 
 	// Ship stats & attributes
-	private const float thrust = 10000f; // Thrust applied to ship moving along axis.
+	private const float thrust = 60000f; // Thrust applied to ship moving along axis.
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
-	private const float bulletForce = 8000f;
+	private const float bulletForce = 20000f;
 	private const float minShotInterval = 0.1f;
+	private const float maxSpeed = 20f;
 
 	void Start() {
 		// Put initialization stuff into InitializeGame() instead of here
@@ -89,22 +90,22 @@ public class ServerGameScript : MonoBehaviour {
 		// Update logic here
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] != null) {
-				if (player[i].w && player[i].a)
-					playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, angleThrust, 0));
-				if (player[i].w && player[i].d)
-					playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, angleThrust, 0));
-				else if (player[i].w)
-					playerShips[i].rigidbody.AddForce(thrust * Vector3.up);
-				else if (player[i].a && player[i].s)
-					playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, -angleThrust, 0));
-				else if (player[i].a)
-					playerShips[i].rigidbody.AddForce(thrust * Vector3.left);
-				else if (player[i].s && player[i].d)
-					playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, -angleThrust, 0));
-				else if (player[i].s)
-					playerShips[i].rigidbody.AddForce(thrust * Vector3.down);
-				else if (player[i].d)
-					playerShips[i].rigidbody.AddForce(thrust * Vector3.right);
+				bool w = (player[i].w && !player[i].s) ? true : false;
+				bool a = (player[i].a && !player[i].d) ? true : false;
+				bool s = (player[i].s && !player[i].w) ? true : false;
+				bool d = (player[i].d && !player[i].a) ? true : false;
+				Vector3 dir = new Vector3(0, 0, 0);
+				if (w)
+					dir = dir + Vector3.up;
+				if (a)
+					dir = dir + Vector3.left;
+				if (s)
+					dir = dir + Vector3.down;
+				if (d)
+					dir = dir + Vector3.right;
+				dir.Normalize();
+				playerShips[i].rigidbody.AddForce(dir * thrust);
+				playerShips[i].rigidbody.velocity = Vector3.ClampMagnitude(playerShips[i].rigidbody.velocity, maxSpeed);
 			}
 		}
 	}
@@ -173,6 +174,7 @@ public class ServerGameScript : MonoBehaviour {
 				Vector3 dir = baddieTargets[i].transform.position - baddies[i].transform.position;
 				dir.Normalize ();
 				baddies[i].rigidbody.AddForce(dir*(thrust/10));
+				baddies[i].rigidbody.velocity = Vector3.ClampMagnitude(baddies[i].rigidbody.velocity, maxSpeed);
 				
 				float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
 				rot -= 90f;
