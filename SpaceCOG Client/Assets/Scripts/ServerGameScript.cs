@@ -8,6 +8,7 @@ public class ServerGameScript : MonoBehaviour {
 	bool initialized = false;
 	
 	float[] lastShotTime = new float[4];
+	float[] playerHP = new float[4];
 	
 	// Prefabs
 	GameObject shipPrefab;
@@ -39,53 +40,75 @@ public class ServerGameScript : MonoBehaviour {
 		}
 
 	}
+	
+	public void KillPlayer(int i) {
+		Network.Destroy(playerShips[i]);
+		
+	}
+	
+	public void Damage(GameObject obj, float dmg) {
+		for (int i = 0; i < pCount; ++i) {
+			if (playerShips[i] == obj) {
+				playerHP[i] -= dmg;
+				if (playerHP[i] < 0f) {
+					KillPlayer(i);
+				}
+			}
+		}
+	}
 
 	public void Move () {
 		// Update logic here
 		for (int i = 0; i < pCount; ++i) {
-			if (player[i].w && player[i].a)
-				playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, angleThrust, 0));
-			if (player[i].w && player[i].d)
-				playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, angleThrust, 0));
-			else if (player[i].w)
-				playerShips[i].rigidbody.AddForce(thrust * Vector3.up);
-			else if (player[i].a && player[i].s)
-				playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, -angleThrust, 0));
-			else if (player[i].a)
-				playerShips[i].rigidbody.AddForce(thrust * Vector3.left);
-			else if (player[i].s && player[i].d)
-				playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, -angleThrust, 0));
-			else if (player[i].s)
-				playerShips[i].rigidbody.AddForce(thrust * Vector3.down);
-			else if (player[i].d)
-				playerShips[i].rigidbody.AddForce(thrust * Vector3.right);
+			if (playerShips[i] != null) {
+				if (player[i].w && player[i].a)
+					playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, angleThrust, 0));
+				if (player[i].w && player[i].d)
+					playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, angleThrust, 0));
+				else if (player[i].w)
+					playerShips[i].rigidbody.AddForce(thrust * Vector3.up);
+				else if (player[i].a && player[i].s)
+					playerShips[i].rigidbody.AddForce(new Vector3(-angleThrust, -angleThrust, 0));
+				else if (player[i].a)
+					playerShips[i].rigidbody.AddForce(thrust * Vector3.left);
+				else if (player[i].s && player[i].d)
+					playerShips[i].rigidbody.AddForce(new Vector3(angleThrust, -angleThrust, 0));
+				else if (player[i].s)
+					playerShips[i].rigidbody.AddForce(thrust * Vector3.down);
+				else if (player[i].d)
+					playerShips[i].rigidbody.AddForce(thrust * Vector3.right);
+			}
 		}
 	}
 	
 	void Turn () {
 		for (int i = 0; i < pCount; ++i) {
-			Vector3 diff = player[i].cursor - playerShips[i].transform.position;
-			diff.Normalize();
-			float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
-			rot -= 90f;
-			playerShips[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+			if (playerShips[i] != null) {
+				Vector3 diff = player[i].cursor - playerShips[i].transform.position;
+				diff.Normalize();
+				float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
+				rot -= 90f;
+				playerShips[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+			}
 		}
 	}
 
 	public void Shoot() {
 		for (int i = 0; i < pCount; ++i) {
-			if (player[i].mb1) {
-				float tmpTime = Time.time;
-				if (tmpTime - lastShotTime[i] > minShotInterval) {
-					lastShotTime[i] = tmpTime;
-					Rigidbody ship = playerShips[i].rigidbody;
-					GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
-					tmp.collider.enabled = true;
-					Physics.IgnoreCollision(ship.collider, tmp.collider, true);
-					tmp.transform.position = ship.transform.position;
-					tmp.transform.rotation = ship.transform.rotation;
-					tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
-					tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+			if (playerShips[i] != null) {
+				if (player[i].mb1) {
+					float tmpTime = Time.time;
+					if (tmpTime - lastShotTime[i] > minShotInterval) {
+						lastShotTime[i] = tmpTime;
+						Rigidbody ship = playerShips[i].rigidbody;
+						GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
+						tmp.collider.enabled = true;
+						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+						tmp.transform.position = ship.transform.position;
+						tmp.transform.rotation = ship.transform.rotation;
+						tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
+						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+					}
 				}
 			}
 		}
@@ -103,9 +126,9 @@ public class ServerGameScript : MonoBehaviour {
 	void CreatePlayerShips() {
 		shipPrefab = (GameObject) Resources.Load("Magpie");
 		bulletPrefab = (GameObject)Resources.Load ("prefabBullet");
-		playerShips[0] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 (-5f, -5f, 0f), Quaternion.identity, 0);
-		for (int i = 1; i < pCount; ++i) {
+		for (int i = 0; i < pCount; ++i) {
 			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
+			playerHP[i] = 100f;
 		}
 	}
 	
