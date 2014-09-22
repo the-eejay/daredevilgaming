@@ -8,6 +8,7 @@ public class LocalGameScript : MonoBehaviour {
 	int x = 0;
 	public GameObject pScriptPrefab;
 	public GameObject CompassHeadPrefab;
+	public GameObject CompassBaddieHeadPrefab;
 	public GameObject CompassPanel;
 	private GameObject pScript;
 	
@@ -15,6 +16,8 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject ship;
 	private GameObject[] compassAllies;
 	private GameObject[] compassAllyBeacons;
+	private GameObject[] compassBaddies;
+	private GameObject[] compassBaddieBeacons;
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
@@ -48,6 +51,7 @@ public class LocalGameScript : MonoBehaviour {
 	}
 	
 	void UpdateCompass() {
+		// Allies
 		for (int i = 0; i < pCount - 1; ++i) {
 			if (compassAllies[i] == null) {
 				if (compassAllyBeacons[i] != null) {
@@ -59,6 +63,18 @@ public class LocalGameScript : MonoBehaviour {
 				compassAllyBeacons[i].transform.localPosition = dir * 80;
 			}
 		}
+		// Enemies
+		for (int i = 0; i < compassBaddies.Length; ++i) {
+			if (compassBaddies[i] == null) {
+				if (compassBaddieBeacons[i] != null) {
+					Destroy(compassBaddieBeacons[i]);
+				}
+			} else {
+				Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
+				dir.Normalize ();
+				compassBaddieBeacons[i].transform.localPosition = dir * 80;
+			}
+		}
 	}
 	
 	void InitCompass() {
@@ -66,6 +82,11 @@ public class LocalGameScript : MonoBehaviour {
 			compassAllyBeacons[i] = (GameObject) Instantiate(CompassHeadPrefab, Vector3.zero, Quaternion.identity);
 			compassAllyBeacons[i].transform.parent = CompassPanel.transform;
 			compassAllyBeacons[i].GetComponent<UnityEngine.UI.Image>().color = compassAllies[i].renderer.material.color;
+		}
+		for (int i = 0; i < compassBaddies.Length; ++i) {
+			compassBaddieBeacons[i] = (GameObject) Instantiate(CompassBaddieHeadPrefab, Vector3.zero, Quaternion.identity);
+			compassBaddieBeacons[i].transform.parent = CompassPanel.transform;
+			compassBaddieBeacons[i].GetComponent<UnityEngine.UI.Image>().color = compassBaddies[i].renderer.material.color;
 		}
 	}
 	
@@ -82,9 +103,23 @@ public class LocalGameScript : MonoBehaviour {
 		if (NetworkView.Find(ship).gameObject != this.ship) {
 			compassAllies[x++] = NetworkView.Find(ship).gameObject;	
 		}
-		if (x == pCount - 1) {
+	}
+	
+	[RPC]
+	public void ServerSendBaddieCount (int c) {
+		x = 0;
+		compassBaddies = new GameObject[c];
+		compassBaddieBeacons = new GameObject[c];
+	}
+	
+	[RPC]
+	public void ServerSendBaddieRef(NetworkViewID baddie) {
+		Debug.Log ("Baddie " + x + " " + compassBaddies.Length);
+		compassBaddies[x++] = NetworkView.Find (baddie).gameObject;
+		if (x == compassBaddies.Length) {
 			InitCompass();
 			initialized = true;
+			Debug.Log ("Initialized");
 		}
 	}
 }

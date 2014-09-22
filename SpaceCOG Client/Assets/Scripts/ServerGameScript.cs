@@ -9,13 +9,18 @@ public class ServerGameScript : MonoBehaviour {
 	
 	float[] lastShotTime = new float[4];
 	float[] playerHP = new float[4];
+	float[] baddieHP;
+	float[] baddieLastShotTime;
 	
 	// Prefabs
 	GameObject shipPrefab;
+	GameObject baddiePrefab;
 	GameObject bulletPrefab;
 	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
+	GameObject[] baddies;
+	GameObject[] baddieTargets;
 	
 	// Client Scripts
 	ClientScript[] player = new ClientScript[4];
@@ -32,6 +37,7 @@ public class ServerGameScript : MonoBehaviour {
 	
 	void InitializeGame() {
 		CreatePlayerShips();
+		CreateBaddies();
 	}
 	
 	void Update() {
@@ -52,9 +58,31 @@ public class ServerGameScript : MonoBehaviour {
 				playerHP[i] -= dmg;
 				if (playerHP[i] < 0f) {
 					KillPlayer(i);
+					return;
 				}
 			}
 		}
+		for (int i = 0; i < baddies.Length; ++i) {
+			if (baddies[i] == obj) {
+				baddieHP[i] -= dmg;
+				if (baddieHP[i] < 0f) {
+					Network.Destroy (baddies[i]);
+					return;
+				}
+			}
+		}
+	}
+	
+	public void CreateBaddies() {
+		baddies = new GameObject[1];
+		baddieTargets = new GameObject[1];
+		baddieHP = new float[1];
+		baddieLastShotTime = new float[1];
+		baddieHP[0] = 100f;
+		baddiePrefab = (GameObject)Resources.Load ("Magpie");
+		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*1000f, (Random.value - 0.5f)*1000f, 0f);
+		baddies[0] = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
+		
 	}
 
 	public void Move () {
@@ -121,6 +149,51 @@ public class ServerGameScript : MonoBehaviour {
 		Move ();
 		Turn ();
 		Shoot ();
+		MoveBaddies();
+	}
+	
+	GameObject GetRandomPlayerShip() {
+		int s = (int) Random.value * playerShips.Length;
+		for (int i = 0; i < playerShips.Length; ++i) {
+			if (playerShips[(i + s) % playerShips.Length] != null) {
+				return playerShips[(i + s) % playerShips.Length];
+			}
+		}
+		return null;
+	}
+	
+	void MoveBaddies() {
+		for (int i = 0; i < baddies.Length; ++i) {
+			if (baddies[i] != null) {
+				if (baddieTargets[i] == null) {
+					baddieTargets[i] = GetRandomPlayerShip();
+				}
+				
+				Vector3 diff = baddieTargets[i].transform.position - baddies[i].transform.position;
+				Vector3 dir = baddieTargets[i].transform.position - baddies[i].transform.position;
+				dir.Normalize ();
+				baddies[i].rigidbody.AddForce(dir*(thrust/10));
+				
+				float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
+				rot -= 90f;
+				baddies[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+				
+				if (diff.magnitude < 25f) {
+					float tmpTime = Time.time;
+					if (tmpTime - baddieLastShotTime[i] > minShotInterval) {
+						baddieLastShotTime[i] = tmpTime;
+						Rigidbody ship = baddies[i].rigidbody;
+						GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
+						tmp.collider.enabled = true;
+						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+						tmp.transform.position = ship.transform.position;
+						tmp.transform.rotation = ship.transform.rotation;
+						tmp.rigidbody.velocity = ship.transform.rigidbody.velocity;
+						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+					}
+				}
+			}
+		}
 	}
 	
 	void CreatePlayerShips() {
@@ -156,7 +229,11 @@ public class ServerGameScript : MonoBehaviour {
 				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID, pCount);
 			}
 			for (int i = 0; i < pCount; ++i) {
-					networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
+				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
+			}
+			networkView.RPC("ServerSendBaddieCount", RPCMode.All, baddies.Length);
+			for (int i = 0; i < baddies.Length; ++i) {
+				networkView.RPC("ServerSendBaddieRef", RPCMode.All, baddies[i].networkView.viewID);
 			}
 		}
 	}

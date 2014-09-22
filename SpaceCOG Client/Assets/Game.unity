@@ -1273,6 +1273,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pScriptPrefab: {fileID: 100000, guid: d5bc2140c75834559a4044b7dabffce3, type: 2}
   CompassHeadPrefab: {fileID: 100000, guid: 3fe493723e1704e7abdcdc2a251907e2, type: 2}
+  CompassBaddieHeadPrefab: {fileID: 100000, guid: 3fe493723e1704e7abdcdc2a251907e2,
+    type: 2}
   CompassPanel: {fileID: 1822257281}
 --- !u!4 &1027193280
 Transform:
