@@ -16,6 +16,7 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject pScript;
 	private bool isAlive = true;
 	private bool gameOver = false;
+	private bool boss = false;
 	
 	// Object References
 	private GameObject ship;
@@ -153,12 +154,18 @@ public class LocalGameScript : MonoBehaviour {
 	}
 
 	[RPC]
+	public void BossMode() {
+		boss = true;
+	}
+
+	[RPC]
 	public void Initialize() {
 		initialized = true;
 	}
 
 	private void OnGUI() {
-		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), "Wave " + WaveCounter);
+		string waveString = boss ? "Final Boss! " : "Wave " + WaveCounter;
+		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), waveString);
 
 		if (gameOver) {
 			string aliveString = isAlive ? "You win! " : "You lose! ";

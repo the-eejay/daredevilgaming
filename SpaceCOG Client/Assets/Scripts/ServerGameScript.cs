@@ -33,6 +33,8 @@ public class ServerGameScript : MonoBehaviour {
 	public float startWait = 1f;
 	public float waveWait = 3f;
 
+	bool bossSpawned = false;
+
 	// Ship stats & attributes
 	private const float thrust = 60000f; // Thrust applied to ship moving along axis.
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
@@ -47,6 +49,7 @@ public class ServerGameScript : MonoBehaviour {
 	void InitializeGame() {
 		Time.timeScale = 1.0f;
 		CreatePlayerShips();
+
 		StartCoroutine (CreateBaddies());
 	}
 	
@@ -87,8 +90,15 @@ public class ServerGameScript : MonoBehaviour {
 					baddies[i] = null;
 					livingEnemies -= 1;
 					if (livingEnemies == 0) {
-						networkView.RPC ("GameOver", RPCMode.All);
-						Time.timeScale = 0.0f;
+						if (bossSpawned) {
+							networkView.RPC ("GameOver", RPCMode.All);
+							Time.timeScale = 0.0f;
+						} else {
+							bossSpawned = true;
+							networkView.RPC ("BossMode", RPCMode.All);
+							livingEnemies++;
+							spawnBoss();
+						}
 					}
 					return;
 				}
@@ -116,14 +126,14 @@ public class ServerGameScript : MonoBehaviour {
 		// Wait a short time before we spawn
 		yield return new WaitForSeconds (startWait);
 
-		while (waveNumber < 11) {
+		while (waveNumber < 1) {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
-				baddieHP [totalEnemies++] = 5f;
+				baddieHP [totalEnemies] = 5f;
 				baddiePrefab = (GameObject)Resources.Load ("Magpie");
-				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 1000f, (Random.value - 0.5f) * 1000f, 0f);
+				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
-				baddies [totalEnemies] = newBaddie;
+				baddies [totalEnemies++] = newBaddie;
 				livingEnemies += 1;
 				networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
 				networkView.RPC("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
@@ -136,6 +146,16 @@ public class ServerGameScript : MonoBehaviour {
 			// Wait a short time before spawning the next wave
 			yield return new WaitForSeconds (waveWait);
 		}
+	}
+
+	public void spawnBoss() {
+		baddieHP[totalEnemies] = 100f;
+		baddiePrefab = (GameObject)Resources.Load ("Magpie");
+		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*200f, (Random.value - 0.5f)*200f, 0f);
+		GameObject newBaddie = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
+		baddies [totalEnemies++] = newBaddie;
+		networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
+		networkView.RPC("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
 	}
 
 	public void Move () {
