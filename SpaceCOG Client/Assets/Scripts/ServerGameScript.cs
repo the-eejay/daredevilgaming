@@ -86,6 +86,10 @@ public class ServerGameScript : MonoBehaviour {
 					Network.Destroy (baddies[i]);
 					baddies[i] = null;
 					livingEnemies -= 1;
+					if (livingEnemies == 0) {
+						networkView.RPC ("GameOver", RPCMode.All);
+						Time.timeScale = 0.0f;
+					}
 					return;
 				}
 			}
@@ -112,7 +116,7 @@ public class ServerGameScript : MonoBehaviour {
 		// Wait a short time before we spawn
 		yield return new WaitForSeconds (startWait);
 
-		while (true) {
+		while (waveNumber < 11) {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies++] = 5f;
@@ -282,7 +286,7 @@ public class ServerGameScript : MonoBehaviour {
 			for (int i = 0; i < pCount; ++i) {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
-
+			networkView.RPC ("Initialize", RPCMode.All);
 		}
 	}
 }

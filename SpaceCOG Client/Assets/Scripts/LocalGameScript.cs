@@ -4,6 +4,7 @@ using System.Collections;
 public class LocalGameScript : MonoBehaviour {
 	// State variables
 	private bool initialized = false;
+	private bool compassInitialized = false;
 	int pCount;
 	int enemyCount = 0;
 	int WaveCounter = 0;
@@ -20,8 +21,8 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject ship;
 	private GameObject[] compassAllies;
 	private GameObject[] compassAllyBeacons;
-	private GameObject[] compassBaddies = new GameObject[0];
-	private GameObject[] compassBaddieBeacons = new GameObject[0];
+	private GameObject[] compassBaddies = new GameObject[1];
+	private GameObject[] compassBaddieBeacons = new GameObject[1];
 
 	private ArrayList enemies = new ArrayList();
 	
@@ -41,8 +42,7 @@ public class LocalGameScript : MonoBehaviour {
 		} else {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID);
 		}
-		initialized = true;
-		InitCompass ();
+
 	}
 	
 	void CentreCamera () {
@@ -55,7 +55,9 @@ public class LocalGameScript : MonoBehaviour {
 		if (!initialized) {
 			return;
 		}
-		
+		if (!compassInitialized) {
+			InitCompass ();
+		}
 		CentreCamera();
 		UpdateCompass();
 	}
@@ -95,6 +97,7 @@ public class LocalGameScript : MonoBehaviour {
 			compassAllyBeacons[i].transform.parent = CompassPanel.transform;
 			compassAllyBeacons[i].GetComponent<UnityEngine.UI.Image>().color = compassAllies[i].renderer.material.color;
 		}
+		compassInitialized = true;
 	}
 	
 	[RPC]
@@ -110,13 +113,6 @@ public class LocalGameScript : MonoBehaviour {
 		if (NetworkView.Find(ship).gameObject != this.ship) {
 			compassAllies[x++] = NetworkView.Find(ship).gameObject;	
 		}
-	}
-	
-	[RPC]
-	public void ServerSendBaddieCount (int c) {
-		x = 0;
-		compassBaddies = new GameObject[c];
-		compassBaddieBeacons = new GameObject[c];
 	}
 
 	[RPC]
@@ -154,6 +150,11 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void NextWave() {
 		WaveCounter++;
+	}
+
+	[RPC]
+	public void Initialize() {
+		initialized = true;
 	}
 
 	private void OnGUI() {
