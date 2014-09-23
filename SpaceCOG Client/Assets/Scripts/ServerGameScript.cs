@@ -9,8 +9,8 @@ public class ServerGameScript : MonoBehaviour {
 	
 	float[] lastShotTime = new float[4];
 	float[] playerHP = new float[4];
-	float[] baddieHP;
-	float[] baddieLastShotTime;
+	float[] baddieHP = new float[1000];
+	float[] baddieLastShotTime = new float[1000];
 	
 	// Prefabs
 	GameObject shipPrefab;
@@ -19,13 +19,21 @@ public class ServerGameScript : MonoBehaviour {
 	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
-	GameObject[] baddies;
-	GameObject[] baddieTargets;
+	GameObject[] baddies = new GameObject[1000];
+	GameObject[] baddieTargets = new GameObject[1000];
 	
 	// Client Scripts
 	ClientScript[] player = new ClientScript[4];
 	private int livingPlayers = 0;
 	private int livingEnemies = 0;
+	private int waveNumber = 1;
+	private int totalEnemies = 0;
+
+	public float spawnWait = 0.1f;
+	public float startWait = 1f;
+	public float waveWait = 3f;
+
+	bool bossSpawned = false;
 
 	// Ship stats & attributes
 	private const float thrust = 60000f; // Thrust applied to ship moving along axis.
@@ -41,7 +49,8 @@ public class ServerGameScript : MonoBehaviour {
 	void InitializeGame() {
 		Time.timeScale = 1.0f;
 		CreatePlayerShips();
-		CreateBaddies();
+
+		StartCoroutine (CreateBaddies());
 	}
 	
 	void Update() {
@@ -78,17 +87,26 @@ public class ServerGameScript : MonoBehaviour {
 				baddieHP[i] -= dmg;
 				if (baddieHP[i] < 0f) {
 					Network.Destroy (baddies[i]);
+					baddies[i] = null;
 					livingEnemies -= 1;
 					if (livingEnemies == 0) {
-						networkView.RPC ("GameOver", RPCMode.All);
-						Time.timeScale = 0.0f;
+						if (bossSpawned) {
+							networkView.RPC ("GameOver", RPCMode.All);
+							Time.timeScale = 0.0f;
+						} else {
+							bossSpawned = true;
+							networkView.RPC ("BossMode", RPCMode.All);
+							livingEnemies++;
+							spawnBoss();
+						}
 					}
 					return;
 				}
 			}
 		}
 	}
-	
+
+	/*
 	public void CreateBaddies() {
 		baddies = new GameObject[1];
 		baddieTargets = new GameObject[1];
@@ -99,6 +117,45 @@ public class ServerGameScript : MonoBehaviour {
 		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*1000f, (Random.value - 0.5f)*1000f, 0f);
 		baddies[0] = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
 		livingEnemies += 1;
+	}
+	*/
+
+	// Spawns waves of asteroids that start flying towards the player.
+	IEnumerator CreateBaddies() {
+	
+		// Wait a short time before we spawn
+		yield return new WaitForSeconds (startWait);
+
+		while (waveNumber < 1) {
+			// Spawn a wave
+			for (int i = 0; i < waveNumber; i++) {
+				baddieHP [totalEnemies] = 5f;
+				baddiePrefab = (GameObject)Resources.Load ("Magpie");
+				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
+				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
+				baddies [totalEnemies++] = newBaddie;
+				livingEnemies += 1;
+				networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
+				networkView.RPC("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
+				yield return new WaitForSeconds (spawnWait);
+			}
+			// Increase the number of asteroids for next time.
+			waveNumber += 1;
+			networkView.RPC("NextWave", RPCMode.All);
+
+			// Wait a short time before spawning the next wave
+			yield return new WaitForSeconds (waveWait);
+		}
+	}
+
+	public void spawnBoss() {
+		baddieHP[totalEnemies] = 100f;
+		baddiePrefab = (GameObject)Resources.Load ("Magpie");
+		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*200f, (Random.value - 0.5f)*200f, 0f);
+		GameObject newBaddie = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
+		baddies [totalEnemies++] = newBaddie;
+		networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
+		networkView.RPC("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
 	}
 
 	public void Move () {
@@ -249,10 +306,7 @@ public class ServerGameScript : MonoBehaviour {
 			for (int i = 0; i < pCount; ++i) {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
-			networkView.RPC("ServerSendBaddieCount", RPCMode.All, baddies.Length);
-			for (int i = 0; i < baddies.Length; ++i) {
-				networkView.RPC("ServerSendBaddieRef", RPCMode.All, baddies[i].networkView.viewID);
-			}
+			networkView.RPC ("Initialize", RPCMode.All);
 		}
 	}
 }

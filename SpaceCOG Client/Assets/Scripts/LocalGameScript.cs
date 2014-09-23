@@ -4,7 +4,10 @@ using System.Collections;
 public class LocalGameScript : MonoBehaviour {
 	// State variables
 	private bool initialized = false;
+	private bool compassInitialized = false;
 	int pCount;
+	int enemyCount = 0;
+	int WaveCounter = 0;
 	int x = 0;
 	public GameObject pScriptPrefab;
 	public GameObject CompassHeadPrefab;
@@ -13,13 +16,16 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject pScript;
 	private bool isAlive = true;
 	private bool gameOver = false;
+	private bool boss = false;
 	
 	// Object References
 	private GameObject ship;
 	private GameObject[] compassAllies;
 	private GameObject[] compassAllyBeacons;
-	private GameObject[] compassBaddies;
-	private GameObject[] compassBaddieBeacons;
+	private GameObject[] compassBaddies = new GameObject[1];
+	private GameObject[] compassBaddieBeacons = new GameObject[1];
+
+	private ArrayList enemies = new ArrayList();
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
@@ -37,6 +43,7 @@ public class LocalGameScript : MonoBehaviour {
 		} else {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID);
 		}
+
 	}
 	
 	void CentreCamera () {
@@ -49,7 +56,9 @@ public class LocalGameScript : MonoBehaviour {
 		if (!initialized) {
 			return;
 		}
-		
+		if (!compassInitialized) {
+			InitCompass ();
+		}
 		CentreCamera();
 		UpdateCompass();
 	}
@@ -89,11 +98,7 @@ public class LocalGameScript : MonoBehaviour {
 			compassAllyBeacons[i].transform.parent = CompassPanel.transform;
 			compassAllyBeacons[i].GetComponent<UnityEngine.UI.Image>().color = compassAllies[i].renderer.material.color;
 		}
-		for (int i = 0; i < compassBaddies.Length; ++i) {
-			compassBaddieBeacons[i] = (GameObject) Instantiate(CompassBaddieHeadPrefab, Vector3.zero, Quaternion.identity);
-			compassBaddieBeacons[i].transform.parent = CompassPanel.transform;
-			compassBaddieBeacons[i].GetComponent<UnityEngine.UI.Image>().color = compassBaddies[i].renderer.material.color;
-		}
+		compassInitialized = true;
 	}
 	
 	[RPC]
@@ -110,23 +115,24 @@ public class LocalGameScript : MonoBehaviour {
 			compassAllies[x++] = NetworkView.Find(ship).gameObject;	
 		}
 	}
-	
+
 	[RPC]
-	public void ServerSendBaddieCount (int c) {
-		x = 0;
-		compassBaddies = new GameObject[c];
-		compassBaddieBeacons = new GameObject[c];
+	public void UpdateEnemyCount(int enemies) {
+		enemyCount = enemies;
+		Debug.Log ("Enemy count: " + enemyCount);
+		System.Array.Resize (ref compassBaddies, enemies);
+		System.Array.Resize (ref compassBaddieBeacons, enemies);
 	}
 	
 	[RPC]
 	public void ServerSendBaddieRef(NetworkViewID baddie) {
-		Debug.Log ("Baddie " + x + " " + compassBaddies.Length);
-		compassBaddies[x++] = NetworkView.Find (baddie).gameObject;
-		if (x == compassBaddies.Length) {
-			InitCompass();
-			initialized = true;
-			Debug.Log ("Initialized");
-		}
+		Debug.Log ("Baddie " + x + " " + enemyCount);
+		compassBaddies[x] = NetworkView.Find (baddie).gameObject;
+		compassBaddieBeacons[x] = (GameObject) Instantiate(CompassBaddieHeadPrefab, Vector3.zero, Quaternion.identity);
+		compassBaddieBeacons[x].transform.parent = CompassPanel.transform;
+		compassBaddieBeacons[x].GetComponent<UnityEngine.UI.Image>().color = compassBaddies[x].renderer.material.color;
+		x++;
+
 	}
 
 	[RPC]
@@ -142,7 +148,25 @@ public class LocalGameScript : MonoBehaviour {
 
 	}
 
+	[RPC]
+	public void NextWave() {
+		WaveCounter++;
+	}
+
+	[RPC]
+	public void BossMode() {
+		boss = true;
+	}
+
+	[RPC]
+	public void Initialize() {
+		initialized = true;
+	}
+
 	private void OnGUI() {
+		string waveString = boss ? "Final Boss! " : "Wave " + WaveCounter;
+		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), waveString);
+
 		if (gameOver) {
 			string aliveString = isAlive ? "You win! " : "You lose! ";
 			GUI.Label (new Rect ((Screen.width - 150) / 2, (Screen.height - 150) / 2, 300, 300), "Game over. " + aliveString);
