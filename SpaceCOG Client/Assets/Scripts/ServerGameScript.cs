@@ -24,6 +24,8 @@ public class ServerGameScript : MonoBehaviour {
 	
 	// Client Scripts
 	ClientScript[] player = new ClientScript[4];
+	private int livingPlayers = 0;
+	private int livingEnemies = 0;
 
 	// Ship stats & attributes
 	private const float thrust = 60000f; // Thrust applied to ship moving along axis.
@@ -37,6 +39,7 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	void InitializeGame() {
+		Time.timeScale = 1.0f;
 		CreatePlayerShips();
 		CreateBaddies();
 	}
@@ -49,6 +52,7 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	public void KillPlayer(int i) {
+		networkView.RPC ("Kill", RPCMode.All, playerShips[i].networkView.viewID);
 		Network.Destroy(playerShips[i]);
 		
 	}
@@ -59,6 +63,12 @@ public class ServerGameScript : MonoBehaviour {
 				playerHP[i] -= dmg;
 				if (playerHP[i] < 0f) {
 					KillPlayer(i);
+					livingPlayers -= 1;
+					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
+					if (livingPlayers == 0) {
+						networkView.RPC ("GameOver", RPCMode.All);
+						Time.timeScale = 0.0f;
+					}
 					return;
 				}
 			}
@@ -68,6 +78,11 @@ public class ServerGameScript : MonoBehaviour {
 				baddieHP[i] -= dmg;
 				if (baddieHP[i] < 0f) {
 					Network.Destroy (baddies[i]);
+					livingEnemies -= 1;
+					if (livingEnemies == 0) {
+						networkView.RPC ("GameOver", RPCMode.All);
+						Time.timeScale = 0.0f;
+					}
 					return;
 				}
 			}
@@ -83,7 +98,7 @@ public class ServerGameScript : MonoBehaviour {
 		baddiePrefab = (GameObject)Resources.Load ("Magpie");
 		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*1000f, (Random.value - 0.5f)*1000f, 0f);
 		baddies[0] = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
-		
+		livingEnemies += 1;
 	}
 
 	public void Move () {
@@ -204,6 +219,7 @@ public class ServerGameScript : MonoBehaviour {
 		for (int i = 0; i < pCount; ++i) {
 			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 			playerHP[i] = 100f;
+			livingPlayers += 1;
 		}
 	}
 	

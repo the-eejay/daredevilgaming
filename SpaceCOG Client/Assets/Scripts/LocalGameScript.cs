@@ -11,6 +11,8 @@ public class LocalGameScript : MonoBehaviour {
 	public GameObject CompassBaddieHeadPrefab;
 	public GameObject CompassPanel;
 	private GameObject pScript;
+	private bool isAlive = true;
+	private bool gameOver = false;
 	
 	// Object References
 	private GameObject ship;
@@ -38,7 +40,9 @@ public class LocalGameScript : MonoBehaviour {
 	}
 	
 	void CentreCamera () {
-		Camera.main.transform.position = ship.transform.position - 10 * Vector3.forward;
+		if (ship) {
+			Camera.main.transform.position = ship.transform.position - 10 * Vector3.forward;
+		}
 	}
 	
 	void Update() {
@@ -70,9 +74,11 @@ public class LocalGameScript : MonoBehaviour {
 					Destroy(compassBaddieBeacons[i]);
 				}
 			} else {
-				Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
-				dir.Normalize ();
-				compassBaddieBeacons[i].transform.localPosition = dir * 80;
+				if (ship) {
+					Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
+					dir.Normalize ();
+					compassBaddieBeacons[i].transform.localPosition = dir * 80;
+				}
 			}
 		}
 	}
@@ -122,4 +128,28 @@ public class LocalGameScript : MonoBehaviour {
 			Debug.Log ("Initialized");
 		}
 	}
+
+	[RPC]
+	public void Kill(NetworkViewID ship) {
+		if (NetworkView.Find(ship).gameObject == this.ship) {
+			isAlive = false;
+		}
+	}
+	[RPC]
+	public void GameOver() {
+		Debug.Log ("Game Over");
+		gameOver = true;
+
+	}
+
+	private void OnGUI() {
+		if (gameOver) {
+			string aliveString = isAlive ? "You win! " : "You lose! ";
+			GUI.Label (new Rect ((Screen.width - 150) / 2, (Screen.height - 150) / 2, 300, 300), "Game over. " + aliveString);
+			if (GUI.Button (new Rect ((Screen.width - 150) / 2, (Screen.height + 100) / 2, 250, 100), "Continue"))
+				Application.LoadLevel ("Menu");
+		}
+	}
+
+
 }
