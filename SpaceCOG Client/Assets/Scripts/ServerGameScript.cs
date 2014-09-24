@@ -126,7 +126,7 @@ public class ServerGameScript : MonoBehaviour {
 		// Wait a short time before we spawn
 		yield return new WaitForSeconds (startWait);
 
-		while (waveNumber < 1) {
+		while (waveNumber < 11) {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies] = 5f;
