@@ -277,6 +277,7 @@ public class ServerGameScript : MonoBehaviour {
 			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 			playerHP[i] = 100f;
 			livingPlayers += 1;
+			playerShips[i].renderer.material.color = GameObject.Find ("Magpie").renderer.material.color;
 		}
 	}
 	

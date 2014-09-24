@@ -15,15 +15,29 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject ConOverlay;
 	public GameObject ConAddress;
 	public GameObject ConButton;
+	public GameObject magpie;
+
+	private Color[] ships = new Color[4];
+	public int shipChooser = 0;
 
 	// Use this for initialization
 	void Start () {
 		ConOverlay.SetActive(false);
+		ships [0] = Color.white;
+		ships [1] = Color.red;
+		ships [2] = Color.blue;
+		ships [3] = Color.cyan;
+		magpie = GameObject.Find ("Magpie");
+		DontDestroyOnLoad (magpie);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (Input.GetKeyDown ("left")) shipChooser--;
+		if (Input.GetKeyDown ("right")) shipChooser++;
+		if (shipChooser < 0) shipChooser = 3;
+		if (shipChooser > 3) shipChooser = 0;
+		magpie.renderer.material.color = ships [shipChooser];
 	}
 
 	// Function to be called when the 'Host' button is pressed.
