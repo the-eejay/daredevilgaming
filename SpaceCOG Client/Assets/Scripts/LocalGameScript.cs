@@ -48,7 +48,7 @@ public class LocalGameScript : MonoBehaviour {
 	
 	void CentreCamera () {
 		if (ship) {
-			Camera.main.transform.position = ship.transform.position - 10 * Vector3.forward;
+			Camera.main.transform.position = ship.transform.position - 20 * Vector3.forward;
 		}
 	}
 	
@@ -144,6 +144,7 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void GameOver() {
 		Debug.Log ("Game Over");
+		Destroy(GameObject.Find ("Magpie"));
 		gameOver = true;
 
 	}

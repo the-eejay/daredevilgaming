@@ -27,6 +27,7 @@ public class ServerGameScript : MonoBehaviour {
 	private int livingPlayers = 0;
 	private int livingEnemies = 0;
 	private int waveNumber = 1;
+	private int maxWaves = 11;
 	private int totalEnemies = 0;
 
 	public float spawnWait = 0.1f;
@@ -89,7 +90,7 @@ public class ServerGameScript : MonoBehaviour {
 					Network.Destroy (baddies[i]);
 					baddies[i] = null;
 					livingEnemies -= 1;
-					if (livingEnemies == 0) {
+					if (livingEnemies == 0 && waveNumber == maxWaves) {
 						if (bossSpawned) {
 							networkView.RPC ("GameOver", RPCMode.All);
 							Time.timeScale = 0.0f;
@@ -126,7 +127,7 @@ public class ServerGameScript : MonoBehaviour {
 		// Wait a short time before we spawn
 		yield return new WaitForSeconds (startWait);
 
-		while (waveNumber < 11) {
+		while (waveNumber < maxWaves) {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies] = 5f;
@@ -277,7 +278,13 @@ public class ServerGameScript : MonoBehaviour {
 			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 			playerHP[i] = 100f;
 			livingPlayers += 1;
-			playerShips[i].renderer.material.color = GameObject.Find ("Magpie").renderer.material.color;
+			GameObject magpie = GameObject.Find ("Magpie");
+			Color color = Color.white;
+			if (magpie) {
+				color = magpie.renderer.material.color;
+				magpie.renderer.enabled = false;
+			}
+			playerShips[i].renderer.material.color = color;
 		}
 	}
 	

@@ -316,6 +316,8 @@ MonoBehaviour:
   ConOverlay: {fileID: 240088050}
   ConAddress: {fileID: 917545485}
   ConButton: {fileID: 113242503}
+  magpie: {fileID: 0}
+  shipChooser: 0
 --- !u!114 &174393543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2154,7 +2156,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 77028f063f44847ce83fcae09f8e8bdd, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 14800000, guid: 77028f063f44847ce83fcae09f8e8bdd, type: 2}
       propertyPath: m_ViewID.m_ID

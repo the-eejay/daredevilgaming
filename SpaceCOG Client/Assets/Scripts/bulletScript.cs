@@ -6,7 +6,7 @@ public class bulletScript : MonoBehaviour {
 	public static GameObject master;
 
 	float spawnTime = 0.0f;
-	float lifetime = 1.0f;
+	float lifetime = 3.0f;
 
 	// Use this for initialization
 	void Start () {
