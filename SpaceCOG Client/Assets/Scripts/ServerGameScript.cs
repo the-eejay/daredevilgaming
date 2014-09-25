@@ -16,7 +16,6 @@ public class ServerGameScript : MonoBehaviour {
 	GameObject shipPrefab;
 	GameObject baddiePrefab;
 	GameObject bulletPrefab;
-	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
 	GameObject[] baddies = new GameObject[1000];
@@ -71,6 +70,7 @@ public class ServerGameScript : MonoBehaviour {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
 				playerHP[i] -= dmg;
+				networkView.RPC ("DamagePlayer", RPCMode.All);
 				if (playerHP[i] < 0f) {
 					KillPlayer(i);
 					livingPlayers -= 1;
@@ -317,4 +317,10 @@ public class ServerGameScript : MonoBehaviour {
 			networkView.RPC ("Initialize", RPCMode.All);
 		}
 	}
+
+	[RPC]
+	public void DamagePlayer(NetworkPlayer owner, NetworkViewID pScript) {
+		
+	}
+
 }

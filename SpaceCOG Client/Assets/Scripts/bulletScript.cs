@@ -7,6 +7,7 @@ public class bulletScript : MonoBehaviour {
 
 	float spawnTime = 0.0f;
 	float lifetime = 3.0f;
+	float damage = 1f;
 
 	// Use this for initialization
 	void Start () {
@@ -26,7 +27,7 @@ public class bulletScript : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine) {
-			((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, 1f);
+			((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
 			Network.Destroy(gameObject);
 		}
 	}

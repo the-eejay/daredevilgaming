@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class LocalGameScript : MonoBehaviour {
@@ -24,6 +25,7 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject[] compassAllyBeacons;
 	private GameObject[] compassBaddies = new GameObject[1];
 	private GameObject[] compassBaddieBeacons = new GameObject[1];
+	public Slider HealthSlider;
 
 	private ArrayList enemies = new ArrayList();
 	
@@ -59,6 +61,7 @@ public class LocalGameScript : MonoBehaviour {
 		if (!compassInitialized) {
 			InitCompass ();
 		}
+
 		CentreCamera();
 		UpdateCompass();
 	}
@@ -162,6 +165,11 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void Initialize() {
 		initialized = true;
+	}
+
+	[RPC]
+	public void DamagePlayer() {
+		HealthSlider.value -= 1f;
 	}
 
 	private void OnGUI() {
