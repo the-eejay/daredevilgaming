@@ -26,6 +26,8 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject[] compassBaddieBeacons = new GameObject[1];
 
 	private ArrayList enemies = new ArrayList();
+
+	public int final_wave;
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
@@ -167,6 +169,10 @@ public class LocalGameScript : MonoBehaviour {
 	private void OnGUI() {
 		string waveString = boss ? "Final Boss! " : "Wave " + WaveCounter;
 		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), waveString);
+
+		final_wave = PlayerPrefs.GetInt("finalWave");
+		string waveScore = "The last wave was: " + final_wave.ToString();
+		GUI.Label (new Rect ((Screen.width / 2), 70, 150, 150), waveScore);
 
 		if (gameOver) {
 			string aliveString = isAlive ? "You win! " : "You lose! ";
