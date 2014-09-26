@@ -171,12 +171,14 @@ public class LocalGameScript : MonoBehaviour {
 		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), waveString);
 
 		final_wave = PlayerPrefs.GetInt("finalWave");
-		string waveScore = "The last wave was: " + final_wave.ToString();
+		string waveScore = "The last wave score: " + final_wave.ToString();
 		GUI.Label (new Rect ((Screen.width / 2), 70, 150, 150), waveScore);
 
 		if (gameOver) {
 			string aliveString = isAlive ? "You win! " : "You lose! ";
 			GUI.Label (new Rect ((Screen.width - 150) / 2, (Screen.height - 150) / 2, 300, 300), "Game over. " + aliveString);
+			PlayerPrefs.SetInt("finalWave", WaveCounter);
+			PlayerPrefs.Save();
 			if (GUI.Button (new Rect ((Screen.width - 150) / 2, (Screen.height + 100) / 2, 250, 100), "Continue"))
 				Application.LoadLevel ("Menu");
 		}
