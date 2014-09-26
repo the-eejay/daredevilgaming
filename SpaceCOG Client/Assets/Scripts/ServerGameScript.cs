@@ -16,6 +16,11 @@ public class ServerGameScript : MonoBehaviour {
 	GameObject shipPrefab;
 	GameObject baddiePrefab;
 	GameObject bulletPrefab;
+
+	// Player Status Prefab
+	public GameObject pStatusScriptPrefab;
+	private GameObject pStatusScript;
+
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
 	GameObject[] baddies = new GameObject[1000];
@@ -49,8 +54,15 @@ public class ServerGameScript : MonoBehaviour {
 	void InitializeGame() {
 		Time.timeScale = 1.0f;
 		CreatePlayerShips();
-
+		CreatePlayerStatusPrefabs();
 		StartCoroutine (CreateBaddies());
+		
+		pStatusScript = (GameObject) Network.Instantiate(pStatusScriptPrefab, Vector3.zero, Quaternion.identity, 0);
+		if (Network.peerType == NetworkPeerType.Server) {
+			((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).LocatePlayerStatusScript (Network.player, pStatusScript.networkView.viewID);
+		} else {
+			networkView.RPC ("LocatePlayerStatusScript", RPCMode.All, Network.player, pStatusScript.networkView.viewID);
+		}
 	}
 	
 	void Update() {
@@ -70,7 +82,6 @@ public class ServerGameScript : MonoBehaviour {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
 				playerHP[i] -= dmg;
-				networkView.RPC ("DamagePlayer", RPCMode.All);
 				if (playerHP[i] < 0f) {
 					KillPlayer(i);
 					livingPlayers -= 1;
@@ -287,6 +298,10 @@ public class ServerGameScript : MonoBehaviour {
 			playerShips[i].renderer.material.color = color;
 		}
 	}
+
+	void CreatePlayerStatusPrefabs(){
+		pStatusScriptPrefab = (GameObject)Resources.Load ("PlayerStatusScriptObject");
+	}
 	
 	[RPC]
 	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript) {
@@ -316,11 +331,6 @@ public class ServerGameScript : MonoBehaviour {
 			}
 			networkView.RPC ("Initialize", RPCMode.All);
 		}
-	}
-
-	[RPC]
-	public void DamagePlayer(NetworkPlayer owner, NetworkViewID pScript) {
-		
 	}
 
 }
