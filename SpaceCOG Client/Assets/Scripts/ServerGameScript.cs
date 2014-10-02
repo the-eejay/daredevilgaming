@@ -20,6 +20,7 @@ public class ServerGameScript : MonoBehaviour {
 	// Player Status Prefab
 	public GameObject pStatusScriptPrefab;
 	private GameObject pStatusScript;
+	PlayerStatusScript[] playerStatuses = new PlayerStatusScript[4];
 
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
@@ -47,6 +48,9 @@ public class ServerGameScript : MonoBehaviour {
 	private const float minShotInterval = 0.1f;
 	private const float maxSpeed = 20f;
 
+	// Player Connections
+	NetworkPlayer[] playerConnections;
+
 	void Start() {
 		// Put initialization stuff into InitializeGame() instead of here
 	}
@@ -56,12 +60,18 @@ public class ServerGameScript : MonoBehaviour {
 		CreatePlayerShips();
 		CreatePlayerStatusPrefabs();
 		StartCoroutine (CreateBaddies());
-		
+
+		playerConnections = Network.connections;
 		pStatusScript = (GameObject) Network.Instantiate(pStatusScriptPrefab, Vector3.zero, Quaternion.identity, 0);
-		if (Network.peerType == NetworkPeerType.Server) {
-			((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).LocatePlayerStatusScript (Network.player, pStatusScript.networkView.viewID);
-		} else {
-			networkView.RPC ("LocatePlayerStatusScript", RPCMode.All, Network.player, pStatusScript.networkView.viewID);
+//		if (Network.peerType == NetworkPeerType.Server) {
+//			((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).LocatePlayerStatusScript (Network.player, pStatusScript.networkView.viewID);
+//		} else {
+//			networkView.RPC ("LocatePlayerStatusScript", RPCMode.All, Network.player, pStatusScript.networkView.viewID);
+//		}
+		// Create player status list
+		for (int i = 0; i < pCount; ++i) {
+			PlayerStatusScript ps = (PlayerStatusScript) pStatusScript.gameObject.GetComponent("PlayerStatusScript");
+			playerStatuses[i] = ps;		
 		}
 	}
 	
@@ -69,7 +79,6 @@ public class ServerGameScript : MonoBehaviour {
 		if (!initialized || !Network.isServer) {
 			return;
 		}
-
 	}
 	
 	public void KillPlayer(int i) {
@@ -82,7 +91,12 @@ public class ServerGameScript : MonoBehaviour {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
 				playerHP[i] -= dmg;
-				if (playerHP[i] < 0f) {
+
+				// Willies Edits
+				playerStatuses[i].health -= dmg;
+				((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, playerStatuses[i].health);
+
+				if (playerHP[i] <= 0f || playerStatuses[i].health <= 0f) {
 					KillPlayer(i);
 					livingPlayers -= 1;
 					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
@@ -301,8 +315,9 @@ public class ServerGameScript : MonoBehaviour {
 
 	void CreatePlayerStatusPrefabs(){
 		pStatusScriptPrefab = (GameObject)Resources.Load ("PlayerStatusScriptObject");
+
 	}
-	
+
 	[RPC]
 	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript) {
 		if (pScript.isMine) {

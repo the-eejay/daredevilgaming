@@ -15,12 +15,12 @@ public class LocalGameScript : MonoBehaviour
 		public GameObject CompassHeadPrefab;
 		public GameObject CompassBaddieHeadPrefab;
 		public GameObject CompassPanel;
-	public Slider HealthSlider;
+		public Slider HealthSlider;
 		private GameObject pScript;
 		private bool isAlive = true;
 		private bool gameOver = false;
 		private bool boss = false;
-	private float health = 100;
+		private float health = 100f;
 	
 		// Object References
 		private GameObject ship;
@@ -71,13 +71,15 @@ public class LocalGameScript : MonoBehaviour
 
 				CentreCamera ();
 				UpdateCompass ();
-		UpdateHealth ();
+				UpdateHealth ();
 		}
 
-		void UpdateHealth() {
-		health -= playerStats.health;
-		HealthSlider.value = playerStats.health;
-	}
+		void UpdateHealth ()
+		{
+				health = playerStats.health;
+				HealthSlider.value = playerStats.health;
+				Debug.Log (health);
+		}
 	
 		void UpdateCompass ()
 		{
@@ -119,6 +121,18 @@ public class LocalGameScript : MonoBehaviour
 				compassInitialized = true;
 		}
 	
+		[RPC]
+		public void UpdatePlayerHealth (NetworkPlayer[] players, float h)
+		{
+				for (int i = 0; i < players.Length; ++i) {
+			Debug.Log(Network.player);
+				Debug.Log(players[i]);
+						if (Network.player == players[i]) {
+								health = h;
+						}
+				}
+		}
+
 		[RPC]
 		public void ServerSuccessfullyInitialized (NetworkViewID ship, int AllyCount)
 		{
