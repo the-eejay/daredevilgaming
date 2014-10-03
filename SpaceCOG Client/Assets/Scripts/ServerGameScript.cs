@@ -55,22 +55,16 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	void Update() {
-
-	}
-
-	void FixedUpdate() {
 		if (!initialized || !Network.isServer) {
 			return;
 		}
-		Move ();
-		Turn ();
-		Shoot ();
-		MoveBaddies();
+
 	}
 	
 	public void KillPlayer(int i) {
 		networkView.RPC ("Kill", RPCMode.All, playerShips[i].networkView.viewID);
 		Network.Destroy(playerShips[i]);
+		
 	}
 	
 	public void Damage(GameObject obj, float dmg) {
@@ -220,6 +214,16 @@ public class ServerGameScript : MonoBehaviour {
 				}
 			}
 		}
+	}
+	
+	void FixedUpdate() {
+		if (!initialized || !Network.isServer) {
+			return;
+		}
+		Move ();
+		Turn ();
+		Shoot ();
+		MoveBaddies();
 	}
 	
 	GameObject GetRandomPlayerShip() {
