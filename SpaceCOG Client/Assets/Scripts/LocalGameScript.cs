@@ -121,14 +121,10 @@ public class LocalGameScript : MonoBehaviour
 		}
 	
 		[RPC]
-		public void UpdatePlayerHealth (NetworkPlayer[] players, float h)
+		public void UpdatePlayerHealth (NetworkViewID ship, float h)
 		{
-				for (int i = 0; i < players.Length; ++i) {
-			Debug.Log(Network.player);
-				Debug.Log(players[i]);
-						if (Network.player == players[i]) {
-								health = h;
-						}
+				if (NetworkView.Find (ship).gameObject == this.ship) {
+						health = h;
 				}
 		}
 
