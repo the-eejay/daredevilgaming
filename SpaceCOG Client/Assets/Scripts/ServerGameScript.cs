@@ -9,11 +9,14 @@ public class ServerGameScript : MonoBehaviour {
 	
 	float[] lastShotTime = new float[4];
 	float[] playerHP = new float[4];
+	int[] playerShipChoices = new int[4];
 	float[] baddieHP = new float[1000];
 	float[] baddieLastShotTime = new float[1000];
 	
 	// Prefabs
-	GameObject shipPrefab;
+	GameObject magpiePrefab;
+	GameObject pelicanPrefab;
+	GameObject penguinPrefab;
 	GameObject baddiePrefab;
 	GameObject bulletPrefab;
 	
@@ -131,7 +134,7 @@ public class ServerGameScript : MonoBehaviour {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies] = 5f;
-				baddiePrefab = (GameObject)Resources.Load ("Magpie");
+				baddiePrefab = (GameObject) Resources.Load ("Sparrow");
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
 				baddies [totalEnemies++] = newBaddie;
@@ -151,7 +154,7 @@ public class ServerGameScript : MonoBehaviour {
 
 	public void spawnBoss() {
 		baddieHP[totalEnemies] = 100f;
-		baddiePrefab = (GameObject)Resources.Load ("Magpie");
+		baddiePrefab = (GameObject )Resources.Load ("Sparrow");
 		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*200f, (Random.value - 0.5f)*200f, 0f);
 		GameObject newBaddie = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
 		baddies [totalEnemies++] = newBaddie;
@@ -272,32 +275,30 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	void CreatePlayerShips() {
-		shipPrefab = (GameObject) Resources.Load("Magpie");
+		magpiePrefab = (GameObject) Resources.Load("Magpie");
+		pelicanPrefab = (GameObject)Resources.Load ("Pelican");
+		penguinPrefab = (GameObject)Resources.Load ("penguin");
+		GameObject[] prefabs = new GameObject[]{magpiePrefab, pelicanPrefab, penguinPrefab};
 		bulletPrefab = (GameObject)Resources.Load ("prefabBullet");
 		for (int i = 0; i < pCount; ++i) {
-			playerShips[i] = (GameObject) Network.Instantiate(shipPrefab, new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
+			playerShips[i] = (GameObject) Network.Instantiate(prefabs[playerShipChoices[i]], new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 			playerHP[i] = 100f;
 			livingPlayers += 1;
-			GameObject magpie = GameObject.Find ("Magpie");
-			Color color = Color.white;
-			if (magpie) {
-				color = magpie.renderer.material.color;
-				magpie.renderer.enabled = false;
-			}
-			playerShips[i].renderer.material.color = color;
 		}
 	}
 	
 	[RPC]
-	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript) {
+	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript, int shipChoice) {
 		if (pScript.isMine) {
 			ClientScript cs = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent("ClientScript");
 			player[0] = cs;
+			playerShipChoices[0] = shipChoice;
 			initCount++;
 		} else {
 			for (int i = 1; i < pCount; ++i) {
 				if (Network.connections[i-1] == owner) {
 					player[i] = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent(typeof(ClientScript));
+					playerShipChoices[i] = shipChoice;
 					initCount++;
 					break;
 				}
