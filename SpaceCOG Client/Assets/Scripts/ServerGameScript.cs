@@ -140,7 +140,7 @@ public class ServerGameScript : MonoBehaviour {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies] = 5f;
-				baddiePrefab = magpiePrefab;
+				baddiePrefab = (GameObject) Resources.Load ("Sparrow");
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
 				baddies [totalEnemies++] = newBaddie;
@@ -160,7 +160,7 @@ public class ServerGameScript : MonoBehaviour {
 
 	public void spawnBoss() {
 		baddieHP[totalEnemies] = 100f;
-		baddiePrefab = (GameObject)Resources.Load ("Magpie");
+		baddiePrefab = (GameObject )Resources.Load ("Sparrow");
 		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*200f, (Random.value - 0.5f)*200f, 0f);
 		GameObject newBaddie = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
 		baddies [totalEnemies++] = newBaddie;
