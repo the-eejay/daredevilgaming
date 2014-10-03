@@ -48,9 +48,6 @@ public class ServerGameScript : MonoBehaviour {
 	private const float minShotInterval = 0.1f;
 	private const float maxSpeed = 20f;
 
-	// Player Connections
-	NetworkPlayer[] playerConnections;
-
 	void Start() {
 		// Put initialization stuff into InitializeGame() instead of here
 	}
@@ -61,7 +58,6 @@ public class ServerGameScript : MonoBehaviour {
 		CreatePlayerStatusPrefabs();
 		StartCoroutine (CreateBaddies());
 
-		playerConnections = Network.connections;
 		pStatusScript = (GameObject) Network.Instantiate(pStatusScriptPrefab, Vector3.zero, Quaternion.identity, 0);
 //		if (Network.peerType == NetworkPeerType.Server) {
 //			((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).LocatePlayerStatusScript (Network.player, pStatusScript.networkView.viewID);
@@ -94,7 +90,8 @@ public class ServerGameScript : MonoBehaviour {
 
 				// Willies Edits
 				playerStatuses[i].health -= dmg;
-				((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, playerStatuses[i].health);
+				networkView.RPC("UpdatePlayerHealth", RPCMode.All, playerShips[i].networkView.viewID, playerStatuses[i].health);
+				//((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, i, playerStatuses[i].health);
 
 				if (playerHP[i] <= 0f || playerStatuses[i].health <= 0f) {
 					KillPlayer(i);
