@@ -76,8 +76,7 @@ public class LocalGameScript : MonoBehaviour
 
 		void UpdateHealth ()
 		{
-				health = playerStats.health;
-				HealthSlider.value = playerStats.health;
+				HealthSlider.value = health;
 				Debug.Log (health);
 		}
 	
@@ -177,6 +176,13 @@ public class LocalGameScript : MonoBehaviour
 				if (NetworkView.Find (ship).gameObject == this.ship) {
 						isAlive = false;
 				}
+		}
+
+		[RPC]
+		public void Hurt(float damage, NetworkViewID ship) {
+			if (NetworkView.Find (ship).gameObject == this.ship) {
+				health -= damage;
+			}
 		}
 
 		[RPC]

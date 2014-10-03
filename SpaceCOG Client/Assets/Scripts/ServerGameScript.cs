@@ -86,15 +86,20 @@ public class ServerGameScript : MonoBehaviour {
 		Network.Destroy(playerShips[i]);
 		
 	}
+
+	public void DamagePlayer(int i, float dmg) {
+		networkView.RPC ("Hurt", RPCMode.All, dmg, playerShips [i].networkView.viewID);
+	}
 	
 	public void Damage(GameObject obj, float dmg) {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
+				DamagePlayer(i, dmg);
 				playerHP[i] -= dmg;
 
 				// Willies Edits
-				playerStatuses[i].health -= dmg;
-				((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, playerStatuses[i].health);
+				//playerStatuses[i].health -= dmg;
+				//((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, playerStatuses[i].health);
 
 				if (playerHP[i] <= 0f || playerStatuses[i].health <= 0f) {
 					KillPlayer(i);
