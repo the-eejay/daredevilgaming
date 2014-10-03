@@ -5,6 +5,10 @@ public class PlayerShipScript : MonoBehaviour {
 
 	private GameScript gameController;
 
+	public int speed = 60000;
+	public int damage = 1;
+	public int hp = 100;
+
 	// Use this for initialization
 	void Start () {
 		GameObject gameControllerObject = GameObject.FindWithTag("GameController");
