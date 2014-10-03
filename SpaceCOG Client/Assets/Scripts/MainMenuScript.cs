@@ -31,25 +31,35 @@ public class MainMenuScript : MonoBehaviour {
 
 		magpie = GameObject.Find ("Magpie");
 		pelican = GameObject.Find ("Pelican");
-		penguin = GameObject.Find ("Penguin");
+		penguin = GameObject.Find ("penguin");
 		ships [0] = magpie;
 		ships [1] = pelican;
 		ships [2] = penguin;
 
+		magpie.collider.enabled = false;
+		pelican.collider.enabled = false;
+		penguin.collider.enabled = false;
+
+		magpie.renderer.enabled = true;
+		pelican.renderer.enabled = false;
+		penguin.renderer.enabled = false;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown ("left")) {
+			ships[shipChooser].renderer.enabled = false;
 			shipChooser--;
+			if (shipChooser < 0) shipChooser = 2;
+			ships[shipChooser].renderer.enabled = true;
 		}
 		if (Input.GetKeyDown ("right")) {
+			ships[shipChooser].renderer.enabled = false;
 			shipChooser++;
+			if (shipChooser > 2) shipChooser = 0;
+			ships[shipChooser].renderer.enabled = true;
 		}
-		if (shipChooser < 0) shipChooser = 2;
-		if (shipChooser > 2) shipChooser = 0;
-		playerShip = ships [shipChooser];
 	}
 
 	// Function to be called when the 'Host' button is pressed.
@@ -128,6 +138,9 @@ public class MainMenuScript : MonoBehaviour {
 	[RPC] // This function can be called remotely over the network.
 	private void Game () {
 		PlayerPrefs.SetInt ("ship", shipChooser);
+		magpie.collider.enabled = true;
+		penguin.collider.enabled = true;
+		pelican.collider.enabled = true;
 		Application.LoadLevel ("Game");
 	}
 	
@@ -139,6 +152,6 @@ public class MainMenuScript : MonoBehaviour {
 	}
 
 	public void loadSinglePlayer() {
-		Application.LoadLevel ("Game");
+		Game ();
 	}
 }

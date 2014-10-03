@@ -41,9 +41,9 @@ public class LocalGameScript : MonoBehaviour {
 		
 		pScript = (GameObject) Network.Instantiate(pScriptPrefab, Vector3.zero, Quaternion.identity, 0);
 		if (Network.peerType == NetworkPeerType.Server) {
-			((ServerGameScript)gameObject.GetComponent("ServerGameScript")).LocatePlayerScript(Network.player, pScript.networkView.viewID);
+			((ServerGameScript)gameObject.GetComponent("ServerGameScript")).LocatePlayerScript(Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		} else {
-			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID);
+			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
 
 	}
