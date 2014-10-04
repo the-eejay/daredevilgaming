@@ -22,6 +22,7 @@ public class ServerGameScript : MonoBehaviour {
 	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
+	PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
 	GameObject[] baddies = new GameObject[1000];
 	GameObject[] baddieTargets = new GameObject[1000];
 	
@@ -40,7 +41,7 @@ public class ServerGameScript : MonoBehaviour {
 	bool bossSpawned = false;
 
 	// Ship stats & attributes
-	private const float thrust = 60000f; // Thrust applied to ship moving along axis.
+	private const float thrust = 60000f; // Thrust applied to enemies
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
 	private const float bulletForce = 20000f;
 	private const float minShotInterval = 0.1f;
@@ -180,8 +181,8 @@ public class ServerGameScript : MonoBehaviour {
 				if (d)
 					dir = dir + Vector3.right;
 				dir.Normalize();
-				playerShips[i].rigidbody.AddForce(dir * thrust);
-				playerShips[i].rigidbody.velocity = Vector3.ClampMagnitude(playerShips[i].rigidbody.velocity, maxSpeed);
+				playerShips[i].rigidbody.AddForce(dir * playerShipScripts[i].thrust);
+				playerShips[i].rigidbody.velocity = Vector3.ClampMagnitude(playerShips[i].rigidbody.velocity, playerShipScripts[i].maxSpeed);
 			}
 		}
 	}
@@ -206,7 +207,7 @@ public class ServerGameScript : MonoBehaviour {
 					if (tmpTime - lastShotTime[i] > minShotInterval) {
 						lastShotTime[i] = tmpTime;
 						Rigidbody ship = playerShips[i].rigidbody;
-						GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
+						GameObject tmp = (GameObject) Network.Instantiate (playerShipScripts[i].bullet, ship.transform.position, Quaternion.identity, 0);
 						tmp.collider.enabled = true;
 						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
 						tmp.transform.position = ship.transform.position;
@@ -282,7 +283,8 @@ public class ServerGameScript : MonoBehaviour {
 		bulletPrefab = (GameObject)Resources.Load ("prefabBullet");
 		for (int i = 0; i < pCount; ++i) {
 			playerShips[i] = (GameObject) Network.Instantiate(prefabs[playerShipChoices[i]], new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
-			playerHP[i] = 100f;
+			playerShipScripts[i] = (PlayerShipScript) playerShips[i].GetComponent ("PlayerShipScript");
+			playerHP[i] = playerShipScripts[i].hp;
 			livingPlayers += 1;
 		}
 	}

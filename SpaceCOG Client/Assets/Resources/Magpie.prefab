@@ -14,6 +14,7 @@ GameObject:
   - 54: {fileID: 5400000}
   - 148: {fileID: 14800000}
   - 122: {fileID: 12200000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: Magpie
   m_TagString: Player
@@ -88,6 +89,21 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 7c61c5358f78dc54abda904828e97d6c, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f13b11372562844618f8b999820aff24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 100
+  bullet: {fileID: 100002, guid: 537c02e220fe62341bc0b9a61cdcec8a, type: 2}
+  thrust: 60000
+  maxSpeed: 20
 --- !u!122 &12200000
 Halo:
   m_ObjectHideFlags: 1
