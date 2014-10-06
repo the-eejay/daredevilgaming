@@ -28,6 +28,7 @@ public class LocalGameScript : MonoBehaviour {
 	private ArrayList enemies = new ArrayList();
 
 	public int final_wave;
+	public int currency;
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
@@ -41,9 +42,9 @@ public class LocalGameScript : MonoBehaviour {
 		
 		pScript = (GameObject) Network.Instantiate(pScriptPrefab, Vector3.zero, Quaternion.identity, 0);
 		if (Network.peerType == NetworkPeerType.Server) {
-			((ServerGameScript)gameObject.GetComponent("ServerGameScript")).LocatePlayerScript(Network.player, pScript.networkView.viewID);
+			((ServerGameScript)gameObject.GetComponent("ServerGameScript")).LocatePlayerScript(Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		} else {
-			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID);
+			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
 
 	}
@@ -167,17 +168,27 @@ public class LocalGameScript : MonoBehaviour {
 	}
 
 	private void OnGUI() {
+		//The button only works when the wave reaches the certain wave level.
+		GUI.Button (new Rect ((Screen.width-(Screen.width / 8)), 10, 100, 30), "Shop");
+		//Display the money.
+		currency = PlayerPrefs.GetInt("Money");
+		string money_status = "Money: " + currency.ToString();
+		GUI.Label (new Rect ((Screen.width-(Screen.width / 6)), 50, 100, 30), money_status);
+
 		string waveString = boss ? "Final Boss! " : "Wave " + WaveCounter;
 		GUI.Label (new Rect ((Screen.width / 2), 50, 150, 150), waveString);
 
 		final_wave = PlayerPrefs.GetInt("finalWave");
 		string waveScore = "The last wave score: " + final_wave.ToString();
-		GUI.Label (new Rect ((Screen.width / 2), 70, 150, 150), waveScore);
+		GUI.Label (new Rect ((Screen.width / 2), 70, 130, 150), waveScore);
 
 		if (gameOver) {
 			string aliveString = isAlive ? "You win! " : "You lose! ";
 			GUI.Label (new Rect ((Screen.width - 150) / 2, (Screen.height - 150) / 2, 300, 300), "Game over. " + aliveString);
 			PlayerPrefs.SetInt("finalWave", WaveCounter);
+			PlayerPrefs.Save();
+			//Set the money 0 when the game is done.
+			PlayerPrefs.SetInt("Money", 0);
 			PlayerPrefs.Save();
 			if (GUI.Button (new Rect ((Screen.width - 150) / 2, (Screen.height + 100) / 2, 250, 100), "Continue"))
 				Application.LoadLevel ("Menu");

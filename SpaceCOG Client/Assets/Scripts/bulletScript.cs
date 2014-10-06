@@ -7,6 +7,7 @@ public class bulletScript : MonoBehaviour {
 
 	float spawnTime = 0.0f;
 	float lifetime = 3.0f;
+	public float damage;
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +15,9 @@ public class bulletScript : MonoBehaviour {
 		if(master == null) {
 			master = GameObject.Find("WorldScriptObject");
 		}
+
+		Physics.IgnoreLayerCollision (8, 8);
+
 	}
 	
 	// Update is called once per frame
@@ -26,7 +30,7 @@ public class bulletScript : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine) {
-			((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, 1f);
+			((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
 			Network.Destroy(gameObject);
 		}
 	}

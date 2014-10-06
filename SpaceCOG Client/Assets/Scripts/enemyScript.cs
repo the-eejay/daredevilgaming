@@ -42,6 +42,9 @@ public class enemyScript : MonoBehaviour {
 			Network.Destroy(col.gameObject);
 			Network.Destroy (gameObject);
 			Destroy (this);
+			//Each hit/kill, earn 10
+			PlayerPrefs.SetInt("Money", 10);
+			PlayerPrefs.Save();
 			gameController.AddScore(score);
 		} else if (col.gameObject.name == "Magpie(Clone)") {
 			// Asteroid collided with player
