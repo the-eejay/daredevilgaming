@@ -6,25 +6,40 @@ public class enemyScript : MonoBehaviour {
 	public int bounty;
 	public bool canShoot;
 	public int speed;
+	public int hp;
 	public GameObject bullet;
+	public float secondsPerShot;
+
+	public static GameObject master;
+
+	public GameObject target;
+	private float lastShot = 0f;
+	private const float bulletForce = 20000f;
 
 	// Use this for initialization
 	void Start () {
 
+		if(master == null) {
+			master = GameObject.Find("WorldScriptObject");
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Move ();
-		Shoot();
+
+	}
+
+	void FixedUpdate() {
+		if (target) {
+			Move ();
+			Shoot ();
+		}
 	}
 
 	void Move() {
-		GameObject target = GameObject.FindGameObjectWithTag ("Player");
 		Vector3 targetPos = target.rigidbody.position;
 		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
 
-		Vector3 diff = target.transform.position - this.transform.position;
 		Vector3 dir = target.transform.position - this.transform.position;
 		dir.Normalize ();
 		
@@ -34,12 +49,28 @@ public class enemyScript : MonoBehaviour {
 	}
 
 	void Shoot() {
-		if (canShoot) {
-			float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
-			rot -= 90f;
-			baddies[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+		Vector3 diff = target.transform.position - this.transform.position;
+
+		if (canShoot && diff.magnitude < 25f) {
+			float tmpTime = Time.time;
+			if (tmpTime - lastShot > secondsPerShot) {
+				lastShot = tmpTime;
+				Rigidbody ship = this.rigidbody;
+				GameObject tmp = (GameObject) Network.Instantiate (bullet, ship.transform.position, Quaternion.identity, 0);
+				tmp.collider.enabled = true;
+				Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+				tmp.transform.position = ship.transform.position;
+				tmp.transform.rotation = ship.transform.rotation;
+				tmp.rigidbody.velocity = ship.transform.rigidbody.velocity;
+				tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+			}
 		}
 	}
 
-
+	void Damage(int damage) {
+		hp -= damage;
+		if (hp < 0) {
+			Network.Destroy (this.networkView.viewID);
+		}
+	}
 }

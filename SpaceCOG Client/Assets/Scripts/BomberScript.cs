@@ -3,13 +3,12 @@ using System.Collections;
 
 public class BomberScript : enemyScript {
 
-	// Use this for initialization
-	void Start () {
+	public int collisionDamage;
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void OnCollisionEnter (Collision col) {
+		if(networkView.isMine && col.gameObject.tag == "Player") {
+			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(col.gameObject, collisionDamage);
+			Network.Destroy(gameObject);
+		}
 	}
 }
