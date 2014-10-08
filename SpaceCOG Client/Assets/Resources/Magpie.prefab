@@ -104,6 +104,8 @@ MonoBehaviour:
   bullet: {fileID: 100002, guid: 537c02e220fe62341bc0b9a61cdcec8a, type: 2}
   thrust: 60000
   maxSpeed: 20
+  name: Magpie
+  description: Medium speed, 100 HP, 2 damage lasers
 --- !u!122 &12200000
 Halo:
   m_ObjectHideFlags: 1

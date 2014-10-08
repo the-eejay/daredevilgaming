@@ -28,7 +28,7 @@ public class LocalGameScript : MonoBehaviour {
 	private ArrayList enemies = new ArrayList();
 
 	public int final_wave;
-	public int currency;
+	public float currency;
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
@@ -84,6 +84,8 @@ public class LocalGameScript : MonoBehaviour {
 			if (compassBaddies[i] == null) {
 				if (compassBaddieBeacons[i] != null) {
 					Destroy(compassBaddieBeacons[i]);
+					//Earn 20 when player kill enemies
+					currency += 20;
 				}
 			} else {
 				if (ship) {
@@ -170,9 +172,9 @@ public class LocalGameScript : MonoBehaviour {
 	private void OnGUI() {
 		//The button only works when the wave reaches the certain wave level.
 		GUI.Button (new Rect ((Screen.width-(Screen.width / 8)), 10, 100, 30), "Shop");
-		//Display the money.
-		currency = PlayerPrefs.GetInt("Money");
-		string money_status = "Money: " + currency.ToString();
+		//Display the money. It generates 1 money in second (In unity time)
+		currency += Time.deltaTime;
+		string money_status = "Money: " + currency.ToString("0");
 		GUI.Label (new Rect ((Screen.width-(Screen.width / 6)), 50, 100, 30), money_status);
 
 		string waveString = boss ? "Final Boss! " : "Wave " + WaveCounter;
