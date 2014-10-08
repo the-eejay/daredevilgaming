@@ -101,12 +101,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bounty: 20
   canShoot: 0
-  speed: 20
+  speed: 25
   hp: 1
   bullet: {fileID: 0}
   secondsPerShot: 0
   target: {fileID: 0}
-  collisionDamage: 10
+  collisionDamage: 5
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1
