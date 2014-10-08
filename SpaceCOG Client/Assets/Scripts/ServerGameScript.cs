@@ -75,6 +75,7 @@ public class ServerGameScript : MonoBehaviour
 			PlayerStatusScript ps = new PlayerStatusScript();
 			playerStatuses [i] = ps;		
 		}
+<<<<<<< HEAD
 
 		// Initialising the basic enemy types
 		ships [0] = new EnemyShipType.Ship ("Speedy", 50, 150, 100);
@@ -87,6 +88,28 @@ public class ServerGameScript : MonoBehaviour
 		powerups [1] = new PowerUp.PowerUpType (100, 150, 100);	// Speed
 		powerups [2] = new PowerUp.PowerUpType (100, 100, 150); // Damage
 	}
+=======
+	
+		public void KillPlayer (int i)
+		{
+				networkView.RPC ("Kill", RPCMode.All, playerShips [i].networkView.viewID);
+				Network.Destroy (playerShips [i]);
+	}
+
+	public void DamagePlayer(int i, float dmg) {
+		networkView.RPC ("Hurt", RPCMode.All, dmg, playerShips [i].networkView.viewID);
+	}
+	
+	public void Damage(GameObject obj, float dmg) {
+		for (int i = 0; i < pCount; ++i) {
+			if (playerShips[i] == obj) {
+				DamagePlayer(i, dmg);
+				playerHP[i] -= dmg;
+
+				// Willies Edits
+				//playerStatuses[i].health -= dmg;
+				//((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth (playerConnections, playerStatuses[i].health);
+>>>>>>> origin/Willies_branch
 
 	void Update ()
 	{
