@@ -1276,6 +1276,8 @@ MonoBehaviour:
   CompassBaddieHeadPrefab: {fileID: 100000, guid: 3fe493723e1704e7abdcdc2a251907e2,
     type: 2}
   CompassPanel: {fileID: 1822257281}
+  final_wave: 0
+  currency: 0
 --- !u!4 &1027193280
 Transform:
   m_ObjectHideFlags: 0

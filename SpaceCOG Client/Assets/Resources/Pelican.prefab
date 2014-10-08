@@ -103,6 +103,8 @@ MonoBehaviour:
   bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
   thrust: 90000
   maxSpeed: 40
+  name: Pelican
+  description: High speed, 75 HP, 1 damage bullets
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1
