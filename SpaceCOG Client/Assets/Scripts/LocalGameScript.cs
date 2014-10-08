@@ -22,8 +22,8 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject ship;
 	private GameObject[] compassAllies;
 	private GameObject[] compassAllyBeacons;
-	private GameObject[] compassBaddies = new GameObject[1];
-	private GameObject[] compassBaddieBeacons = new GameObject[1];
+	private GameObject[] compassBaddies = new GameObject[1000];
+	private GameObject[] compassBaddieBeacons = new GameObject[1000];
 
 	private ArrayList enemies = new ArrayList();
 
@@ -74,9 +74,11 @@ public class LocalGameScript : MonoBehaviour {
 					Destroy(compassAllyBeacons[i]);
 				}
 			} else {
-				Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
-				dir.Normalize ();
-				compassAllyBeacons[i].transform.localPosition = dir * 80;
+				if (ship) {
+					Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
+					dir.Normalize ();
+					compassAllyBeacons[i].transform.localPosition = dir * 80;
+				}
 			}
 		}
 		// Enemies

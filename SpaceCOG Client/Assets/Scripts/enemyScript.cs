@@ -6,7 +6,7 @@ public class enemyScript : MonoBehaviour {
 	public int bounty;
 	public bool canShoot;
 	public int speed;
-	public int hp;
+	public float hp;
 	public GameObject bullet;
 	public float secondsPerShot;
 
@@ -67,10 +67,12 @@ public class enemyScript : MonoBehaviour {
 		}
 	}
 
-	void Damage(int damage) {
+	public void Damage(float damage) {
 		hp -= damage;
-		if (hp < 0) {
-			Network.Destroy (this.networkView.viewID);
+		Debug.Log ("Enemy lost" + damage + "hp.  Enemy now at " + hp + "hp");
+		if (hp <= 0) {
+			Debug.Log ("Enemy destroyed");
+			Network.Destroy (gameObject);
 		}
 	}
 }
