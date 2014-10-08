@@ -30,8 +30,14 @@ public class bulletScript : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine) {
-			((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
-			Network.Destroy(gameObject);
+			if (col.gameObject.tag == "Player") {
+				((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
+				Network.Destroy (gameObject);
+			} else if (col.gameObject.tag == "Enemy") {
+				Debug.Log ("Hit enemy");
+				((enemyScript)col.gameObject.GetComponent ("enemyScript")).Damage (damage);
+				Network.Destroy (gameObject);
+			}
 		}
 	}
 }
