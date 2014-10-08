@@ -14,16 +14,19 @@ public class ServerGameScript : MonoBehaviour {
 	float[] baddieLastShotTime = new float[1000];
 	
 	// Prefabs
-	GameObject magpiePrefab;
-	GameObject pelicanPrefab;
-	GameObject penguinPrefab;
+	public GameObject magpiePrefab;
+	public GameObject pelicanPrefab;
+	public GameObject penguinPrefab;
 	GameObject baddiePrefab;
+	public GameObject sparrowPrefab;
+	public GameObject bomberPrefab;
 	GameObject bulletPrefab;
 	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
 	PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
 	GameObject[] baddies = new GameObject[1000];
+	enemyScript[] enemyScripts = new enemyScript[1000];
 	GameObject[] baddieTargets = new GameObject[1000];
 	
 	// Client Scripts
@@ -111,20 +114,6 @@ public class ServerGameScript : MonoBehaviour {
 		}
 	}
 
-	/*
-	public void CreateBaddies() {
-		baddies = new GameObject[1];
-		baddieTargets = new GameObject[1];
-		baddieHP = new float[1];
-		baddieLastShotTime = new float[1];
-		baddieHP[0] = 100f;
-		baddiePrefab = (GameObject)Resources.Load ("Magpie");
-		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*1000f, (Random.value - 0.5f)*1000f, 0f);
-		baddies[0] = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
-		livingEnemies += 1;
-	}
-	*/
-
 	// Spawns waves of asteroids that start flying towards the player.
 	IEnumerator CreateBaddies() {
 	
@@ -135,7 +124,11 @@ public class ServerGameScript : MonoBehaviour {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				baddieHP [totalEnemies] = 5f;
-				baddiePrefab = (GameObject) Resources.Load ("Sparrow");
+				if (i % 2 == 1) {
+					baddiePrefab = sparrowPrefab;
+				} else {
+					baddiePrefab = bomberPrefab;
+				}
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
 				baddies [totalEnemies++] = newBaddie;
@@ -241,12 +234,13 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	void MoveBaddies() {
+
+
 		for (int i = 0; i < baddies.Length; ++i) {
 			if (baddies[i] != null) {
 				if (baddieTargets[i] == null) {
 					baddieTargets[i] = GetRandomPlayerShip();
 				}
-				
 				Vector3 diff = baddieTargets[i].transform.position - baddies[i].transform.position;
 				Vector3 dir = baddieTargets[i].transform.position - baddies[i].transform.position;
 				dir.Normalize ();
