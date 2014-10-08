@@ -127,6 +127,7 @@ public class ServerGameScript : MonoBehaviour {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber*2; i++) {
 				GameObject target = GetRandomPlayerShip ();
+				Debug.Log ("Target " + target.name);
 				baddieHP [totalEnemies] = 5f;
 				if (i % 2 == 1) {
 					baddiePrefab = sparrowPrefab;
@@ -228,13 +229,10 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	GameObject GetRandomPlayerShip() {
-		int s = (int) Random.value * playerShips.Length;
-		for (int i = 0; i < playerShips.Length; ++i) {
-			if (playerShips[(i + s) % playerShips.Length] != null) {
-				return playerShips[(i + s) % playerShips.Length];
-			}
-		}
-		return null;
+
+		int s = Random.Range (0, pCount);
+		if (playerShips [s]) return playerShips [s];
+		return GetRandomPlayerShip ();
 	}
 
 	

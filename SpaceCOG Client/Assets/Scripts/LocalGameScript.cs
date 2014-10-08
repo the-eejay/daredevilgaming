@@ -9,6 +9,7 @@ public class LocalGameScript : MonoBehaviour {
 	int enemyCount = 0;
 	int WaveCounter = 0;
 	int x = 0;
+	int y = 0;
 	public GameObject pScriptPrefab;
 	public GameObject CompassHeadPrefab;
 	public GameObject CompassBaddieHeadPrefab;
@@ -119,7 +120,7 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void ServerSendAllyRef(NetworkViewID ship) {
 		if (NetworkView.Find(ship).gameObject != this.ship) {
-			compassAllies[x++] = NetworkView.Find(ship).gameObject;	
+			compassAllies[y++] = NetworkView.Find(ship).gameObject;	
 		}
 	}
 
