@@ -7,12 +7,12 @@ public class PlayerShipScript : MonoBehaviour {
 	public GameObject bullet;
 	public float thrust;
 	public float maxSpeed;
-<<<<<<< HEAD
+
 	public float currency;
-=======
+
 	public string name;
 	public string description;
->>>>>>> origin/master
+
 
 	// Use this for initialization
 	void Start () {
