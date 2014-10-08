@@ -34,7 +34,7 @@ public class ServerGameScript : MonoBehaviour {
 	private int livingPlayers = 0;
 	private int livingEnemies = 0;
 	private int waveNumber = 1;
-	private int maxWaves = 11;
+	private int maxWaves = 21;
 	private int totalEnemies = 0;
 
 	public float spawnWait = 0.1f;
@@ -57,6 +57,9 @@ public class ServerGameScript : MonoBehaviour {
 	void InitializeGame() {
 		Time.timeScale = 1.0f;
 		CreatePlayerShips();
+
+		sparrowPrefab = (GameObject) Resources.Load ("Sparrow");
+		bomberPrefab = (GameObject) Resources.Load  ("Bomber");
 
 		StartCoroutine (CreateBaddies());
 	}
@@ -122,15 +125,17 @@ public class ServerGameScript : MonoBehaviour {
 
 		while (waveNumber < maxWaves) {
 			// Spawn a wave
-			for (int i = 0; i < waveNumber; i++) {
+			for (int i = 0; i < waveNumber*2; i++) {
+				GameObject target = GetRandomPlayerShip ();
 				baddieHP [totalEnemies] = 5f;
 				if (i % 2 == 1) {
 					baddiePrefab = sparrowPrefab;
 				} else {
 					baddiePrefab = bomberPrefab;
 				}
-				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
+				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * target.rigidbody.position.x, (Random.value - 0.5f) * target.rigidbody.position.y, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
+				((enemyScript) (newBaddie.GetComponent ("enemyScript"))).target = GetRandomPlayerShip ();
 				baddies [totalEnemies++] = newBaddie;
 				livingEnemies += 1;
 				networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
@@ -220,7 +225,6 @@ public class ServerGameScript : MonoBehaviour {
 		Move ();
 		Turn ();
 		Shoot ();
-		MoveBaddies();
 	}
 	
 	GameObject GetRandomPlayerShip() {
@@ -232,42 +236,7 @@ public class ServerGameScript : MonoBehaviour {
 		}
 		return null;
 	}
-	
-	void MoveBaddies() {
 
-
-		for (int i = 0; i < baddies.Length; ++i) {
-			if (baddies[i] != null) {
-				if (baddieTargets[i] == null) {
-					baddieTargets[i] = GetRandomPlayerShip();
-				}
-				Vector3 diff = baddieTargets[i].transform.position - baddies[i].transform.position;
-				Vector3 dir = baddieTargets[i].transform.position - baddies[i].transform.position;
-				dir.Normalize ();
-				baddies[i].rigidbody.AddForce(dir*(thrust/10));
-				baddies[i].rigidbody.velocity = Vector3.ClampMagnitude(baddies[i].rigidbody.velocity, maxSpeed);
-				
-				float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
-				rot -= 90f;
-				baddies[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
-				
-				if (diff.magnitude < 25f) {
-					float tmpTime = Time.time;
-					if (tmpTime - baddieLastShotTime[i] > minShotInterval) {
-						baddieLastShotTime[i] = tmpTime;
-						Rigidbody ship = baddies[i].rigidbody;
-						GameObject tmp = (GameObject) Network.Instantiate (bulletPrefab, ship.transform.position, Quaternion.identity, 0);
-						tmp.collider.enabled = true;
-						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
-						tmp.transform.position = ship.transform.position;
-						tmp.transform.rotation = ship.transform.rotation;
-						tmp.rigidbody.velocity = ship.transform.rigidbody.velocity;
-						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
-					}
-				}
-			}
-		}
-	}
 	
 	void CreatePlayerShips() {
 		magpiePrefab = (GameObject) Resources.Load("Magpie");
@@ -312,6 +281,29 @@ public class ServerGameScript : MonoBehaviour {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
 			networkView.RPC ("Initialize", RPCMode.All);
+		}
+	}
+
+	public void CleanUp() {
+		GameObject[] playerShips = new GameObject[4];
+		PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
+		GameObject[] baddies = new GameObject[1000];
+		enemyScript[] enemyScripts = new enemyScript[1000];
+		GameObject[] baddieTargets = new GameObject[1000];
+		foreach (GameObject ship in playerShips) {
+			Network.Destroy (ship);
+		}
+		foreach (PlayerShipScript script in playerShipScripts) {
+			Destroy (script);
+		}
+		foreach (GameObject enemy in baddies) {
+			Network.Destroy (enemy);
+		}
+		foreach (enemyScript script in enemyScripts) {
+			Destroy (script);
+		}
+		foreach (GameObject ship in baddieTargets) {
+			Destroy (ship);
 		}
 	}
 }
