@@ -9,6 +9,7 @@ public class LocalGameScript : MonoBehaviour {
 	int enemyCount = 0;
 	int WaveCounter = 0;
 	int x = 0;
+	int y = 0;
 	public GameObject pScriptPrefab;
 	public GameObject CompassHeadPrefab;
 	public GameObject CompassBaddieHeadPrefab;
@@ -22,8 +23,8 @@ public class LocalGameScript : MonoBehaviour {
 	private GameObject ship;
 	private GameObject[] compassAllies;
 	private GameObject[] compassAllyBeacons;
-	private GameObject[] compassBaddies = new GameObject[1];
-	private GameObject[] compassBaddieBeacons = new GameObject[1];
+	private GameObject[] compassBaddies = new GameObject[1000];
+	private GameObject[] compassBaddieBeacons = new GameObject[1000];
 
 	private ArrayList enemies = new ArrayList();
 
@@ -74,9 +75,11 @@ public class LocalGameScript : MonoBehaviour {
 					Destroy(compassAllyBeacons[i]);
 				}
 			} else {
-				Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
-				dir.Normalize ();
-				compassAllyBeacons[i].transform.localPosition = dir * 80;
+				if (ship) {
+					Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
+					dir.Normalize ();
+					compassAllyBeacons[i].transform.localPosition = dir * 80;
+				}
 			}
 		}
 		// Enemies
@@ -120,7 +123,7 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void ServerSendAllyRef(NetworkViewID ship) {
 		if (NetworkView.Find(ship).gameObject != this.ship) {
-			compassAllies[x++] = NetworkView.Find(ship).gameObject;	
+			compassAllies[y++] = NetworkView.Find(ship).gameObject;	
 		}
 	}
 
