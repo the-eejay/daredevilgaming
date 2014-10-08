@@ -103,6 +103,8 @@ MonoBehaviour:
   bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
   thrust: 45000
   maxSpeed: 15
+  name: Penguin
+  description: Slow, 150 HP, 1 damage bullets
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1

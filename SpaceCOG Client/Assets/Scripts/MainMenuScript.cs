@@ -148,4 +148,8 @@ public class MainMenuScript : MonoBehaviour {
 	public void loadSinglePlayer() {
 		Game ();
 	}
+
+	public GameObject chosenShip() {
+		return ships [shipChooser];
+	}
 }
