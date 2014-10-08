@@ -4,135 +4,150 @@ using System.Collections;
 public class ServerGameScript : MonoBehaviour
 {
 
-		int pCount = 1 + Network.connections.Length;
-		int initCount = 0;
-		bool initialized = false;
-		float[] lastShotTime = new float[4];
-		float[] playerHP = new float[4];
-		float[] baddieHP = new float[1000];
-		float[] baddieLastShotTime = new float[1000];
+	int pCount = 1 + Network.connections.Length;
+	int initCount = 0;
+	bool initialized = false;
+	float[] lastShotTime = new float[4];
+	float[] playerHP = new float[4];
+	float[] baddieHP = new float[1000];
+	float[] baddieLastShotTime = new float[1000];
+
+	// Prefabs
+	GameObject shipPrefab;
+	GameObject baddiePrefab;
+	GameObject bulletPrefab;
+
+	// Player Status Prefab
+	public GameObject pStatusScriptPrefab;
+	private GameObject pStatusScript;
+	PlayerStatusScript[] playerStatuses = new PlayerStatusScript[4];
+
+	// Game Objects
+	GameObject[] playerShips = new GameObject[4];
+	GameObject[] baddies = new GameObject[1000];
+	GameObject[] baddieTargets = new GameObject[1000];
+
+	// Client Scripts
+	ClientScript[] player = new ClientScript[4];
+	private int livingPlayers = 0;
+	private int livingEnemies = 0;
+	private int waveNumber = 1;
+	private int maxWaves = 11;
+	private int totalEnemies = 0;
+	public float spawnWait = 0.1f;
+	public float startWait = 1f;
+	public float waveWait = 3f;
+	bool bossSpawned = false;
+
+		
+	// Ship stats & attributes		
+	private const float thrust = 60000f; // Thrust applied to ship moving along axis.		
+	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.		
+	private const float bulletForce = 20000f;		
+	private const float minShotInterval = 0.1f;
+	private const float maxSpeed = 20f;
+
+	// Enemy Ship Types list
+	private EnemyShipType.Ship[] ships = new EnemyShipType.Ship[4];
+	// Power Ups list
+	private PowerUp.PowerUpType[] powerups = new PowerUp.PowerUpType[3];
+
+	void Start ()
+	{
+			// Put initialization stuff into InitializeGame() instead of here
+	}
 	
-		// Prefabs
-		GameObject shipPrefab;
-		GameObject baddiePrefab;
-		GameObject bulletPrefab;
 
-		// Player Status Prefab
-		public GameObject pStatusScriptPrefab;
-		private GameObject pStatusScript;
-		PlayerStatusScript[] playerStatuses = new PlayerStatusScript[4];
-
-		// Game Objects
-		GameObject[] playerShips = new GameObject[4];
-		GameObject[] baddies = new GameObject[1000];
-		GameObject[] baddieTargets = new GameObject[1000];
-	
-		// Client Scripts
-		ClientScript[] player = new ClientScript[4];
-		private int livingPlayers = 0;
-		private int livingEnemies = 0;
-		private int waveNumber = 1;
-		private int maxWaves = 11;
-		private int totalEnemies = 0;
-		public float spawnWait = 0.1f;
-		public float startWait = 1f;
-		public float waveWait = 3f;
-		bool bossSpawned = false;
-
-		// Ship stats & attributes
-		private const float thrust = 60000f; // Thrust applied to ship moving along axis.
-		private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
-		private const float bulletForce = 20000f;
-		private const float minShotInterval = 0.1f;
-		private const float maxSpeed = 20f;
-
-		void Start ()
-		{
-				// Put initialization stuff into InitializeGame() instead of here
-		}
-	
-		void InitializeGame ()
-		{
-				Time.timeScale = 1.0f;
-				CreatePlayerShips ();
-				CreatePlayerStatusPrefabs ();
-				StartCoroutine (CreateBaddies ());
-
-				pStatusScript = (GameObject)Network.Instantiate (pStatusScriptPrefab, Vector3.zero, Quaternion.identity, 0);
+	void InitializeGame ()
+	{
+		Time.timeScale = 1.0f;
+		CreatePlayerShips ();
+		CreatePlayerStatusPrefabs ();
+		StartCoroutine (CreateBaddies ());
+		pStatusScript = (GameObject)Network.Instantiate (pStatusScriptPrefab, Vector3.zero, Quaternion.identity, 0);
 //		if (Network.peerType == NetworkPeerType.Server) {
 //			((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).LocatePlayerStatusScript (Network.player, pStatusScript.networkView.viewID);
 //		} else {
 //			networkView.RPC ("LocatePlayerStatusScript", RPCMode.All, Network.player, pStatusScript.networkView.viewID);
 //		}
 				// Create player status list
-				for (int i = 0; i < pCount; ++i) {
-						PlayerStatusScript ps = new PlayerStatusScript();
-						playerStatuses [i] = ps;		
-				}
+		for (int i = 0; i < pCount; ++i) {
+			PlayerStatusScript ps = new PlayerStatusScript();
+			playerStatuses [i] = ps;		
 		}
-	
-		void Update ()
-		{
-				if (!initialized || !Network.isServer) {
-						return;
-				}
+
+		// Initialising the basic enemy types
+		ships [0] = new EnemyShipType.Ship ("Speedy", 50, 150, 100);
+		ships [1] = new EnemyShipType.Ship ("Tanky", 150, 50, 100);
+		ships [2] = new EnemyShipType.Ship ("Attacker", 75, 75, 150);
+		ships [3] = new EnemyShipType.Ship ("Drone", 10, 150, 150);
+
+		// Initialising power ups
+		powerups [0] = new PowerUp.PowerUpType (150, 100, 100); // Health
+		powerups [1] = new PowerUp.PowerUpType (100, 150, 100);	// Speed
+		powerups [2] = new PowerUp.PowerUpType (100, 100, 150); // Damage
+	}
+
+	void Update ()
+	{
+		if (!initialized || !Network.isServer) {
+			return;
 		}
-	
-		public void KillPlayer (int i)
-		{
-				networkView.RPC ("Kill", RPCMode.All, playerShips [i].networkView.viewID);
-				Network.Destroy (playerShips [i]);
-		
-		}
-	
-		public void Damage (GameObject obj, float dmg)
-		{
-				for (int i = 0; i < pCount; ++i) {
-						if (playerShips [i] == obj) {
-								playerHP [i] -= dmg;
+	}
 
-								// Willies Edits
-								playerStatuses [i].health -= dmg;
+	public void KillPlayer (int i)
+	{
+		networkView.RPC ("Kill", RPCMode.All, playerShips [i].networkView.viewID);
+		Network.Destroy (playerShips [i]);
+	}
 
-								Debug.Log ("Player " + i + " HP : " + playerHP [i] + " OR statusHP : " + playerStatuses [i].health); 
-								((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth 
-									(playerShips [i].networkView.viewID, 
-				                     playerStatuses [i].health);
-
-								if (playerHP [i] <= 0f || playerStatuses [i].health <= 0f) {
-										KillPlayer (i);
-										livingPlayers -= 1;
-										Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
-										if (livingPlayers == 0) {
-												networkView.RPC ("GameOver", RPCMode.All);
-												Time.timeScale = 0.0f;
-										}
-										return;
-								}
-						}
+	public void Damage (GameObject obj, float dmg)
+	{
+		for (int i = 0; i < pCount; ++i) {
+			if (playerShips [i] == obj) {
+				playerHP [i] -= dmg;		
+					// Willies Edits
+				playerStatuses [i].health -= dmg;
+				Debug.Log ("Player " + i + " HP : " + playerHP [i] + " OR statusHP : " + playerStatuses [i].health); 
+				((LocalGameScript)gameObject.GetComponent ("LocalGameScript")).UpdatePlayerHealth 
+					(playerShips [i].networkView.viewID, 	       
+					 playerStatuses [i].health);
+				if (playerHP [i] <= 0f || playerStatuses [i].health <= 0f) {	
+			
+					KillPlayer (i);
+					livingPlayers -= 1;
+					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);						
+				
+					if (livingPlayers == 0) {
+						networkView.RPC ("GameOver", RPCMode.All);
+						Time.timeScale = 0.0f;
+					}
+					return;
 				}
+			}
+		}
 				for (int i = 0; i < baddies.Length; ++i) {
-						if (baddies [i] == obj) {
-								baddieHP [i] -= dmg;
-								if (baddieHP [i] < 0f) {
-										Network.Destroy (baddies [i]);
-										baddies [i] = null;
-										livingEnemies -= 1;
-										if (livingEnemies == 0 && waveNumber == maxWaves) {
-												if (bossSpawned) {
-														networkView.RPC ("GameOver", RPCMode.All);
-														Time.timeScale = 0.0f;
-												} else {
-														bossSpawned = true;
-														networkView.RPC ("BossMode", RPCMode.All);
-														livingEnemies++;
-														spawnBoss ();
-												}
-										}
-										return;
-								}
+					if (baddies [i] == obj) {
+						baddieHP [i] -= dmg;
+						if (baddieHP [i] < 0f) {
+							Network.Destroy (baddies [i]);
+							baddies [i] = null;
+							livingEnemies -= 1;
+							if (livingEnemies == 0 && waveNumber == maxWaves) {
+								if (bossSpawned) {
+									networkView.RPC ("GameOver", RPCMode.All);
+									Time.timeScale = 0.0f;
+								} else {
+									bossSpawned = true;
+									networkView.RPC ("BossMode", RPCMode.All);
+									livingEnemies++;
+									spawnBoss ();
+							}
 						}
+						return;
+					}
 				}
+			}
 		}
 
 		/*
