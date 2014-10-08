@@ -174,7 +174,6 @@ public class LocalGameScript : MonoBehaviour {
 
 	private void OnGUI() {
 		//Display the money. It generates 1 money in second (In unity time)
-		//currency += Time.deltaTime;
 		currency = PlayerPrefs.GetFloat("Money");
 		string money_status = "Money: " + currency.ToString("0");
 		GUI.Label (new Rect ((Screen.width-(Screen.width / 6)), 50, 100, 30), money_status);
