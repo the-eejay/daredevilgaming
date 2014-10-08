@@ -16,7 +16,7 @@ GameObject:
   - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: Sparrow
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,8 +102,10 @@ MonoBehaviour:
   bounty: 50
   canShoot: 1
   speed: 10
+  hp: 5
   bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
   secondsPerShot: .100000001
+  target: {fileID: 0}
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1
