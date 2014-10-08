@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 /*	MainMenuScript contains all functionality required by the main menu
@@ -18,6 +19,9 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject magpie;
 	public GameObject pelican;
 	public GameObject penguin;
+
+	public Text shipNameText;
+	public Text shipDescText;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
@@ -57,6 +61,9 @@ public class MainMenuScript : MonoBehaviour {
 			if (shipChooser > 2) shipChooser = 0;
 			ships[shipChooser].renderer.enabled = true;
 		}
+
+		shipNameText.text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
+		shipDescText.text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).description;
 	}
 
 	// Function to be called when the 'Host' button is pressed.
@@ -147,9 +154,5 @@ public class MainMenuScript : MonoBehaviour {
 
 	public void loadSinglePlayer() {
 		Game ();
-	}
-
-	public GameObject chosenShip() {
-		return ships [shipChooser];
 	}
 }
