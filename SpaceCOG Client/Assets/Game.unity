@@ -1277,6 +1277,7 @@ MonoBehaviour:
     type: 2}
   CompassPanel: {fileID: 1822257281}
   final_wave: 0
+  currency: 0
 --- !u!4 &1027193280
 Transform:
   m_ObjectHideFlags: 0
@@ -1461,7 +1462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7ba1f156e6c1434180a7411dad3a08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjectToSpawn: {fileID: 100002, guid: 37da6cbfc1b07de42b94fd953a91b768, type: 3}
+  ObjectToSpawn: {fileID: 100000, guid: 9617f9cfeeba9744f8a81d48f53caed5, type: 2}
 --- !u!23 &1789138469
 Renderer:
   m_ObjectHideFlags: 0
