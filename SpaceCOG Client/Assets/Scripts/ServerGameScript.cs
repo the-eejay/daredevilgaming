@@ -6,7 +6,7 @@ public class ServerGameScript : MonoBehaviour {
 	int pCount = 1 + Network.connections.Length;
 	int initCount = 0;
 	bool initialized = false;
-	
+
 	float[] lastShotTime = new float[4];
 	float[] playerHP = new float[4];
 	int[] playerShipChoices = new int[4];
