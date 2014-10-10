@@ -125,7 +125,7 @@ public class MainMenuScript : MonoBehaviour {
 		if (!Network.isServer) {
 			Debug.Log ("Attempting to host server...");
 			NetworkConnectionError e;
-			e = Network.InitializeServer (MAX_CONNECTIONS, PORT_NO, false);
+			e = Network.InitializeServer (MAX_CONNECTIONS, PORT_NO, !Network.HavePublicAddress());
 			
 			if (e == NetworkConnectionError.NoError) {
 				Debug.Log ("Listening for connections...");
