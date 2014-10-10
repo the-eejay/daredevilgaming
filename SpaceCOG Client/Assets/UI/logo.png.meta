@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 2dbe642a440cb584abeedd0522a568fa
+guid: fbb79655890d24f3492f7868fa1b2175
 TextureImporter:
   fileIDToRecycleName:
-    21300000: window
+    21300000: logo
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -25,7 +25,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
-    filterMode: 2
+    filterMode: -1
     aniso: 1
     mipBias: -1
     wrapMode: 1
