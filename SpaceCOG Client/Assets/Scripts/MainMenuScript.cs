@@ -15,6 +15,7 @@ public class MainMenuScript : MonoBehaviour {
 	
 	public GameObject ConOverlay;
 	public GameObject GameListOverlay;
+	public GameObject GameNameOverlay;
 	public GameObject magpie;
 	public GameObject pelican;
 	public GameObject penguin;
@@ -31,6 +32,8 @@ public class MainMenuScript : MonoBehaviour {
 
 	public Text shipNameText;
 	public Text shipDescText;
+	
+	public Text GameName;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
@@ -42,6 +45,7 @@ public class MainMenuScript : MonoBehaviour {
 		MasterServer.dedicatedServer = false;
 		ConOverlay.SetActive(false);
 		GameListOverlay.SetActive(false);
+		GameNameOverlay.SetActive(false);
 		magpie = GameObject.Find ("Magpie");
 		pelican = GameObject.Find ("Pelican");
 		penguin = GameObject.Find ("penguin");
@@ -107,6 +111,12 @@ public class MainMenuScript : MonoBehaviour {
 			shipDescText.text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).description;
 		}
 	}
+	
+	public void CreateLobby() {
+		if (!Network.isServer) {
+			GameNameOverlay.SetActive(true);
+		}
+	}
 
 	// Function to be called when the 'Host' button is pressed.
 	// Begins listening for a connection attempt by another client.
@@ -119,7 +129,8 @@ public class MainMenuScript : MonoBehaviour {
 			
 			if (e == NetworkConnectionError.NoError) {
 				Debug.Log ("Listening for connections...");
-				MasterServer.RegisterHost("SpaceCOG", "Generic Game");
+				MasterServer.RegisterHost("SpaceCOG", GameName.text);
+				GameNameOverlay.SetActive(false);
 				ConOverlay.SetActive(true);
 				p1Ready.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
 			} else {
