@@ -335,7 +335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: .911764681, g: .194420427, b: .194420427, a: 0}
-  m_Sprite: {fileID: 21300000, guid: 162e57f9772b25641ad90c3d0b15132d, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -393,7 +393,7 @@ RectTransform:
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: 0, y: 17}
-  m_SizeDelta: {x: 1004, y: 505}
+  m_SizeDelta: {x: 1200, y: 505}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &177451637
 MonoBehaviour:
@@ -407,8 +407,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
-  m_Color: {r: .760784328, g: .760784328, b: .760784328, a: .768627465}
-  m_Sprite: {fileID: 21300000, guid: df86720d6e064ed4c98dae6357a02c8a, type: 3}
+  m_Color: {r: .325177491, g: .451458305, b: .698529422, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 2dbe642a440cb584abeedd0522a568fa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -543,6 +543,7 @@ MonoBehaviour:
   bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
   thrust: 90000
   maxSpeed: 40
+  currency: 0
   name: Pelican
   description: High speed, 75 HP, 1 damage bullets
 --- !u!1 &240088050
@@ -973,6 +974,7 @@ MonoBehaviour:
   bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
   thrust: 45000
   maxSpeed: 15
+  currency: 0
   name: Penguin
   description: Slow, 150 HP, 1 damage bullets
 --- !u!1 &571600544
@@ -1206,7 +1208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: 0, g: .788235307, b: 1, a: .796078444}
-  m_Sprite: {fileID: 21300000, guid: 979190464b4ab21499102ac107c9a6d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d564cee9bff94e4086fc1cea4939a9c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2537,7 +2539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: 0, g: .788235307, b: 1, a: .796078444}
-  m_Sprite: {fileID: 21300000, guid: 979190464b4ab21499102ac107c9a6d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d564cee9bff94e4086fc1cea4939a9c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2589,6 +2591,7 @@ MonoBehaviour:
   bullet: {fileID: 100002, guid: 537c02e220fe62341bc0b9a61cdcec8a, type: 2}
   thrust: 60000
   maxSpeed: 20
+  currency: 0
   name: Magpie
   description: Medium speed, 100 HP, 2 damage lasers
 --- !u!148 &989026351
@@ -2855,7 +2858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: 0, g: .788235307, b: 1, a: .796078444}
-  m_Sprite: {fileID: 21300000, guid: 979190464b4ab21499102ac107c9a6d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d564cee9bff94e4086fc1cea4939a9c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3100,7 +3103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: .160784319, g: .788235307, b: 1, a: .796078444}
-  m_Sprite: {fileID: 21300000, guid: 979190464b4ab21499102ac107c9a6d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d564cee9bff94e4086fc1cea4939a9c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3518,24 +3521,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1969926314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Mat: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: d28646fc948eab14da24d927021c5cbc, type: 3}
-    m_FontSize: 64
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: SpaceCOG
+  m_Sprite: {fileID: 21300000, guid: fbb79655890d24f3492f7868fa1b2175, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!222 &1969926316
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3556,8 +3554,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 292.329987, y: -149.179993}
-  m_SizeDelta: {x: 500, y: 250}
+  m_AnchoredPosition: {x: 340, y: -90}
+  m_SizeDelta: {x: 600, y: 75}
   m_Pivot: {x: .5, y: .5}
 --- !u!1 &2058186461
 GameObject:
