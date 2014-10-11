@@ -31,5 +31,12 @@ public class PlayerShipScript : MonoBehaviour {
 	void FixedUpdate () {
 	
 	}
+
+	public void Damage(float damage) {
+		hp -= (int) damage;
+		if (hp <= 0) {
+			Network.Destroy (this.gameObject);
+		}
+	}
 	
 }
