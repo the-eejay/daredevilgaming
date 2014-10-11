@@ -21,7 +21,6 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject penguin;
 
 	public Text shipNameText;
-	public Text shipDescText;
 
 	public Slider hpSlider;
 	public Slider dmgSlider;
@@ -88,7 +87,6 @@ public class MainMenuScript : MonoBehaviour {
 		dmgSlider.value = damage;
 		speedSlider.value = playership.maxSpeed;
 		shipNameText.text = playership.name;
-		shipDescText.text = playership.description;
 	}
 
 	// Function to be called when the 'Host' button is pressed.
