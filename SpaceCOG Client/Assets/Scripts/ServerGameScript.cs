@@ -7,14 +7,28 @@ public class ServerGameScript : MonoBehaviour
 	int pCount = 1 + Network.connections.Length;
 	int initCount = 0;
 	bool initialized = false;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 	float[] lastShotTime = new float[4];
 	float[] playerHP = new float[4];
+	int[] playerShipChoices = new int[4];
 	float[] baddieHP = new float[1000];
 	float[] baddieLastShotTime = new float[1000];
+<<<<<<< HEAD
 
+=======
+	float[] currency = new float[4];
+	
+>>>>>>> origin/master
 	// Prefabs
-	GameObject shipPrefab;
+	public GameObject magpiePrefab;
+	public GameObject pelicanPrefab;
+	public GameObject penguinPrefab;
 	GameObject baddiePrefab;
+	public GameObject sparrowPrefab;
+	public GameObject bomberPrefab;
 	GameObject bulletPrefab;
 
 	// Player Status Prefab
@@ -24,7 +38,9 @@ public class ServerGameScript : MonoBehaviour
 
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
+	PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
 	GameObject[] baddies = new GameObject[1000];
+	enemyScript[] enemyScripts = new enemyScript[1000];
 	GameObject[] baddieTargets = new GameObject[1000];
 
 	// Client Scripts
@@ -32,18 +48,25 @@ public class ServerGameScript : MonoBehaviour
 	private int livingPlayers = 0;
 	private int livingEnemies = 0;
 	private int waveNumber = 1;
-	private int maxWaves = 11;
+	private int maxWaves = 21;
 	private int totalEnemies = 0;
 	public float spawnWait = 0.1f;
 	public float startWait = 1f;
 	public float waveWait = 3f;
 	bool bossSpawned = false;
 
+<<<<<<< HEAD
 		
 	// Ship stats & attributes		
 	private const float thrust = 60000f; // Thrust applied to ship moving along axis.		
 	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.		
 	private const float bulletForce = 20000f;		
+=======
+	// Ship stats & attributes
+	private const float thrust = 60000f; // Thrust applied to enemies
+	private const float angleThrust = 7070f; // Thrust applied to ship moving diagonally.
+	private const float bulletForce = 20000f;
+>>>>>>> origin/master
 	private const float minShotInterval = 0.1f;
 	private const float maxSpeed = 20f;
 
@@ -52,9 +75,16 @@ public class ServerGameScript : MonoBehaviour
 	// Power Ups list
 	private PowerUp.PowerUpType[] powerups = new PowerUp.PowerUpType[3];
 
+<<<<<<< HEAD
 	void Start ()
 	{
 			// Put initialization stuff into InitializeGame() instead of here
+=======
+		sparrowPrefab = (GameObject) Resources.Load ("Sparrow");
+		bomberPrefab = (GameObject) Resources.Load  ("Bomber");
+
+		StartCoroutine (CreateBaddies());
+>>>>>>> origin/master
 	}
 	
 
@@ -173,6 +203,7 @@ public class ServerGameScript : MonoBehaviour
 			}
 		}
 
+<<<<<<< HEAD
 		/*
 	public void CreateBaddies() {
 		baddies = new GameObject[1];
@@ -190,10 +221,15 @@ public class ServerGameScript : MonoBehaviour
 		// Spawns waves of asteroids that start flying towards the player.
 		IEnumerator CreateBaddies ()
 		{
+=======
+	// Spawns waves of asteroids that start flying towards the player.
+	IEnumerator CreateBaddies() {
+>>>>>>> origin/master
 	
 				// Wait a short time before we spawn
 				yield return new WaitForSeconds (startWait);
 
+<<<<<<< HEAD
 				while (waveNumber < maxWaves) {
 						// Spawn a wave
 						for (int i = 0; i < waveNumber; i++) {
@@ -222,10 +258,27 @@ public class ServerGameScript : MonoBehaviour
 				baddiePrefab = (GameObject)Resources.Load ("Magpie");
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * 200f, (Random.value - 0.5f) * 200f, 0f);
 				GameObject newBaddie = (GameObject)Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
+=======
+		while (waveNumber < maxWaves) {
+			// Spawn a wave
+			for (int i = 0; i < waveNumber*2; i++) {
+				GameObject target = GetRandomPlayerShip ();
+				Debug.Log ("Target " + target.name);
+				baddieHP [totalEnemies] = 5f;
+				if (i % 2 == 1) {
+					baddiePrefab = sparrowPrefab;
+				} else {
+					baddiePrefab = bomberPrefab;
+				}
+				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * target.rigidbody.position.x, (Random.value - 0.5f) * target.rigidbody.position.y, 0f);
+				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
+				((enemyScript) (newBaddie.GetComponent ("enemyScript"))).target = GetRandomPlayerShip ();
+>>>>>>> origin/master
 				baddies [totalEnemies++] = newBaddie;
 				networkView.RPC ("UpdateEnemyCount", RPCMode.All, totalEnemies);
 				networkView.RPC ("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
 		}
+<<<<<<< HEAD
 
 		public void Move ()
 		{
@@ -250,6 +303,41 @@ public class ServerGameScript : MonoBehaviour
 								playerShips [i].rigidbody.velocity = Vector3.ClampMagnitude (playerShips [i].rigidbody.velocity, maxSpeed);
 						}
 				}
+=======
+	}
+
+	public void spawnBoss() {
+		baddieHP[totalEnemies] = 100f;
+		baddiePrefab = (GameObject )Resources.Load ("Sparrow");
+		Vector3 spawnPoint = new Vector3((Random.value - 0.5f)*200f, (Random.value - 0.5f)*200f, 0f);
+		GameObject newBaddie = (GameObject) Network.Instantiate(baddiePrefab, spawnPoint, Quaternion.identity, 0);
+		baddies [totalEnemies++] = newBaddie;
+		networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
+		networkView.RPC("ServerSendBaddieRef", RPCMode.All, newBaddie.networkView.viewID);
+	}
+
+	public void Move () {
+		// Update logic here
+		for (int i = 0; i < pCount; ++i) {
+			if (playerShips[i] != null) {
+				bool w = (player[i].w && !player[i].s) ? true : false;
+				bool a = (player[i].a && !player[i].d) ? true : false;
+				bool s = (player[i].s && !player[i].w) ? true : false;
+				bool d = (player[i].d && !player[i].a) ? true : false;
+				Vector3 dir = new Vector3(0, 0, 0);
+				if (w)
+					dir = dir + Vector3.up;
+				if (a)
+					dir = dir + Vector3.left;
+				if (s)
+					dir = dir + Vector3.down;
+				if (d)
+					dir = dir + Vector3.right;
+				dir.Normalize();
+				playerShips[i].rigidbody.AddForce(dir * playerShipScripts[i].thrust);
+				playerShips[i].rigidbody.velocity = Vector3.ClampMagnitude(playerShips[i].rigidbody.velocity, playerShipScripts[i].maxSpeed);
+			}
+>>>>>>> origin/master
 		}
 	
 		void Turn ()
@@ -265,6 +353,7 @@ public class ServerGameScript : MonoBehaviour
 				}
 		}
 
+<<<<<<< HEAD
 		public void Shoot ()
 		{
 				for (int i = 0; i < pCount; ++i) {
@@ -284,6 +373,24 @@ public class ServerGameScript : MonoBehaviour
 										}
 								}
 						}
+=======
+	public void Shoot() {
+		for (int i = 0; i < pCount; ++i) {
+			if (playerShips[i] != null) {
+				if (player[i].mb1) {
+					float tmpTime = Time.time;
+					if (tmpTime - lastShotTime[i] > minShotInterval) {
+						lastShotTime[i] = tmpTime;
+						Rigidbody ship = playerShips[i].rigidbody;
+						GameObject tmp = (GameObject) Network.Instantiate (playerShipScripts[i].bullet, ship.transform.position, Quaternion.identity, 0);
+						tmp.collider.enabled = true;
+						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+						tmp.transform.position = ship.transform.position;
+						tmp.transform.rotation = ship.transform.rotation;
+						tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
+						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+					}
+>>>>>>> origin/master
 				}
 		}
 	
@@ -297,6 +404,7 @@ public class ServerGameScript : MonoBehaviour
 				Shoot ();
 				MoveBaddies ();
 		}
+<<<<<<< HEAD
 	
 		GameObject GetRandomPlayerShip ()
 		{
@@ -343,8 +451,36 @@ public class ServerGameScript : MonoBehaviour
 								}
 						}
 				}
+=======
+		Move ();
+		Turn ();
+		Shoot ();
+	}
+	
+	GameObject GetRandomPlayerShip() {
+
+		int s = Random.Range (0, pCount);
+		if (playerShips [s]) return playerShips [s];
+		return GetRandomPlayerShip ();
+	}
+
+	
+	void CreatePlayerShips() {
+		magpiePrefab = (GameObject) Resources.Load("Magpie");
+		pelicanPrefab = (GameObject)Resources.Load ("Pelican");
+		penguinPrefab = (GameObject)Resources.Load ("penguin");
+		GameObject[] prefabs = new GameObject[]{magpiePrefab, pelicanPrefab, penguinPrefab};
+		bulletPrefab = (GameObject)Resources.Load ("prefabBullet");
+		for (int i = 0; i < pCount; ++i) {
+			playerShips[i] = (GameObject) Network.Instantiate(prefabs[playerShipChoices[i]], new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
+			playerShipScripts[i] = (PlayerShipScript) playerShips[i].GetComponent ("PlayerShipScript");
+			playerHP[i] = playerShipScripts[i].hp;
+			currency[i] = playerShipScripts[i].currency;
+			livingPlayers += 1;
+>>>>>>> origin/master
 		}
 	
+<<<<<<< HEAD
 		void CreatePlayerShips ()
 		{
 				shipPrefab = (GameObject)Resources.Load ("Magpie");
@@ -360,6 +496,22 @@ public class ServerGameScript : MonoBehaviour
 								magpie.renderer.enabled = false;
 						}
 						playerShips [i].renderer.material.color = color;
+=======
+	[RPC]
+	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript, int shipChoice) {
+		if (pScript.isMine) {
+			ClientScript cs = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent("ClientScript");
+			player[0] = cs;
+			playerShipChoices[0] = shipChoice;
+			initCount++;
+		} else {
+			for (int i = 1; i < pCount; ++i) {
+				if (Network.connections[i-1] == owner) {
+					player[i] = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent(typeof(ClientScript));
+					playerShipChoices[i] = shipChoice;
+					initCount++;
+					break;
+>>>>>>> origin/master
 				}
 		}
 
@@ -399,5 +551,32 @@ public class ServerGameScript : MonoBehaviour
 						networkView.RPC ("Initialize", RPCMode.All);
 				}
 		}
+<<<<<<< HEAD
 
+=======
+	}
+
+	public void CleanUp() {
+		GameObject[] playerShips = new GameObject[4];
+		PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
+		GameObject[] baddies = new GameObject[1000];
+		enemyScript[] enemyScripts = new enemyScript[1000];
+		GameObject[] baddieTargets = new GameObject[1000];
+		foreach (GameObject ship in playerShips) {
+			Network.Destroy (ship);
+		}
+		foreach (PlayerShipScript script in playerShipScripts) {
+			Destroy (script);
+		}
+		foreach (GameObject enemy in baddies) {
+			Network.Destroy (enemy);
+		}
+		foreach (enemyScript script in enemyScripts) {
+			Destroy (script);
+		}
+		foreach (GameObject ship in baddieTargets) {
+			Destroy (ship);
+		}
+	}
+>>>>>>> origin/master
 }

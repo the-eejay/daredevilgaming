@@ -2,7 +2,12 @@ fileFormatVersion: 2
 guid: c62f7b7e41b6048c9a93b1ec872d0a05
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - magpiePrefab: {fileID: 100000, guid: 77028f063f44847ce83fcae09f8e8bdd, type: 2}
+  - pelicanPrefab: {fileID: 100002, guid: 453bbe1443165a94384465c522d464e2, type: 2}
+  - penguinPrefab: {fileID: 100002, guid: 25e4412b3e688e440927bb4dfd694dfb, type: 2}
+  - sparrowPrefab: {fileID: 100002, guid: a6f78d8144616a742b7d831e1472dcc1, type: 2}
+  - bomberPrefab: {fileID: 100000, guid: 862a2483ca2430d40b1872c9b8df26a7, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

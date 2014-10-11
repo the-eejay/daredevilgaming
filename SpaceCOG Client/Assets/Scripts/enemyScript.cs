@@ -3,51 +3,76 @@ using System.Collections;
 
 public class enemyScript : MonoBehaviour {
 
+	public int bounty;
+	public bool canShoot;
 	public int speed;
-	public int score;
-	private GameScript gameController;
-	float duration = 10f;
-	float startTime;
+	public float hp;
+	public GameObject bullet;
+	public float secondsPerShot;
+
+	public static GameObject master;
+
+	public GameObject target;
+	private float lastShot = 0f;
+	private const float bulletForce = 20000f;
 
 	// Use this for initialization
 	void Start () {
-		GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameScript>();
-		}
-		if (gameController == null) {
-			Debug.Log ("Cannot find 'GameController' script");
-		}
 
-		Vector3 targetPos = gameController.GetPos ();
-		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
-		
-		startTime = Time.time;
+		if(master == null) {
+			master = GameObject.Find("WorldScriptObject");
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Rotate (Vector3.up * Time.deltaTime * 500);
-		this.transform.position = new Vector3 (this.transform.position.x, this.transform.position.y, 0);
-		
-		if (Time.time - startTime > duration) {
-			Network.Destroy (gameObject);
+
+	}
+
+	void FixedUpdate() {
+		if (target) {
+			Move ();
+			Shoot ();
 		}
 	}
 
-	void OnCollisionEnter (Collision col) {
-		if (col.gameObject.name == "prefabBullet(Clone)") {
-			// Asteroid collided with bullet
+	void Move() {
+		Vector3 targetPos = target.rigidbody.position;
+		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
 
-			Network.Destroy(col.gameObject);
+		Vector3 dir = target.transform.position - this.transform.position;
+		dir.Normalize ();
+		
+		float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
+		rot -= 90f;
+		this.transform.rotation = Quaternion.Euler (0f, 0f, rot);
+	}
+
+	void Shoot() {
+		Vector3 diff = target.transform.position - this.transform.position;
+
+		if (canShoot && diff.magnitude < 25f) {
+			float tmpTime = Time.time;
+			if (tmpTime - lastShot > secondsPerShot) {
+				lastShot = tmpTime;
+				Rigidbody ship = this.rigidbody;
+				GameObject tmp = (GameObject) Network.Instantiate (bullet, ship.transform.position, Quaternion.identity, 0);
+				tmp.collider.enabled = true;
+				Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+				tmp.transform.position = ship.transform.position;
+				tmp.transform.rotation = ship.transform.rotation;
+				tmp.rigidbody.velocity = ship.transform.rigidbody.velocity;
+				tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+			}
+		}
+	}
+
+	public void Damage(float damage) {
+		hp -= damage;
+		Debug.Log ("Enemy lost" + damage + "hp.  Enemy now at " + hp + "hp");
+		if (hp <= 0) {
+			Debug.Log ("Enemy destroyed");
 			Network.Destroy (gameObject);
-			Destroy (this);
-			gameController.AddScore(score);
-		} else if (col.gameObject.name == "Magpie(Clone)") {
-			// Asteroid collided with player
-			// Network.Destroy (col.gameObject);
-			Network.Destroy (gameObject);
-			Destroy (this);
 		}
 	}
 }

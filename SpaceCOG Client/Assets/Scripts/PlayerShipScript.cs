@@ -3,31 +3,33 @@ using System.Collections;
 
 public class PlayerShipScript : MonoBehaviour {
 
-	private GameScript gameController;
+	public int hp;
+	public GameObject bullet;
+	public float thrust;
+	public float maxSpeed;
+
+	public float currency;
+
+	public string name;
+	public string description;
+
 
 	// Use this for initialization
 	void Start () {
-		GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameScript>();
-		}
-		if (gameController == null) {
-			Debug.Log ("Cannot find 'GameController' script");
-		}
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		//Display the money. It generates 1 money in second (In unity time)
+		currency = PlayerPrefs.GetFloat("Money");
+		currency += Time.deltaTime;
+		PlayerPrefs.SetFloat("Money", currency);
+		PlayerPrefs.Save();
 	}
 	
 	void FixedUpdate () {
 	
-	}
-	
-	// Temporarily programmed to cause the player's death whenever it is knocked by anything.
-	private void OnCollisionEnter (Collision col) {
-		gameController.ReportDeath ();
 	}
 	
 }
