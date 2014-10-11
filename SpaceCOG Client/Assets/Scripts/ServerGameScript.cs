@@ -69,13 +69,7 @@ public class ServerGameScript : MonoBehaviour {
 		if (!initialized || !Network.isServer) {
 			return;
 		}
-
-	}
-	
-	public void KillPlayer(int i) {
-		networkView.RPC ("Kill", RPCMode.All, playerShips[i].networkView.viewID);
-		Network.Destroy(playerShips[i]);
-		
+		Debug.Log (livingPlayers + " Players left alive");
 	}
 
 	/*
@@ -139,7 +133,9 @@ public class ServerGameScript : MonoBehaviour {
 				}
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * target.rigidbody.position.x, (Random.value - 0.5f) * target.rigidbody.position.y, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
-				((enemyScript) (newBaddie.GetComponent ("enemyScript"))).target = GetRandomPlayerShip ();
+				if (livingPlayers > 0) {
+					((enemyScript) (newBaddie.GetComponent ("enemyScript"))).target = GetRandomPlayerShip ();
+				}
 				baddies [totalEnemies++] = newBaddie;
 				livingEnemies += 1;
 				networkView.RPC("UpdateEnemyCount", RPCMode.All, totalEnemies);
@@ -232,7 +228,6 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	GameObject GetRandomPlayerShip() {
-
 		int s = Random.Range (0, pCount);
 		if (playerShips [s]) return playerShips [s];
 		return GetRandomPlayerShip ();
@@ -288,18 +283,14 @@ public class ServerGameScript : MonoBehaviour {
 
 	[RPC]
 	public void KillPlayer(NetworkPlayer owner) {
-		for (int i = 0; i < pCount; ++i) {
-			if (Network.connections[i] == owner) {
-				player[i] = null;
-				playerShips[i] = null;
-				break;
-			}
-		}
+
 		livingPlayers -= 1;
-		if (livingPlayers == 0) {
+		if (livingPlayers <= 0) {
+
 			networkView.RPC ("GameOver", RPCMode.All);
 			Time.timeScale = 0.0f;
 		}
+		Debug.Log (livingPlayers + " players left alive");
 	}
 	
 	[RPC]

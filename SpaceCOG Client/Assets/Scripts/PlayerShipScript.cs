@@ -16,7 +16,6 @@ public class PlayerShipScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
 	}
 	
 	// Update is called once per frame
@@ -26,6 +25,7 @@ public class PlayerShipScript : MonoBehaviour {
 		currency += Time.deltaTime;
 		PlayerPrefs.SetFloat("Money", currency);
 		PlayerPrefs.Save();
+
 	}
 	
 	void FixedUpdate () {
@@ -35,6 +35,8 @@ public class PlayerShipScript : MonoBehaviour {
 	public void Damage(float damage) {
 		hp -= (int) damage;
 		if (hp <= 0) {
+			networkView.RPC ("KillPlayer", RPCMode.Server, Network.player);
+
 			Network.Destroy (this.gameObject);
 		}
 	}
