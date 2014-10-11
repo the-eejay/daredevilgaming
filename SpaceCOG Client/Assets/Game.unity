@@ -1725,7 +1725,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 500, y: 315}
+  m_AnchoredPosition: {x: 477, y: 197}
   m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &858475525
@@ -1766,7 +1766,19 @@ MonoBehaviour:
   m_Interactable: 1
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1219599897}
+        m_MethodName: UpgradeButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_Enabled: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &858475526
@@ -2007,18 +2019,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 115d861c08e408645b426d95b408f0b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health_level: 1
-  damage_level: 1
-  speed_level: 1
-  Width: 0
-  Height: 0
-  X: 0
-  Y: 0
-  players: {fileID: 0}
-  pss: {fileID: 0}
-  price1: 1200
-  price2: 500
-  min: 0
+  ship: {fileID: 0}
+  player: {fileID: 0}
+  shipScript: {fileID: 0}
   currency: 0
 --- !u!1 &1202753622
 GameObject:
@@ -2095,6 +2098,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1219599896}
   - 114: {fileID: 1219599895}
+  - 114: {fileID: 1219599897}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -2125,6 +2129,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &1219599897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1219599894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 115d861c08e408645b426d95b408f0b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ship: {fileID: 0}
+  player: {fileID: 0}
+  shipScript: {fileID: 0}
+  currency: 0
 --- !u!1 &1326781736
 GameObject:
   m_ObjectHideFlags: 0
