@@ -23,6 +23,10 @@ public class MainMenuScript : MonoBehaviour {
 	public Text shipNameText;
 	public Text shipDescText;
 
+	public Slider hpSlider;
+	public Slider dmgSlider;
+	public Slider speedSlider;
+
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
 
@@ -35,10 +39,26 @@ public class MainMenuScript : MonoBehaviour {
 		ships [0] = magpie;
 		ships [1] = pelican;
 		ships [2] = penguin;
-
 		magpie.collider.enabled = false;
 		pelican.collider.enabled = false;
 		penguin.collider.enabled = false;
+
+		for (int i = 0; i < ships.Length; i++) {
+			// Set max health on slider
+			PlayerShipScript playership = ((PlayerShipScript)ships[i].GetComponent ("PlayerShipScript"));
+			float damage = ((bulletScript) playership.bullet.GetComponent("bulletScript")).damage;
+			if (playership.hp > hpSlider.maxValue) {
+				hpSlider.maxValue = playership.hp;
+			}
+			// Set max damage on slider
+			if (damage> dmgSlider.maxValue) {
+				dmgSlider.maxValue = damage;
+			}
+			// Set max speed on slider
+			if (playership.maxSpeed > speedSlider.maxValue) {
+				speedSlider.maxValue = playership.maxSpeed;
+			}
+		}
 
 		magpie.renderer.enabled = true;
 		pelican.renderer.enabled = false;
@@ -62,8 +82,13 @@ public class MainMenuScript : MonoBehaviour {
 			ships[shipChooser].renderer.enabled = true;
 		}
 
-		shipNameText.text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
-		shipDescText.text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).description;
+		PlayerShipScript playership = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript"));
+		float damage = ((bulletScript)playership.bullet.GetComponent ("bulletScript")).damage;
+		hpSlider.value = playership.hp;
+		dmgSlider.value = damage;
+		speedSlider.value = playership.maxSpeed;
+		shipNameText.text = playership.name;
+		shipDescText.text = playership.description;
 	}
 
 	// Function to be called when the 'Host' button is pressed.
