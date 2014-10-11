@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class LocalGameScript : MonoBehaviour {
@@ -15,6 +16,7 @@ public class LocalGameScript : MonoBehaviour {
 	public GameObject CompassBaddieHeadPrefab;
 	public GameObject CompassPanel;
 	public GameObject GameOverButton;
+	public Slider slider;
 	private GameObject pScript;
 	private bool isAlive = true;
 	private bool gameOver = false;
@@ -51,6 +53,7 @@ public class LocalGameScript : MonoBehaviour {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
 
+		slider.maxValue = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
 	}
 	
 	void CentreCamera () {
@@ -68,6 +71,11 @@ public class LocalGameScript : MonoBehaviour {
 		}
 		CentreCamera();
 		UpdateCompass();
+
+		if (ship) {
+			slider.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+			slider.GetComponentInChildren<Text> ().text = slider.value.ToString ();
+		}
 	}
 	
 	void UpdateCompass() {
@@ -158,7 +166,6 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void GameOver() {
 		Debug.Log ("Game Over");
-		Destroy(GameObject.Find ("Magpie"));
 		gameOver = true;
 		GameOverButton.SetActive (true);
 
