@@ -72,12 +72,12 @@ public class ServerGameScript : MonoBehaviour {
 		Debug.Log (livingPlayers + " Players left alive");
 	}
 
-	/*
+
 	public void Damage(GameObject obj, float dmg) {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
-				playerHP[i] -= dmg;
-				if (playerHP[i] < 0f) {
+				playerShipScripts[i].hp -= (int) dmg;
+				if (playerShipScripts[i].hp < 0f) {
 					KillPlayer(i);
 					livingPlayers -= 1;
 					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
@@ -112,7 +112,7 @@ public class ServerGameScript : MonoBehaviour {
 			}
 		}
 	}
-	*/
+
 
 	// Spawns waves of asteroids that start flying towards the player.
 	IEnumerator CreateBaddies() {
@@ -149,6 +149,12 @@ public class ServerGameScript : MonoBehaviour {
 			// Wait a short time before spawning the next wave
 			yield return new WaitForSeconds (waveWait);
 		}
+	}
+
+	public void KillPlayer(int i) {
+		networkView.RPC ("Kill", RPCMode.All, playerShips[i].networkView.viewID);
+		Network.Destroy(playerShips[i]);
+		
 	}
 
 	public void spawnBoss() {
@@ -281,26 +287,7 @@ public class ServerGameScript : MonoBehaviour {
 		}
 	}
 
-	[RPC]
-	public void KillPlayer(NetworkPlayer owner) {
 
-		livingPlayers -= 1;
-		if (livingPlayers <= 0) {
-
-			networkView.RPC ("GameOver", RPCMode.All);
-			Time.timeScale = 0.0f;
-		}
-		Debug.Log (livingPlayers + " players left alive");
-	}
-	
-	[RPC]
-	public void KillEnemy() {
-		livingEnemies -= 1;
-		if (livingEnemies == 0 && waveNumber == maxWaves) {
-			networkView.RPC ("GameOver", RPCMode.All);
-			Time.timeScale = 0.0f;
-		}
-	}
 
 	public void CleanUp() {
 		GameObject[] playerShips = new GameObject[4];

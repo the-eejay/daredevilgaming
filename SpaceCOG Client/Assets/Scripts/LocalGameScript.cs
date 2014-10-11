@@ -16,7 +16,9 @@ public class LocalGameScript : MonoBehaviour {
 	public GameObject CompassBaddieHeadPrefab;
 	public GameObject CompassPanel;
 	public GameObject GameOverButton;
-	public Slider slider;
+	public Slider hpBar;
+	public Text waveText;
+	public Text gameOverText;
 	private GameObject pScript;
 	private bool isAlive = true;
 	private bool gameOver = false;
@@ -52,6 +54,7 @@ public class LocalGameScript : MonoBehaviour {
 		} else {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
+		gameOverText.text = "";
 
 	}
 	
@@ -71,9 +74,11 @@ public class LocalGameScript : MonoBehaviour {
 		CentreCamera();
 		UpdateCompass();
 		if (ship) {
-			slider.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
-			slider.GetComponentInChildren<Text> ().text = slider.value.ToString ();
+			hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+			hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 		}
+		waveText.text = "Wave: " + WaveCounter;
+
 	}
 	
 	void UpdateCompass() {
@@ -165,6 +170,11 @@ public class LocalGameScript : MonoBehaviour {
 	public void GameOver() {
 		Debug.Log ("Game Over");
 		gameOver = true;
+
+		if (((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp <= 0) {
+			isAlive = false;
+		}
+		gameOverText.text = isAlive ? "You win! Congratulations!" : "You lost.  Better luck next time!";
 		GameOverButton.SetActive (true);
 
 	}

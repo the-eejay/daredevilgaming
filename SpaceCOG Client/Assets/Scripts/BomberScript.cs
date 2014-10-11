@@ -7,7 +7,7 @@ public class BomberScript : enemyScript {
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine && col.gameObject.tag == "Player") {
-			((PlayerShipScript) target.GetComponent ("PlayerShipScript")).Damage(collisionDamage);
+			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(col.gameObject, collisionDamage);
 			Network.Destroy(gameObject);
 		}
 	}

@@ -3,10 +3,13 @@ using System.Collections;
 
 public class PlayerShipScript : MonoBehaviour {
 
+	public static GameObject master;
+
 	public int hp;
 	public GameObject bullet;
 	public float thrust;
 	public float maxSpeed;
+
 
 	public float currency;
 
@@ -16,6 +19,9 @@ public class PlayerShipScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		if(master == null) {
+			master = GameObject.Find("WorldScriptObject");
+		}
 	}
 	
 	// Update is called once per frame
@@ -32,13 +38,8 @@ public class PlayerShipScript : MonoBehaviour {
 	
 	}
 
-	public void Damage(float damage) {
-		hp -= (int) damage;
-		if (hp <= 0) {
-			networkView.RPC ("KillPlayer", RPCMode.Server, Network.player);
-
-			Network.Destroy (this.gameObject);
-		}
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo SystemInfo) {
+		stream.Serialize (ref hp);
 	}
 	
 }
