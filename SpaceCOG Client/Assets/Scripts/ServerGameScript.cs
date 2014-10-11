@@ -77,7 +77,8 @@ public class ServerGameScript : MonoBehaviour {
 		Network.Destroy(playerShips[i]);
 		
 	}
-	
+
+	/*
 	public void Damage(GameObject obj, float dmg) {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
@@ -117,6 +118,7 @@ public class ServerGameScript : MonoBehaviour {
 			}
 		}
 	}
+	*/
 
 	// Spawns waves of asteroids that start flying towards the player.
 	IEnumerator CreateBaddies() {
@@ -230,7 +232,7 @@ public class ServerGameScript : MonoBehaviour {
 	}
 	
 	GameObject GetRandomPlayerShip() {
-
+		if (pCount == 0) return null;
 		int s = Random.Range (0, pCount);
 		if (playerShips [s]) return playerShips [s];
 		return GetRandomPlayerShip ();
@@ -281,6 +283,31 @@ public class ServerGameScript : MonoBehaviour {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
 			networkView.RPC ("Initialize", RPCMode.All);
+		}
+	}
+
+	[RPC]
+	public void KillPlayer(NetworkPlayer owner) {
+		for (int i = 0; i < pCount; ++i) {
+			if (Network.connections[i] == owner) {
+				player[i] = null;
+				playerShips[i] = null;
+				break;
+			}
+		}
+		livingPlayers -= 1;
+		if (livingPlayers == 0) {
+			networkView.RPC ("GameOver", RPCMode.All);
+			Time.timeScale = 0.0f;
+		}
+	}
+
+	[RPC]
+	public void KillEnemy() {
+		livingEnemies -= 1;
+		if (livingEnemies == 0 && waveNumber == maxWaves) {
+			networkView.RPC ("GameOver", RPCMode.All);
+			Time.timeScale = 0.0f;
 		}
 	}
 
