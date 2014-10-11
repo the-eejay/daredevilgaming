@@ -68,7 +68,7 @@ public class enemyScript : MonoBehaviour {
 	}
 
 	public void Damage(float damage) {
-		hp -= (int) damage;
+		hp -= damage;
 		Debug.Log ("Enemy lost" + damage + "hp.  Enemy now at " + hp + "hp");
 		if (hp <= 0) {
 			Debug.Log ("Enemy destroyed");
