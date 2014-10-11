@@ -3,11 +3,11 @@ using System.Collections;
 
 public class BomberScript : enemyScript {
 
-	public int collisionDamage;
+	public float collisionDamage;
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine && col.gameObject.tag == "Player") {
-			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(col.gameObject, collisionDamage);
+			((PlayerShipScript) target.GetComponent ("PlayerShipScript")).Damage(collisionDamage);
 			Network.Destroy(gameObject);
 		}
 	}
