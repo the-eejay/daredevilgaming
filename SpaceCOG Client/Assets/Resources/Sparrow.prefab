@@ -103,7 +103,7 @@ MonoBehaviour:
   canShoot: 1
   speed: 10
   hp: 5
-  bullet: {fileID: 100000, guid: 0322d5b52c100c844be4713c8d79720b, type: 2}
+  bullet: {fileID: 100000, guid: c7db71e4ee42fbc4387d5b4166114147, type: 2}
   secondsPerShot: .100000001
   target: {fileID: 0}
 --- !u!148 &14800000
