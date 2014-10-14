@@ -3,7 +3,7 @@ guid: e7ba1f156e6c1434180a7411dad3a08e
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - ObjectToSpawn: {fileID: 100002, guid: 3a3ba1e943cf312428edf1a1eebb5e5e, type: 3}
+  - ObjectToSpawn: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
