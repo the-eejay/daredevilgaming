@@ -68,13 +68,13 @@ public class MainMenuScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown ("left")) {
+		if (Input.GetKeyDown (KeyCode.A)) {
 			ships[shipChooser].renderer.enabled = false;
 			shipChooser--;
 			if (shipChooser < 0) shipChooser = 2;
 			ships[shipChooser].renderer.enabled = true;
 		}
-		if (Input.GetKeyDown ("right")) {
+		if (Input.GetKeyDown (KeyCode.D)) {
 			ships[shipChooser].renderer.enabled = false;
 			shipChooser++;
 			if (shipChooser > 2) shipChooser = 0;
