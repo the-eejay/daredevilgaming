@@ -99,7 +99,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 060fd2336cada4ee6ba64d0f06ba013d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreValue: 0
+  bounty: 0
+  canShoot: 0
+  speed: 0
+  hp: 0
+  bullet: {fileID: 0}
+  secondsPerShot: 0
+  target: {fileID: 0}
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1
