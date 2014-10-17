@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Shop : MonoBehaviour {
+public class Upgrade : MonoBehaviour {
 
 	public GameObject ship;
 	public GameObject player;

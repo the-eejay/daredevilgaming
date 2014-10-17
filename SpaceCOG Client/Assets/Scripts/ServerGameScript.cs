@@ -12,7 +12,6 @@ public class ServerGameScript : MonoBehaviour {
 	int[] playerShipChoices = new int[4];
 	float[] baddieHP = new float[1000];
 	float[] baddieLastShotTime = new float[1000];
-	float[] currency = new float[4];
 	
 	// Prefabs
 	public GameObject magpiePrefab;
@@ -250,7 +249,6 @@ public class ServerGameScript : MonoBehaviour {
 			playerShips[i] = (GameObject) Network.Instantiate(prefabs[playerShipChoices[i]], new Vector3 ( -5f + 10 * (i % 2), -5f + 10 * (i / 2), 0f), Quaternion.identity, 0);
 			playerShipScripts[i] = (PlayerShipScript) playerShips[i].GetComponent ("PlayerShipScript");
 			playerHP[i] = playerShipScripts[i].hp;
-			currency[i] = playerShipScripts[i].currency;
 			livingPlayers += 1;
 		}
 	}
