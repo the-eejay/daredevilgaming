@@ -647,6 +647,7 @@ MonoBehaviour:
   currency: 0
   name: Pelican
   description: High speed, 75 HP, 1 damage bullets
+  cursor: {x: 0, y: 0, z: 0}
 --- !u!1 &240088050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,6 +1145,7 @@ MonoBehaviour:
   currency: 0
   name: Penguin
   description: Slow, 150 HP, 1 damage bullets
+  cursor: {x: 0, y: 0, z: 0}
 --- !u!1 &571600544
 GameObject:
   m_ObjectHideFlags: 0
@@ -3066,6 +3068,7 @@ MonoBehaviour:
   currency: 0
   name: Magpie
   description: Medium speed, 100 HP, 2 damage lasers
+  cursor: {x: 0, y: 0, z: 0}
 --- !u!148 &989026351
 NetworkView:
   m_ObjectHideFlags: 0
