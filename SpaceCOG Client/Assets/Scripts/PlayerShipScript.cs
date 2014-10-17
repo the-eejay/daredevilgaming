@@ -43,7 +43,7 @@ public class PlayerShipScript : MonoBehaviour {
 	}
 	
 	void Move () {
-		if (!Network.isServer && Network.isClient) {
+		if (!Network.peerType.Equals(NetworkPeerType.Disconnected)) {
 			// Cursor
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			float dist = 2000f;
