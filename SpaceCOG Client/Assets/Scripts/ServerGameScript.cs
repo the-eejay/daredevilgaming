@@ -338,11 +338,11 @@ public class ServerGameScript : MonoBehaviour {
 
 
 	public void CleanUp() {
-		GameObject[] playerShips = new GameObject[4];
-		PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
-		GameObject[] baddies = new GameObject[1000];
-		enemyScript[] enemyScripts = new enemyScript[1000];
-		GameObject[] baddieTargets = new GameObject[1000];
+		//GameObject[] playerShips = new GameObject[4];
+		//PlayerShipScript[] playerShipScripts = new PlayerShipScript[4];
+		//GameObject[] baddies = new GameObject[1000];
+		//enemyScript[] enemyScripts = new enemyScript[1000];
+		//GameObject[] baddieTargets = new GameObject[1000];
 		foreach (GameObject ship in playerShips) {
 			Network.Destroy (ship);
 		}

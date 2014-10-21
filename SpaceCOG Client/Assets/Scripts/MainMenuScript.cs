@@ -21,6 +21,7 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject penguin;
 
 	public Text shipNameText;
+	public Text loadingText;
 
 	public Slider hpSlider;
 	public Slider dmgSlider;
@@ -41,6 +42,8 @@ public class MainMenuScript : MonoBehaviour {
 		magpie.collider.enabled = false;
 		pelican.collider.enabled = false;
 		penguin.collider.enabled = false;
+
+		loadingText.text = "";
 
 		for (int i = 0; i < ships.Length; i++) {
 			// Set max health on slider
@@ -165,6 +168,7 @@ public class MainMenuScript : MonoBehaviour {
 	[RPC] // This function can be called remotely over the network.
 	private void Game () {
 		PlayerPrefs.SetInt ("ship", shipChooser);
+		loadingText.text = "Loading...";
 		Application.LoadLevel ("Game");
 	}
 	
