@@ -31,11 +31,11 @@ public class enemyScript : MonoBehaviour {
 
 	void FixedUpdate() {
 		if (target) {
-			Move ();
-			Shoot ();
+			//Move ();
+			//Shoot ();
 		}
 	}
-
+	/*
 	void Move() {
 		Vector3 targetPos = target.rigidbody.position;
 		rigidbody.velocity = (targetPos - this.transform.position).normalized * speed;
@@ -66,7 +66,8 @@ public class enemyScript : MonoBehaviour {
 			}
 		}
 	}
-
+	*/
+	/*
 	public void Damage(float damage) {
 		hp -= (int) damage;
 		Debug.Log ("Enemy lost" + damage + "hp.  Enemy now at " + hp + "hp");
@@ -75,4 +76,5 @@ public class enemyScript : MonoBehaviour {
 			Network.Destroy (gameObject);
 		}
 	}
+	*/
 }

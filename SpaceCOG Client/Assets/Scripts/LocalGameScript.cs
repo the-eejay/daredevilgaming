@@ -55,6 +55,7 @@ public class LocalGameScript : MonoBehaviour {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
 		gameOverText.text = "";
+		/*
 		switch (((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).name) {
 			case "Magpie": hpBar.maxValue = 100f;
 			break;
@@ -63,12 +64,11 @@ public class LocalGameScript : MonoBehaviour {
 			case "Penguin" : hpBar.maxValue = 150f;
 			break;
 		}
+		*/
 	}
 	
 	void CentreCamera () {
-		if (ship) {
-			Camera.main.transform.position = ship.transform.position - 20 * Vector3.forward;
-		}
+		Camera.main.transform.position = ship.transform.position - 20 * Vector3.forward;
 	}
 	
 	void Update() {
@@ -80,10 +80,8 @@ public class LocalGameScript : MonoBehaviour {
 		}
 		CentreCamera();
 		UpdateCompass();
-		if (ship) {
-			hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
-			hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
-		}
+		hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+		hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 		waveText.text = "Wave: " + WaveCounter;
 
 	}
@@ -96,11 +94,9 @@ public class LocalGameScript : MonoBehaviour {
 					Destroy(compassAllyBeacons[i]);
 				}
 			} else {
-				if (ship) {
-					Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
-					dir.Normalize ();
-					compassAllyBeacons[i].transform.localPosition = dir * 80;
-				}
+				Vector3 dir = compassAllies[i].transform.position - ship.transform.position;
+				dir.Normalize ();
+				compassAllyBeacons[i].transform.localPosition = dir * 80;
 			}
 		}
 		// Enemies
@@ -115,11 +111,9 @@ public class LocalGameScript : MonoBehaviour {
 					PlayerPrefs.Save();
 				}
 			} else {
-				if (ship) {
-					Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
-					dir.Normalize ();
-					compassBaddieBeacons[i].transform.localPosition = dir * 80;
-				}
+				Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
+				dir.Normalize ();
+				compassBaddieBeacons[i].transform.localPosition = dir * 80;
 			}
 		}
 	}
@@ -139,6 +133,7 @@ public class LocalGameScript : MonoBehaviour {
 		pCount = AllyCount;
 		compassAllies = new GameObject[pCount-1];
 		compassAllyBeacons = new GameObject[pCount-1];
+		Debug.Log ("Server Successfully Initialised: ship = " + ship.ToString ());
 	}
 	
 	[RPC]
@@ -151,14 +146,14 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void UpdateEnemyCount(int enemies) {
 		enemyCount = enemies;
-		Debug.Log ("Enemy count: " + enemyCount);
+		//Debug.Log ("Enemy count: " + enemyCount);
 		System.Array.Resize (ref compassBaddies, enemies);
 		System.Array.Resize (ref compassBaddieBeacons, enemies);
 	}
 	
 	[RPC]
 	public void ServerSendBaddieRef(NetworkViewID baddie) {
-		Debug.Log ("Baddie " + x + " " + enemyCount);
+		//Debug.Log ("Baddie " + x + " " + enemyCount);
 		compassBaddies[x] = NetworkView.Find (baddie).gameObject;
 		compassBaddieBeacons[x] = (GameObject) Instantiate(CompassBaddieHeadPrefab, Vector3.zero, Quaternion.identity);
 		compassBaddieBeacons[x].transform.parent = CompassPanel.transform;

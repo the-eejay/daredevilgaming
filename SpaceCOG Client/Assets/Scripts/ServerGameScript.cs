@@ -21,6 +21,7 @@ public class ServerGameScript : MonoBehaviour {
 	public GameObject sparrowPrefab;
 	public GameObject bomberPrefab;
 	GameObject bulletPrefab;
+	GameObject enemyBullet;
 	
 	// Game Objects
 	GameObject[] playerShips = new GameObject[4];
@@ -60,6 +61,7 @@ public class ServerGameScript : MonoBehaviour {
 
 		sparrowPrefab = (GameObject) Resources.Load ("Sparrow");
 		bomberPrefab = (GameObject) Resources.Load  ("Bomber");
+		enemyBullet = (GameObject)Resources.Load ("enemyBullet");
 
 		StartCoroutine (CreateBaddies());
 	}
@@ -68,7 +70,7 @@ public class ServerGameScript : MonoBehaviour {
 		if (!initialized || !Network.isServer) {
 			return;
 		}
-		Debug.Log (livingPlayers + " Players left alive");
+		//Debug.Log (livingPlayers + " Players left alive");
 	}
 
 
@@ -95,16 +97,10 @@ public class ServerGameScript : MonoBehaviour {
 					Network.Destroy (baddies[i]);
 					baddies[i] = null;
 					livingEnemies -= 1;
+					Debug.Log ("Baddie destroyed. waveNumber: " + waveNumber + " max waves: " + maxWaves + " living enemies: " + livingEnemies);
 					if (livingEnemies == 0 && waveNumber == maxWaves) {
-						if (bossSpawned) {
-							networkView.RPC ("GameOver", RPCMode.All);
-							Time.timeScale = 0.0f;
-						} else {
-							bossSpawned = true;
-							networkView.RPC ("BossMode", RPCMode.All);
-							livingEnemies++;
-							spawnBoss();
-						}
+						networkView.RPC ("GameOver", RPCMode.All);
+						Time.timeScale = 0.0f;
 					}
 					return;
 				}
@@ -121,15 +117,16 @@ public class ServerGameScript : MonoBehaviour {
 
 		while (waveNumber < maxWaves) {
 			// Spawn a wave
-			for (int i = 0; i < waveNumber*2; i++) {
+			for (int i = 0; i < waveNumber; i++) {
 				GameObject target = GetRandomPlayerShip ();
 				Debug.Log ("Target " + target.name);
-				baddieHP [totalEnemies] = 5f;
+
 				if (i % 2 == 1) {
 					baddiePrefab = sparrowPrefab;
 				} else {
 					baddiePrefab = bomberPrefab;
 				}
+				baddieHP [totalEnemies] = ((enemyScript) baddiePrefab.GetComponent ("enemyScript")).hp;
 				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * target.rigidbody.position.x, (Random.value - 0.5f) * target.rigidbody.position.y, 0f);
 				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
 				if (livingPlayers > 0) {
@@ -222,6 +219,41 @@ public class ServerGameScript : MonoBehaviour {
 			}
 		}
 	}
+
+	void MoveBaddies() {
+		for (int i = 0; i < baddies.Length; ++i) {
+			if (baddies[i] != null) {
+				if (baddieTargets[i] == null) {
+					baddieTargets[i] = GetRandomPlayerShip();
+				}
+				enemyScript enemy = ((enemyScript) baddies[i].GetComponent ("enemyScript"));
+				
+				Vector3 diff = baddieTargets[i].transform.position - baddies[i].transform.position;
+				Vector3 dir = baddieTargets[i].transform.position - baddies[i].transform.position;
+				dir.Normalize ();
+				baddies[i].rigidbody.velocity = diff.normalized * enemy.speed;
+				
+				float rot = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
+				rot -= 90f;
+				baddies[i].transform.rotation = Quaternion.Euler (0f, 0f, rot);
+				
+				if (diff.magnitude < 25f && enemy.canShoot) {
+					float tmpTime = Time.time;
+					if (tmpTime - baddieLastShotTime[i] > enemy.secondsPerShot) {
+						baddieLastShotTime[i] = tmpTime;
+						Rigidbody ship = baddies[i].rigidbody;
+						GameObject tmp = (GameObject) Network.Instantiate (enemyBullet, ship.transform.position, Quaternion.identity, 0);
+						tmp.collider.enabled = true;
+						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
+						tmp.transform.position = ship.transform.position;
+						tmp.transform.rotation = ship.transform.rotation;
+						tmp.rigidbody.velocity = ship.transform.rigidbody.velocity;
+						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+					}
+				}
+			}
+		}
+	}
 	
 	void FixedUpdate() {
 		if (!initialized || !Network.isServer) {
@@ -230,6 +262,7 @@ public class ServerGameScript : MonoBehaviour {
 		Move ();
 		Turn ();
 		Shoot ();
+		MoveBaddies ();
 	}
 	
 	GameObject GetRandomPlayerShip() {
@@ -257,6 +290,7 @@ public class ServerGameScript : MonoBehaviour {
 	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript, int shipChoice) {
 		if (pScript.isMine) {
 			ClientScript cs = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent("ClientScript");
+			Debug.Log (0 + " Found client script");
 			player[0] = cs;
 			playerShipChoices[0] = shipChoice;
 			initCount++;
@@ -264,6 +298,7 @@ public class ServerGameScript : MonoBehaviour {
 			for (int i = 1; i < pCount; ++i) {
 				if (Network.connections[i-1] == owner) {
 					player[i] = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent(typeof(ClientScript));
+					Debug.Log (i + " Found client script");
 					playerShipChoices[i] = shipChoice;
 					initCount++;
 					break;
@@ -276,12 +311,14 @@ public class ServerGameScript : MonoBehaviour {
 			initialized = true;
 			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID, pCount);
 			for (int i = 1; i < pCount; ++i) {
+				Debug.Log ("Sending initialise to " + playerShips[i].networkView.viewID);
 				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID, pCount);
 			}
 			for (int i = 0; i < pCount; ++i) {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
 			networkView.RPC ("Initialize", RPCMode.All);
+			Debug.Log ("Initialisation complete");
 		}
 	}
 

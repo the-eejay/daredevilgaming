@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bounty: 20
   canShoot: 0
-  speed: 25
+  speed: 30
   hp: 1
   bullet: {fileID: 0}
   secondsPerShot: 0

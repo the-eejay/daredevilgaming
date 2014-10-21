@@ -11,7 +11,7 @@ public class SpawnAsteroid : MonoBehaviour {
 				rndPosWithin = new Vector3 (Random.Range (-1f, 1f), Random.Range (-1f, 1f), Random.Range (-1f, 1f));
 				rndPosWithin = transform.TransformPoint (rndPosWithin * .5f);
 				Instantiate (ObjectToSpawn, rndPosWithin, Random.rotation);  
-				Debug.Log ("spawn asteroids");
+				//Debug.Log ("spawn asteroids");
 		}
 	}
 	
