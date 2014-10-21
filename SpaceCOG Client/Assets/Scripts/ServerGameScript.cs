@@ -126,9 +126,22 @@ public class ServerGameScript : MonoBehaviour {
 				} else {
 					baddiePrefab = bomberPrefab;
 				}
+
+				Vector3 playerPosition = target.transform.position;
+				
+				// Get a point on the unit circle
+				Vector2 randomPointOnCircle = Random.insideUnitCircle;
+				randomPointOnCircle.Normalize();
+				randomPointOnCircle *= 25f;
+				
+				float randomX = randomPointOnCircle.x;
+				float randomY = randomPointOnCircle.y;
+				
+				
+				Vector3 spawnPosition = new Vector3(playerPosition.x + randomX, playerPosition.y + randomY, 0);
+
 				baddieHP [totalEnemies] = ((enemyScript) baddiePrefab.GetComponent ("enemyScript")).hp;
-				Vector3 spawnPoint = new Vector3 ((Random.value - 0.5f) * target.rigidbody.position.x, (Random.value - 0.5f) * target.rigidbody.position.y, 0f);
-				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPoint, Quaternion.identity, 0);
+				GameObject newBaddie = (GameObject) Network.Instantiate (baddiePrefab, spawnPosition, Quaternion.identity, 0);
 				if (livingPlayers > 0) {
 					((enemyScript) (newBaddie.GetComponent ("enemyScript"))).target = GetRandomPlayerShip ();
 				}

@@ -65,6 +65,7 @@ public class LocalGameScript : MonoBehaviour {
 			break;
 		}
 		*/
+		Time.timeScale = 1.0f;
 	}
 	
 	void CentreCamera () {
@@ -178,6 +179,7 @@ public class LocalGameScript : MonoBehaviour {
 		}
 		gameOverText.text = isAlive ? "You win! Congratulations!" : "You lost.  Better luck next time!";
 		GameOverButton.SetActive (true);
+		Time.timeScale = 0.0f;
 
 	}
 
