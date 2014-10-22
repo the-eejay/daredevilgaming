@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerShipScript : MonoBehaviour {
@@ -10,7 +11,7 @@ public class PlayerShipScript : MonoBehaviour {
 	public float thrust;
 	public float maxSpeed;
 
-
+	public Text currencyText;
 	public float currency;
 
 	public string name;
@@ -35,6 +36,7 @@ public class PlayerShipScript : MonoBehaviour {
 		currency += Time.deltaTime;
 		PlayerPrefs.SetFloat("Money", currency);
 		PlayerPrefs.Save();
+		currencyText.text = "Currency: " + currency;
 	}
 	
 	void FixedUpdate () {

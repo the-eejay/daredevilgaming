@@ -35,6 +35,7 @@ public class LocalGameScript : MonoBehaviour {
 
 	public int final_wave;
 	public float currency;
+	public Text currencyText;
 	
 	void Start() {
 		// Simulate a network if playing singleplayer
