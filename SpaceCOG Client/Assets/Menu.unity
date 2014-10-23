@@ -648,7 +648,6 @@ MonoBehaviour:
   currency: 0
   name: Pelican
   description: High speed, 75 HP, 1 damage bullets
-  cursor: {x: 0, y: 0, z: 0}
 --- !u!1 &240088050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1146,7 +1145,6 @@ MonoBehaviour:
   currency: 0
   name: Penguin
   description: Slow, 150 HP, 1 damage bullets
-  cursor: {x: 0, y: 0, z: 0}
 --- !u!1 &571600544
 GameObject:
   m_ObjectHideFlags: 0
@@ -3135,7 +3133,6 @@ MonoBehaviour:
   currency: 0
   name: Magpie
   description: Medium speed, 100 HP, 2 damage lasers
-  cursor: {x: 0, y: 0, z: 0}
 --- !u!148 &989026351
 NetworkView:
   m_ObjectHideFlags: 0
@@ -4341,6 +4338,7 @@ GameObject:
   - 92: {fileID: 1405774355}
   - 124: {fileID: 1405774354}
   - 81: {fileID: 1405774353}
+  - 54: {fileID: 1405774358}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4415,6 +4413,21 @@ Transform:
   - {fileID: 842416236}
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!54 &1405774358
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1405774352}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: .0500000007
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1414557545
 GameObject:
   m_ObjectHideFlags: 0

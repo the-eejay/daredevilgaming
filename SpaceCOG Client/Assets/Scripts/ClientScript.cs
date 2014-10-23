@@ -49,7 +49,7 @@ public class ClientScript : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		float dist = 2000f;
 		if (targettingPlane.Raycast(ray, out dist)) {
-			cursor = ray.GetPoint(dist);
+			cursor = ray.GetPoint(dist) - new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0f);
 		}
 	}
 }

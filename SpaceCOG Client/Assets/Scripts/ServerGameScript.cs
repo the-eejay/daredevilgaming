@@ -203,7 +203,7 @@ public class ServerGameScript : MonoBehaviour {
 	void Turn () {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] != null) {
-				Vector3 diff = player[i].cursor - playerShips[i].transform.position;
+				Vector3 diff = player[i].cursor;
 				diff.Normalize();
 				float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
 				rot -= 90f;
@@ -220,13 +220,10 @@ public class ServerGameScript : MonoBehaviour {
 					if (tmpTime - lastShotTime[i] > minShotInterval) {
 						lastShotTime[i] = tmpTime;
 						Rigidbody ship = playerShips[i].rigidbody;
-						GameObject tmp = (GameObject) Network.Instantiate (playerShipScripts[i].bullet, ship.transform.position, Quaternion.identity, 0);
-						tmp.collider.enabled = true;
+						GameObject tmp = (GameObject) Network.Instantiate (playerShipScripts[i].bullet, ship.transform.position, ship.transform.rotation, 0);
+						tmp.rigidbody.velocity = ship.transform.rigidbody.velocity + ship.transform.up * 40f;
 						Physics.IgnoreCollision(ship.collider, tmp.collider, true);
-						tmp.transform.position = ship.transform.position;
-						tmp.transform.rotation = ship.transform.rotation;
-						tmp.transform.rigidbody.velocity = ship.transform.rigidbody.velocity;
-						tmp.rigidbody.AddForce(ship.transform.up * bulletForce);
+						tmp.collider.enabled = true;
 					}
 				}
 			}

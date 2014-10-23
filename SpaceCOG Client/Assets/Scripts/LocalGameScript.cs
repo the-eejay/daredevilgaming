@@ -36,6 +36,9 @@ public class LocalGameScript : MonoBehaviour {
 	public int final_wave;
 	public float currency;
 	
+	public Vector3 cursor;
+	private static Plane targettingPlane;
+	
 	void Start() {
 		// Simulate a network if playing singleplayer
 		if (Network.peerType == NetworkPeerType.Disconnected) {
@@ -46,6 +49,7 @@ public class LocalGameScript : MonoBehaviour {
 			gameObject.AddComponent("ServerGameScript");
 		//}
 
+		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
 		GameOverButton.SetActive (false);
 
 		pScript = (GameObject) Network.Instantiate(pScriptPrefab, Vector3.zero, Quaternion.identity, 0);
@@ -84,7 +88,25 @@ public class LocalGameScript : MonoBehaviour {
 		hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
 		hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 		waveText.text = "Wave: " + WaveCounter;
+		Move();
 
+	}
+	
+	void Move () {
+		if (Application.loadedLevel == 1) {
+			// Cursor
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			float dist = 2000f;
+			if (targettingPlane.Raycast(ray, out dist)) {
+				cursor = ray.GetPoint(dist);
+			}
+			
+			Vector3 diff = cursor - ship.transform.position;
+			diff.Normalize();
+			float rot = Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg;
+			rot -= 90f;
+			ship.transform.rotation = Quaternion.Euler (0f, 0f, rot);
+		}
 	}
 	
 	void UpdateCompass() {
