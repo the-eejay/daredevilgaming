@@ -8,27 +8,24 @@ using System.Collections;
 public class MainMenuScript : MonoBehaviour {
 
 	// These instance variables will be obsolete by the final release
-	private const int MAX_CONNECTIONS = 1;
+	private const int MAX_CONNECTIONS = 3;
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
-	private int slots = 1;
+	private int slots = 3;
 	
 	public GameObject ConOverlay;
 	public GameObject GameListOverlay;
 	public GameObject GameNameOverlay;
+	public GameObject WaitingOverlay;
+	
 	public GameObject magpie;
 	public GameObject pelican;
 	public GameObject penguin;
 	
-	public UnityEngine.UI.Button p1Ready;
-	public UnityEngine.UI.Button p2Ready;
-	public UnityEngine.UI.Button p3Ready;
-	public UnityEngine.UI.Button p4Ready;
 	
-	bool p1 = false;
-	bool p2 = false;
-	bool p3 = false;
-	bool p4 = false;
+	public UnityEngine.UI.Button btnPrefab;
+	
+	private ArrayList serverButtons;
 
 	public Text shipNameText;
 	public Text loadingText;
@@ -38,19 +35,30 @@ public class MainMenuScript : MonoBehaviour {
 	public Slider speedSlider;
 	public Text shipDescText;
 	
+	HostData[] servers;
+	
+	public GameObject GameList;
+	
 	public Text GameName;
+	
+	public Text wGameName;
+	public Text wGameStatus;
+	public UnityEngine.UI.Button wGo;
+	public UnityEngine.UI.Button wLeave;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
 
 	// Use this for initialization
 	void Start () {
+		serverButtons = new ArrayList();
 		MasterServer.ipAddress = "123.100.141.5";
 		MasterServer.port = 23466;
 		MasterServer.dedicatedServer = false;
-		ConOverlay.SetActive(false);
+		//ConOverlay.SetActive(false);
 		GameListOverlay.SetActive(false);
 		GameNameOverlay.SetActive(false);
+		WaitingOverlay.SetActive(false);
 		magpie = GameObject.Find ("Magpie");
 		pelican = GameObject.Find ("Pelican");
 		penguin = GameObject.Find ("penguin");
@@ -96,25 +104,51 @@ public class MainMenuScript : MonoBehaviour {
 			Debug.Log ("Connection Error: " + e.ToString ());
 		} else {
 			GameListOverlay.SetActive(false);
-			ConOverlay.SetActive(true);
 		}
+	}
+	
+	public void LeaveServerList() {
+		GameListOverlay.SetActive(false);
+	}
+	
+	public void ConnectToNumber(int i) {
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (GameListOverlay.activeSelf) {
-			Debug.Log("What");
-			HostData[] servers = MasterServer.PollHostList();
-			UnityEngine.UI.Text[] buttons = GameListOverlay.GetComponentsInChildren<UnityEngine.UI.Text>();
-			buttons[0].text = "Games";
-			for (int i = 0; i < 5; ++i) {
-				if (i == servers.Length) {
-					break;
+			servers = MasterServer.PollHostList();
+			Debug.Log(servers.Length);
+			if (serverButtons.Count != servers.Length) {
+				Debug.Log ("Creating List");
+				serverButtons.Clear();
+				for (int i = 0; i < servers.Length; ++i) {
+					Debug.Log ("NewServerButton");
+					UnityEngine.UI.Button tmp = Instantiate(btnPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.UI.Button;
+					tmp.transform.parent = GameList.transform;
+					tmp.transform.localPosition = Vector3.zero + new Vector3(0, 20 * i, 0);;
+					tmp.transform.localScale = new Vector3(1, 1, 1);
+					tmp.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = servers[i].gameName;
+					tmp.onClick.AddListener(delegate {
+							Debug.Log ("Attempting to connect to server...");
+							Debug.Log (i);
+							Debug.Log (servers[i-1]);
+							
+							NetworkConnectionError e;
+							e = Network.Connect (servers[i-1]);
+							if (e != NetworkConnectionError.NoError) {
+								Debug.Log ("Connection Error: " + e.ToString ());
+							} else {
+								wGameName.text = servers[i-1].gameName;
+								
+							}
+							GameListOverlay.SetActive(false);
+						});
+					serverButtons.Add(tmp);
 				}
-				buttons[i+1].text = servers[i].gameName;
 			}
 			
-		
 		} else {
 
 		if (Input.GetKeyDown (KeyCode.A)) {
@@ -158,8 +192,11 @@ public class MainMenuScript : MonoBehaviour {
 				Debug.Log ("Listening for connections...");
 				MasterServer.RegisterHost("SpaceCOG", GameName.text);
 				GameNameOverlay.SetActive(false);
-				ConOverlay.SetActive(true);
-				p1Ready.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
+				WaitingOverlay.SetActive(true);
+				wGameName.text = GameName.text;
+				wGameStatus.text = "3 slots still empty...";
+				//ConOverlay.SetActive(true);
+				//p1Ready.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
 			} else {
 				Debug.Log ("Initialization Error: " + e.ToString ());
 			}
@@ -172,26 +209,37 @@ public class MainMenuScript : MonoBehaviour {
 	public void ServerList () {
 		GameListOverlay.SetActive(true);
 		MasterServer.RequestHostList("SpaceCOG");
-		foreach (UnityEngine.UI.Text btn in GameListOverlay.GetComponentsInChildren<UnityEngine.UI.Text>()) {
-			btn.text = "";
-		}
 	}
 	
 	public void ConnectServer () {
 		Debug.Log ("Attempting to connect to server...");
 		NetworkConnectionError e;
 		//e = Network.Connect (ConAddress.GetComponent<UnityEngine.UI.Text>().text, PORT_NO);
-		/*
-		if (e != NetworkConnectionError.NoError) {
-			Debug.Log ("Connection Error: " + e.ToString ());
-		}
-		*/
+		
+		//if (e != NetworkConnectionError.NoError) {
+		//	Debug.Log ("Connection Error: " + e.ToString ());
+		//} else {
+		//	
+		//}
 	}
 	
 	// Function to be called when the 'Join' button is pressed.
 	// Attempts to connect to a server on the local machine.
 	public void JoinServer () {
 		ConOverlay.SetActive(true);
+	}
+	
+	public void GoAnyway () {
+		if(Network.isServer) {
+			Debug.Log ("Loading game...");
+			MasterServer.UnregisterHost();
+			networkView.RPC ("Game", RPCMode.All);
+		}
+	}
+	
+	public void LeaveLobby () {
+		Network.Disconnect();
+		WaitingOverlay.SetActive(false);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
@@ -207,6 +255,8 @@ public class MainMenuScript : MonoBehaviour {
 		if (Network.connections.Length == slots) {
 			Debug.Log ("Loading game...");
 			networkView.RPC ("Game", RPCMode.All);
+		} else {
+			networkView.RPC ("NewConnected", RPCMode.All, slots - Network.connections.Length);
 		}
 	}
 	
@@ -214,20 +264,27 @@ public class MainMenuScript : MonoBehaviour {
 	// when this client successfully connects to a server.
 	private void OnConnectedToServer () {
 		Debug.Log ("Successfully connected to the server.");
-		//ConButton.SetActive (true);
-		//ConOverlay.SetActive (false);
+		WaitingOverlay.SetActive(true);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
 	// when this client is disconnected from the server.
 	private void OnDisconnectedFromServer (NetworkDisconnection info) {
 		Debug.Log ("Disconnected from the server: " + info.ToString ());
+		wGameStatus.text = "Host has left the game. Please leave the lobby.";
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
 	// when a client disconnects from this server.
 	private void OnPlayerDisconnected (NetworkPlayer player) {
 		Debug.Log ("Player disconnected.");
+		networkView.RPC ("NewConnected", RPCMode.All, slots - Network.connections.Length + 1);
+	}
+	
+	// This function transitions the game into the actual gameplay.
+	[RPC] // This function can be called remotely over the network.
+	private void NewConnected (int slots) {
+		wGameStatus.text = slots + " slots still empty...";
 	}
 	
 	// This function transitions the game into the actual gameplay.
