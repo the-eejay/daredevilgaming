@@ -17,16 +17,11 @@ public class PlayerShipScript : MonoBehaviour {
 	public string name;
 	public string description;
 	
-	public Vector3 cursor;
-	private static Plane targettingPlane;
-
-
 	// Use this for initialization
 	void Start () {
 		if(master == null) {
 			master = GameObject.Find("WorldScriptObject");
 		}
-		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
 	}
 	
 	// Update is called once per frame
@@ -42,8 +37,6 @@ public class PlayerShipScript : MonoBehaviour {
 	void FixedUpdate () {
 	
 	}
-	
-
 
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo SystemInfo) {
 		stream.Serialize (ref hp);

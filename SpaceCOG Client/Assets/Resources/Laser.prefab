@@ -15,7 +15,7 @@ GameObject:
   - 54: {fileID: 5400000}
   - 148: {fileID: 14800000}
   - 82: {fileID: 8200000}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Laser
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f85fc6ef907c14c27af06f097ffdbdbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 2
+  damage: 3
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

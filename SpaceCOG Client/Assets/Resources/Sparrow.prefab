@@ -74,7 +74,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 56
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!64 &6400000
 MeshCollider:
@@ -161,9 +161,9 @@ MonoBehaviour:
   bounty: 50
   canShoot: 1
   speed: 15
-  hp: 5
+  hp: 1
   bullet: {fileID: 100000, guid: c7db71e4ee42fbc4387d5b4166114147, type: 2}
-  secondsPerShot: .100000001
+  secondsPerShot: .5
   target: {fileID: 0}
 --- !u!148 &14800000
 NetworkView:
