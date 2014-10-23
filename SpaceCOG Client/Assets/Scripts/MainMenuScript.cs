@@ -14,11 +14,21 @@ public class MainMenuScript : MonoBehaviour {
 	private int slots = 1;
 	
 	public GameObject ConOverlay;
-	public GameObject ConAddress;
-	public GameObject ConButton;
+	public GameObject GameListOverlay;
+	public GameObject GameNameOverlay;
 	public GameObject magpie;
 	public GameObject pelican;
 	public GameObject penguin;
+	
+	public UnityEngine.UI.Button p1Ready;
+	public UnityEngine.UI.Button p2Ready;
+	public UnityEngine.UI.Button p3Ready;
+	public UnityEngine.UI.Button p4Ready;
+	
+	bool p1 = false;
+	bool p2 = false;
+	bool p3 = false;
+	bool p4 = false;
 
 	public Text shipNameText;
 	public Text loadingText;
@@ -26,13 +36,21 @@ public class MainMenuScript : MonoBehaviour {
 	public Slider hpSlider;
 	public Slider dmgSlider;
 	public Slider speedSlider;
+	public Text shipDescText;
+	
+	public Text GameName;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
 
 	// Use this for initialization
 	void Start () {
+		MasterServer.ipAddress = "123.100.141.5";
+		MasterServer.port = 23466;
+		MasterServer.dedicatedServer = false;
 		ConOverlay.SetActive(false);
+		GameListOverlay.SetActive(false);
+		GameNameOverlay.SetActive(false);
 		magpie = GameObject.Find ("Magpie");
 		pelican = GameObject.Find ("Pelican");
 		penguin = GameObject.Find ("penguin");
@@ -68,8 +86,36 @@ public class MainMenuScript : MonoBehaviour {
 
 	}
 	
+	public void JoinServer(int btn) {
+		Debug.Log ("Attempting to connect to server...");
+		HostData[] servers = MasterServer.PollHostList();
+		NetworkConnectionError e;
+		e = Network.Connect (servers[btn]);
+		
+		if (e != NetworkConnectionError.NoError) {
+			Debug.Log ("Connection Error: " + e.ToString ());
+		} else {
+			GameListOverlay.SetActive(false);
+			ConOverlay.SetActive(true);
+		}
+	}
+	
 	// Update is called once per frame
 	void Update () {
+		if (GameListOverlay.activeSelf) {
+			Debug.Log("What");
+			HostData[] servers = MasterServer.PollHostList();
+			UnityEngine.UI.Text[] buttons = GameListOverlay.GetComponentsInChildren<UnityEngine.UI.Text>();
+			buttons[0].text = "Games";
+			for (int i = 0; i < 5; ++i) {
+				if (i == servers.Length) {
+					break;
+				}
+				buttons[i+1].text = servers[i].gameName;
+			}
+			
+		
+		} else {
 
 		if (Input.GetKeyDown (KeyCode.A)) {
 			ships[shipChooser].renderer.enabled = false;
@@ -90,6 +136,13 @@ public class MainMenuScript : MonoBehaviour {
 		dmgSlider.value = damage;
 		speedSlider.value = playership.maxSpeed;
 		shipNameText.text = playership.name;
+		}
+	}
+	
+	public void CreateLobby() {
+		if (!Network.isServer) {
+			GameNameOverlay.SetActive(true);
+		}
 	}
 
 	// Function to be called when the 'Host' button is pressed.
@@ -99,10 +152,14 @@ public class MainMenuScript : MonoBehaviour {
 		if (!Network.isServer) {
 			Debug.Log ("Attempting to host server...");
 			NetworkConnectionError e;
-			e = Network.InitializeServer (MAX_CONNECTIONS, PORT_NO, false);
+			e = Network.InitializeServer (MAX_CONNECTIONS, PORT_NO, !Network.HavePublicAddress());
 			
 			if (e == NetworkConnectionError.NoError) {
 				Debug.Log ("Listening for connections...");
+				MasterServer.RegisterHost("SpaceCOG", GameName.text);
+				GameNameOverlay.SetActive(false);
+				ConOverlay.SetActive(true);
+				p1Ready.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript")).name;
 			} else {
 				Debug.Log ("Initialization Error: " + e.ToString ());
 			}
@@ -112,14 +169,23 @@ public class MainMenuScript : MonoBehaviour {
 		}
 	}
 	
+	public void ServerList () {
+		GameListOverlay.SetActive(true);
+		MasterServer.RequestHostList("SpaceCOG");
+		foreach (UnityEngine.UI.Text btn in GameListOverlay.GetComponentsInChildren<UnityEngine.UI.Text>()) {
+			btn.text = "";
+		}
+	}
+	
 	public void ConnectServer () {
 		Debug.Log ("Attempting to connect to server...");
 		NetworkConnectionError e;
-		ConButton.SetActive (false);
-		e = Network.Connect (ConAddress.GetComponent<UnityEngine.UI.Text>().text, PORT_NO);
+		//e = Network.Connect (ConAddress.GetComponent<UnityEngine.UI.Text>().text, PORT_NO);
+		/*
 		if (e != NetworkConnectionError.NoError) {
 			Debug.Log ("Connection Error: " + e.ToString ());
 		}
+		*/
 	}
 	
 	// Function to be called when the 'Join' button is pressed.
@@ -148,8 +214,8 @@ public class MainMenuScript : MonoBehaviour {
 	// when this client successfully connects to a server.
 	private void OnConnectedToServer () {
 		Debug.Log ("Successfully connected to the server.");
-		ConButton.SetActive (true);
-		ConOverlay.SetActive (false);
+		//ConButton.SetActive (true);
+		//ConOverlay.SetActive (false);
 	}
 	
 	// Overriding MonoBehaviour method that is automatically called
