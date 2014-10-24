@@ -34,6 +34,10 @@ public class Upgrade : MonoBehaviour {
 		player = GameObject.FindGameObjectWithTag ("Player");
 		shipScript = (PlayerShipScript)player.GetComponent("PlayerShipScript");
 		shipScript.bullet.renderer.material.color = colours[Random.Range(0, colours.Length)];
+
+		currency = PlayerPrefs.GetFloat("Money");
+		currency -= 20;
+		PlayerPrefs.SetFloat("Money", currency);
 		
 		Debug.Log ("Upgraded !");
 	}

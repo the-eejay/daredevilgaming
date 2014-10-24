@@ -19,6 +19,8 @@ public class LocalGameScript : MonoBehaviour {
 	public Slider hpBar;
 	public Text waveText;
 	public Text gameOverText;
+	public Text currencyText;
+	public Text scoreText;
 	private GameObject pScript;
 	private bool isAlive = true;
 	private bool gameOver = false;
@@ -35,7 +37,7 @@ public class LocalGameScript : MonoBehaviour {
 
 	public int final_wave;
 	public float currency;
-	public Text currencyText;
+	public int score;
 	
 	public Vector3 cursor;
 	private static Plane targettingPlane;
@@ -89,6 +91,12 @@ public class LocalGameScript : MonoBehaviour {
 		hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
 		hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 		waveText.text = "Wave: " + WaveCounter;
+
+		currency = PlayerPrefs.GetFloat("Money");
+		currency += Time.deltaTime;
+		PlayerPrefs.SetFloat("Money", currency);
+		currencyText.text = "Currency: " + currency.ToString("0");
+
 		Move();
 
 	}
@@ -128,11 +136,12 @@ public class LocalGameScript : MonoBehaviour {
 			if (compassBaddies[i] == null) {
 				if (compassBaddieBeacons[i] != null) {
 					Destroy(compassBaddieBeacons[i]);
-					//Earn 20 when player kill enemies
-					currency = PlayerPrefs.GetFloat("Money");
-					currency += 20;
-					PlayerPrefs.SetFloat("Money", currency);
-					PlayerPrefs.Save();
+					//Earn 10 points when player kill enemies
+					score = PlayerPrefs.GetInt("Score");
+					score += 10;
+					PlayerPrefs.SetInt("Score", score);
+					scoreText.text = "Score: " + score;
+
 				}
 			} else {
 				Vector3 dir = compassBaddies[i].transform.position - ship.transform.position;
@@ -204,6 +213,15 @@ public class LocalGameScript : MonoBehaviour {
 		GameOverButton.SetActive (true);
 		Time.timeScale = 0.0f;
 
+		currency = PlayerPrefs.GetFloat("Money");
+		currency = 0;
+		PlayerPrefs.SetFloat("Money", currency);
+		PlayerPrefs.Save();
+
+		score = PlayerPrefs.GetInt("Score");
+		score = 0;
+		PlayerPrefs.SetInt("Score", score);
+		PlayerPrefs.Save();
 	}
 
 	[RPC]
