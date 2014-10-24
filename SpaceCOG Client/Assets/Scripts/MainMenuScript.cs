@@ -12,8 +12,7 @@ public class MainMenuScript : MonoBehaviour {
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
 	private int slots = 3;
-	
-	public GameObject ConOverlay;
+
 	public GameObject GameListOverlay;
 	public GameObject GameNameOverlay;
 	public GameObject WaitingOverlay;
@@ -23,7 +22,7 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject penguin;
 	
 	
-	public UnityEngine.UI.Button btnPrefab;
+	public Button btnPrefab;
 	
 	private ArrayList serverButtons;
 
@@ -43,8 +42,8 @@ public class MainMenuScript : MonoBehaviour {
 	
 	public Text wGameName;
 	public Text wGameStatus;
-	public UnityEngine.UI.Button wGo;
-	public UnityEngine.UI.Button wLeave;
+	public Button wGo;
+	public Button wLeave;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
@@ -149,27 +148,27 @@ public class MainMenuScript : MonoBehaviour {
 				}
 			}
 			
-		} else {
+		} else if (!GameNameOverlay.activeSelf && !WaitingOverlay.activeSelf){
 
-		if (Input.GetKeyDown (KeyCode.A)) {
-			ships[shipChooser].renderer.enabled = false;
-			shipChooser--;
-			if (shipChooser < 0) shipChooser = 2;
-			ships[shipChooser].renderer.enabled = true;
-		}
-		if (Input.GetKeyDown (KeyCode.D)) {
-			ships[shipChooser].renderer.enabled = false;
-			shipChooser++;
-			if (shipChooser > 2) shipChooser = 0;
-			ships[shipChooser].renderer.enabled = true;
-		}
+			if (Input.GetKeyDown (KeyCode.A)) {
+				ships[shipChooser].renderer.enabled = false;
+				shipChooser--;
+				if (shipChooser < 0) shipChooser = 2;
+				ships[shipChooser].renderer.enabled = true;
+			}
+			if (Input.GetKeyDown (KeyCode.D)) {
+				ships[shipChooser].renderer.enabled = false;
+				shipChooser++;
+				if (shipChooser > 2) shipChooser = 0;
+				ships[shipChooser].renderer.enabled = true;
+			}
 
-		PlayerShipScript playership = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript"));
-		float damage = ((bulletScript)playership.bullet.GetComponent ("bulletScript")).damage;
-		hpSlider.value = playership.hp;
-		dmgSlider.value = damage;
-		speedSlider.value = playership.maxSpeed;
-		shipNameText.text = playership.name;
+			PlayerShipScript playership = ((PlayerShipScript)ships [shipChooser].GetComponent ("PlayerShipScript"));
+			float damage = ((bulletScript)playership.bullet.GetComponent ("bulletScript")).damage;
+			hpSlider.value = playership.hp;
+			dmgSlider.value = damage;
+			speedSlider.value = playership.maxSpeed;
+			shipNameText.text = playership.name;
 		}
 	}
 	
@@ -223,12 +222,6 @@ public class MainMenuScript : MonoBehaviour {
 		//}
 	}
 	
-	// Function to be called when the 'Join' button is pressed.
-	// Attempts to connect to a server on the local machine.
-	public void JoinServer () {
-		ConOverlay.SetActive(true);
-	}
-	
 	public void GoAnyway () {
 		if(Network.isServer) {
 			Debug.Log ("Loading game...");
@@ -241,10 +234,15 @@ public class MainMenuScript : MonoBehaviour {
 		Network.Disconnect();
 		WaitingOverlay.SetActive(false);
 	}
+
+	public void GameNameCancel () {
+		GameNameOverlay.SetActive(false);
+	}
 	
 	// Overriding MonoBehaviour method that is automatically called
 	// when a server is successfully initialized locally.
 	private void OnServerInitialized () {
+		wGo.interactable = true;
 		Debug.Log ("Server successfully initialized.");
 	}
 	
@@ -264,6 +262,7 @@ public class MainMenuScript : MonoBehaviour {
 	// when this client successfully connects to a server.
 	private void OnConnectedToServer () {
 		Debug.Log ("Successfully connected to the server.");
+		wGo.interactable = false;
 		WaitingOverlay.SetActive(true);
 	}
 	
