@@ -77,4 +77,7 @@ public class enemyScript : MonoBehaviour {
 		}
 	}
 	*/
+	public void OnDestroy() {
+		Debug.Log ("Enemy destroyed");
+	}
 }
