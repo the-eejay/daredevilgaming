@@ -9,7 +9,7 @@ public class BomberScript : enemyScript {
 		if(networkView.isMine && col.gameObject.tag == "Player") {
 
 			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(col.gameObject, collisionDamage);
-			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(this.gameObject, 1);
+			((ServerGameScript) master.GetComponent("ServerGameScript")).Damage(this.gameObject, 5);
 		}
 	}
 }
