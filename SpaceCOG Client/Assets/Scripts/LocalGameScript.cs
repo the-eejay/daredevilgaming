@@ -86,19 +86,22 @@ public class LocalGameScript : MonoBehaviour {
 		if (!compassInitialized) {
 			InitCompass ();
 		}
-		CentreCamera();
-		UpdateCompass();
-		hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
-		hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
-		waveText.text = "Wave: " + WaveCounter;
+		if (ship) {
+			CentreCamera ();
+			UpdateCompass ();
 
-		currency = PlayerPrefs.GetFloat("Money");
-		currency += Time.deltaTime;
-		PlayerPrefs.SetFloat("Money", currency);
-		currencyText.text = "Currency: " + currency.ToString("0");
+			hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+			hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 
-		Move();
+			waveText.text = "Wave: " + WaveCounter;
 
+			currency = PlayerPrefs.GetFloat ("Money");
+			currency += Time.deltaTime;
+			PlayerPrefs.SetFloat ("Money", currency);
+			currencyText.text = "Currency: " + currency.ToString ("0");
+
+			Move ();
+		}
 	}
 	
 	void Move () {

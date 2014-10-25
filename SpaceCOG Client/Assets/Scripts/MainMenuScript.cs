@@ -137,7 +137,7 @@ public class MainMenuScript : MonoBehaviour {
 				}
 				serverButtons.Clear();
 				for (int i = 0; i < servers.Length; ++i) {
-					Debug.Log ("NewServerButton");
+					//Debug.Log ("NewServerButton");
 					UnityEngine.UI.Button tmp = Instantiate(btnPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.UI.Button;
 					tmp.transform.parent = GameList.transform;
 					tmp.transform.localPosition = Vector3.zero + new Vector3(0, -100 * i + 50 * (servers.Length-1), 0);
@@ -145,8 +145,8 @@ public class MainMenuScript : MonoBehaviour {
 					tmp.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = servers[i].gameName;
 					tmp.onClick.AddListener(delegate {
 							Debug.Log ("Attempting to connect to server...");
-							Debug.Log (i);
-							Debug.Log (servers[i-1]);
+							//Debug.Log (i);
+							//Debug.Log (servers[i-1]);
 							
 							NetworkConnectionError e;
 							e = Network.Connect (servers[i-1]);
