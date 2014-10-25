@@ -120,10 +120,10 @@ public class MainMenuScript : MonoBehaviour {
 			servers = MasterServer.PollHostList();
 			Debug.Log(servers.Length);
 			if (serverButtons.Count != servers.Length) {
-				Debug.Log ("Creating List");
+				//Debug.Log ("Creating List");
 				serverButtons.Clear();
 				for (int i = 0; i < servers.Length; ++i) {
-					Debug.Log ("NewServerButton");
+					//Debug.Log ("NewServerButton");
 					UnityEngine.UI.Button tmp = Instantiate(btnPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.UI.Button;
 					tmp.transform.parent = GameList.transform;
 					tmp.transform.localPosition = Vector3.zero + new Vector3(0, 20 * i, 0);;
@@ -131,8 +131,8 @@ public class MainMenuScript : MonoBehaviour {
 					tmp.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = servers[i].gameName;
 					tmp.onClick.AddListener(delegate {
 							Debug.Log ("Attempting to connect to server...");
-							Debug.Log (i);
-							Debug.Log (servers[i-1]);
+							//Debug.Log (i);
+							//Debug.Log (servers[i-1]);
 							
 							NetworkConnectionError e;
 							e = Network.Connect (servers[i-1]);

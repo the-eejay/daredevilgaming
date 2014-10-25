@@ -40,7 +40,7 @@ public class bulletScript : MonoBehaviour {
 				((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
 				Network.Destroy (gameObject);
 			} else if (col.gameObject.tag == "Enemy") {
-				Debug.Log ("Hit enemy");
+				//Debug.Log ("Hit enemy");
 				((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
 				Network.Destroy (gameObject);
 			}
