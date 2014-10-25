@@ -130,7 +130,7 @@ public class MainMenuScript : MonoBehaviour {
 			servers = MasterServer.PollHostList();
 			Debug.Log(servers.Length);
 			if (serverButtons.Count != servers.Length) {
-				Debug.Log ("Creating List");
+				//Debug.Log ("Creating List");
 				while(serverButtons.Count > 0) {
 					DestroyImmediate(serverButtons[0].gameObject);
 					serverButtons.RemoveAt(0);

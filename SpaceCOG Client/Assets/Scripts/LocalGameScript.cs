@@ -90,7 +90,7 @@ public class LocalGameScript : MonoBehaviour {
 			CentreCamera ();
 			UpdateCompass ();
 
-			hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+			//hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
 			hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 
 			waveText.text = "Wave: " + WaveCounter;
@@ -207,6 +207,11 @@ public class LocalGameScript : MonoBehaviour {
 		} else {
 			Debug.Log ("Someone else!");
 		}
+	}
+
+	[RPC]
+	public void Hurt(NetworkViewID ship, int damage) {
+		hpBar.value -= damage;
 	}
 	
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
