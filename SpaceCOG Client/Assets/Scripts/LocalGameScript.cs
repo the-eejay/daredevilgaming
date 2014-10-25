@@ -140,7 +140,7 @@ public class LocalGameScript : MonoBehaviour {
 				if (compassBaddieBeacons[i] != null) {
 					Destroy(compassBaddieBeacons[i]);
 					//Earn 10 points when player kill enemies
-					score = PlayerPrefs.GetInt("Score");a
+					score = PlayerPrefs.GetInt("Score");
 					score += 10;
 					PlayerPrefs.SetInt("Score", score);
 					scoreText.text = "Score: " + score;

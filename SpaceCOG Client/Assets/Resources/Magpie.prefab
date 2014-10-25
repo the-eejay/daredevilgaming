@@ -46,7 +46,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 9559bc3059d7b4de48b51202ebf9b946, type: 2}
+  - {fileID: 2100000, guid: a90a8fc01be053944a6f255b87ba2764, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -104,10 +104,10 @@ MonoBehaviour:
   bullet: {fileID: 100002, guid: 537c02e220fe62341bc0b9a61cdcec8a, type: 2}
   thrust: 60000
   maxSpeed: 20
+  currencyText: {fileID: 0}
   currency: 0
   name: Magpie
   description: Medium speed, 100 HP, 2 damage lasers
-  cursor: {x: 0, y: 0, z: 0}
 --- !u!122 &12200000
 Halo:
   m_ObjectHideFlags: 1
