@@ -117,7 +117,7 @@ Halo:
   m_Enabled: 1
   m_Color:
     serializedVersion: 2
-    rgba: 603980848
+    rgba: 604254212
   m_Size: 1
 --- !u!148 &14800000
 NetworkView:
