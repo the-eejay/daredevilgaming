@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 /*	MainMenuScript contains all functionality required by the main menu
  *	scene in the game. It only needs to be attached to a single object
@@ -24,7 +25,7 @@ public class MainMenuScript : MonoBehaviour {
 	
 	public Button btnPrefab;
 	
-	private ArrayList serverButtons;
+	private List<Button> serverButtons;
 
 	public Text shipNameText;
 	public Text loadingText;
@@ -44,13 +45,16 @@ public class MainMenuScript : MonoBehaviour {
 	public Text wGameStatus;
 	public Button wGo;
 	public Button wLeave;
+	
+	private float lastListPoll;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
 
 	// Use this for initialization
 	void Start () {
-		serverButtons = new ArrayList();
+		Time.timeScale = 1.0f;
+		serverButtons = new List<Button>();
 		MasterServer.ipAddress = "123.100.141.5";
 		MasterServer.port = 23466;
 		MasterServer.dedicatedServer = false;
@@ -117,16 +121,26 @@ public class MainMenuScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (GameListOverlay.activeSelf) {
+			if (Time.time - lastListPoll > 5.0) {
+				Debug.Log("Refreshing list...");
+				MasterServer.ClearHostList();
+				lastListPoll = Time.time;
+				MasterServer.RequestHostList("SpaceCOG");
+			}
 			servers = MasterServer.PollHostList();
 			Debug.Log(servers.Length);
 			if (serverButtons.Count != servers.Length) {
 				Debug.Log ("Creating List");
+				while(serverButtons.Count > 0) {
+					DestroyImmediate(serverButtons[0].gameObject);
+					serverButtons.RemoveAt(0);
+				}
 				serverButtons.Clear();
 				for (int i = 0; i < servers.Length; ++i) {
 					Debug.Log ("NewServerButton");
 					UnityEngine.UI.Button tmp = Instantiate(btnPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.UI.Button;
 					tmp.transform.parent = GameList.transform;
-					tmp.transform.localPosition = Vector3.zero + new Vector3(0, 20 * i, 0);;
+					tmp.transform.localPosition = Vector3.zero + new Vector3(0, -100 * i + 50 * (servers.Length-1), 0);
 					tmp.transform.localScale = new Vector3(1, 1, 1);
 					tmp.GetComponentsInChildren<UnityEngine.UI.Text>()[0].text = servers[i].gameName;
 					tmp.onClick.AddListener(delegate {
@@ -144,6 +158,7 @@ public class MainMenuScript : MonoBehaviour {
 							}
 							GameListOverlay.SetActive(false);
 						});
+					Destroy(tmp, 5.0f);
 					serverButtons.Add(tmp);
 				}
 			}
@@ -208,6 +223,7 @@ public class MainMenuScript : MonoBehaviour {
 	public void ServerList () {
 		GameListOverlay.SetActive(true);
 		MasterServer.RequestHostList("SpaceCOG");
+		lastListPoll = Time.time;
 	}
 	
 	public void ConnectServer () {
