@@ -197,16 +197,24 @@ public class LocalGameScript : MonoBehaviour {
 
 	[RPC]
 	public void Kill(NetworkViewID ship) {
+	Debug.Log ("Someone died...");
 		if (NetworkView.Find(ship).gameObject == this.ship) {
 			isAlive = false;
+			Debug.Log ("It was you!");
+		} else {
+			Debug.Log ("Someone else!");
 		}
 	}
-	[RPC]
+	
+	public void OnDisconnectedFromServer(NetworkDisconnection info) {
+		GameOver();
+	}
+	
 	public void GameOver() {
 		Debug.Log ("Game Over");
 		gameOver = true;
 
-		if (((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp <= 0) {
+		if (ship != null && ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp <= 0) {
 			isAlive = false;
 		}
 		gameOverText.text = isAlive ? "You win! Congratulations!" : "You lost.  Better luck next time!";

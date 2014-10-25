@@ -83,7 +83,8 @@ public class ServerGameScript : MonoBehaviour {
 					livingPlayers -= 1;
 					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
 					if (livingPlayers == 0) {
-						networkView.RPC ("GameOver", RPCMode.All);
+						Debug.Log ("Gameover 1");
+						GameOver();
 						Time.timeScale = 0.0f;
 					}
 					return;
@@ -99,13 +100,18 @@ public class ServerGameScript : MonoBehaviour {
 					livingEnemies -= 1;
 					Debug.Log ("Baddie destroyed. waveNumber: " + waveNumber + " max waves: " + maxWaves + " living enemies: " + livingEnemies);
 					if (livingEnemies == 0 && waveNumber == maxWaves) {
-						networkView.RPC ("GameOver", RPCMode.All);
+						Debug.Log ("Gameover 2");
+						GameOver();
 						Time.timeScale = 0.0f;
 					}
 					return;
 				}
 			}
 		}
+	}
+	
+	private void GameOver() {
+		Network.Disconnect();
 	}
 
 
