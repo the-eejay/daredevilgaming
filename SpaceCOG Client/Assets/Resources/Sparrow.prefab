@@ -161,9 +161,9 @@ MonoBehaviour:
   bounty: 50
   canShoot: 1
   speed: 15
-  hp: 1
+  hp: 5
   bullet: {fileID: 100000, guid: c7db71e4ee42fbc4387d5b4166114147, type: 2}
-  secondsPerShot: .5
+  secondsPerShot: .100000001
   explosion: {fileID: 8300000, guid: bff365c1512d6b943baedc84fe8adfc5, type: 3}
   target: {fileID: 0}
 --- !u!148 &14800000
