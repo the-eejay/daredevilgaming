@@ -408,7 +408,7 @@ Transform:
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 7
 --- !u!1 &325647872
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +583,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Upgrade
+  m_Text: Upgrade ($20)
 --- !u!222 &371578436
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1864,7 +1864,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -100, y: 50}
-  m_SizeDelta: {x: 300, y: 100}
+  m_SizeDelta: {x: 318.730011, y: 100}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &858475525
 MonoBehaviour:
@@ -2140,7 +2140,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
 --- !u!148 &1027193281
 NetworkView:
   m_ObjectHideFlags: 0
@@ -2852,7 +2852,7 @@ Transform:
   m_LocalScale: {x: 2017.80786, y: 1496.11804, z: 91.7990952}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
 --- !u!1 &1818655364
 GameObject:
   m_ObjectHideFlags: 0

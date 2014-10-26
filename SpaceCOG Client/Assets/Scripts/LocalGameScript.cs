@@ -100,7 +100,7 @@ public class LocalGameScript : MonoBehaviour {
 			currency = PlayerPrefs.GetFloat ("Money");
 			currency += Time.deltaTime;
 			PlayerPrefs.SetFloat ("Money", currency);
-			currencyText.text = "Currency: " + currency.ToString ("0");
+			currencyText.text = "Cash: $" + currency.ToString ("0");
 
 			Move ();
 		}

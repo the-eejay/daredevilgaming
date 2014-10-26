@@ -13,7 +13,12 @@ public class Upgrade : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		colours [0] = Color.cyan;
+		colours [1] = Color.red;
+		colours [2] = Color.green;
+		colours [3] = Color.yellow;
+		colours [4] = Color.magenta;
+		colours [5] = Color.blue;
 	}
 	
 	// Update is called once per frame
@@ -24,21 +29,19 @@ public class Upgrade : MonoBehaviour {
 	//Upgrade the ships 
 	public void UpgradeButton () {
 		
-		colours [0] = Color.cyan;
-		colours [1] = Color.red;
-		colours [2] = Color.green;
-		colours [3] = Color.yellow;
-		colours [4] = Color.magenta;
-		colours [5] = Color.blue;
+
 		
-		player = GameObject.FindGameObjectWithTag ("Player");
-		shipScript = (PlayerShipScript)player.GetComponent("PlayerShipScript");
-		shipScript.bullet.renderer.material.color = colours[Random.Range(0, colours.Length)];
+
 
 		currency = PlayerPrefs.GetFloat("Money");
-		currency -= 20;
-		PlayerPrefs.SetFloat("Money", currency);
-		
-		Debug.Log ("Upgraded !");
+		if (currency >= 20) {
+			player = GameObject.FindGameObjectWithTag ("Player");
+			shipScript = (PlayerShipScript)player.GetComponent ("PlayerShipScript");
+			shipScript.bullet.renderer.material.color = colours [Random.Range (0, colours.Length)];
+			currency -= 20;
+			PlayerPrefs.SetFloat ("Money", currency);
+
+			Debug.Log ("Upgraded !");
+		}
 	}
 }
