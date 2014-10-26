@@ -77,6 +77,7 @@ public class ServerGameScript : MonoBehaviour {
 	public void Damage(GameObject obj, float dmg) {
 		for (int i = 0; i < pCount; ++i) {
 			if (playerShips[i] == obj) {
+				networkView.RPC ("Hurt", RPCMode.All, playerShips[i].networkView.viewID, dmg);
 				playerShipScripts[i].hp -= (int) dmg;
 				if (playerShipScripts[i].hp < 0f) {
 					KillPlayer(i);

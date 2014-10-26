@@ -47,6 +47,7 @@ public class LocalGameScript : MonoBehaviour {
 		if (Network.peerType == NetworkPeerType.Disconnected) {
 			Network.InitializeServer(0, 0, false);
 		}
+		Time.timeScale = 1.0f;
 		// Launch server script if server
 		//if (Network.isServer) {
 			gameObject.AddComponent("ServerGameScript");
@@ -62,6 +63,7 @@ public class LocalGameScript : MonoBehaviour {
 			networkView.RPC("LocatePlayerScript", RPCMode.All, Network.player, pScript.networkView.viewID, PlayerPrefs.GetInt ("ship"));
 		}
 		gameOverText.text = "";
+
 		/*
 		switch (((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).name) {
 			case "Magpie": hpBar.maxValue = 100f;
@@ -72,7 +74,7 @@ public class LocalGameScript : MonoBehaviour {
 			break;
 		}
 		*/
-		Time.timeScale = 1.0f;
+
 	}
 	
 	void CentreCamera () {
@@ -90,7 +92,7 @@ public class LocalGameScript : MonoBehaviour {
 			CentreCamera ();
 			UpdateCompass ();
 
-			//hpBar.value = ((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).hp;
+			// 
 			hpBar.GetComponentInChildren<Text> ().text = hpBar.value.ToString ();
 
 			waveText.text = "Wave: " + WaveCounter;
@@ -170,6 +172,7 @@ public class LocalGameScript : MonoBehaviour {
 		compassAllies = new GameObject[pCount-1];
 		compassAllyBeacons = new GameObject[pCount-1];
 		Debug.Log ("Server Successfully Initialised: ship = " + ship.ToString ());
+		hpBar.value = ((PlayerShipScript)this.ship.GetComponent ("PlayerShipScript")).hp;
 	}
 	
 	[RPC]
@@ -210,9 +213,13 @@ public class LocalGameScript : MonoBehaviour {
 	}
 
 	[RPC]
-	public void Hurt(NetworkViewID ship, int damage) {
-		hpBar.value -= damage;
+	public void Hurt(NetworkViewID ship, float damage) {
+		if (NetworkView.Find (ship).gameObject == this.ship) {
+			hpBar.value -= (int) damage;
+		}
 	}
+
+
 	
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
 		GameOver();
@@ -253,6 +260,7 @@ public class LocalGameScript : MonoBehaviour {
 	[RPC]
 	public void Initialize() {
 		initialized = true;
+
 	}
 
 

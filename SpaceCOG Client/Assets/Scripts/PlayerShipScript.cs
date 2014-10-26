@@ -33,8 +33,6 @@ public class PlayerShipScript : MonoBehaviour {
 	
 	}
 
-	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo SystemInfo) {
-		stream.Serialize (ref hp);
-	}
-	
+
+
 }
