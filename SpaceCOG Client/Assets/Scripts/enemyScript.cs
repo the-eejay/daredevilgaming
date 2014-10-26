@@ -79,7 +79,7 @@ public class enemyScript : MonoBehaviour {
 	}
 	*/
 	public void OnDestroy() {
-		Debug.Log ("Enemy destroyed");
+		//Debug.Log ("Enemy destroyed");
 		transform.position = new Vector3 (0, 0, 0);
 		AudioSource.PlayClipAtPoint(explosion, transform.position, 0.25f);
 	}

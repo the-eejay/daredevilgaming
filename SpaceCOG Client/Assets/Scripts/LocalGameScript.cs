@@ -203,12 +203,8 @@ public class LocalGameScript : MonoBehaviour {
 
 	[RPC]
 	public void Kill(NetworkViewID ship) {
-	Debug.Log ("Someone died...");
 		if (NetworkView.Find(ship).gameObject == this.ship) {
 			isAlive = false;
-			Debug.Log ("It was you!");
-		} else {
-			Debug.Log ("Someone else!");
 		}
 	}
 

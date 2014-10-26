@@ -82,9 +82,9 @@ public class ServerGameScript : MonoBehaviour {
 				if (playerShipScripts[i].hp < 0f) {
 					KillPlayer(i);
 					livingPlayers -= 1;
-					Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
+					//Debug.Log ("Destroyed goodie.  Goodies left: " + livingPlayers);
 					if (livingPlayers == 0) {
-						Debug.Log ("Gameover 1");
+						//Debug.Log ("Gameover 1");
 						GameOver();
 						Time.timeScale = 0.0f;
 					}
@@ -99,9 +99,9 @@ public class ServerGameScript : MonoBehaviour {
 					Network.Destroy (baddies[i]);
 					baddies[i] = null;
 					livingEnemies -= 1;
-					Debug.Log ("Baddie destroyed. waveNumber: " + waveNumber + " max waves: " + maxWaves + " living enemies: " + livingEnemies);
+					//Debug.Log ("Baddie destroyed. waveNumber: " + waveNumber + " max waves: " + maxWaves + " living enemies: " + livingEnemies);
 					if (livingEnemies == 0 && waveNumber == maxWaves) {
-						Debug.Log ("Gameover 2");
+						//Debug.Log ("Gameover 2");
 						GameOver();
 						Time.timeScale = 0.0f;
 					}
@@ -126,7 +126,7 @@ public class ServerGameScript : MonoBehaviour {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
 				GameObject target = GetRandomPlayerShip ();
-				Debug.Log ("Target " + target.name);
+				//Debug.Log ("Target " + target.name);
 
 				if (i % 2 == 1) {
 					baddiePrefab = sparrowPrefab;
@@ -328,14 +328,14 @@ public class ServerGameScript : MonoBehaviour {
 			initialized = true;
 			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID, pCount);
 			for (int i = 1; i < pCount; ++i) {
-				Debug.Log ("Sending initialise to " + playerShips[i].networkView.viewID);
+				//Debug.Log ("Sending initialise to " + playerShips[i].networkView.viewID);
 				networkView.RPC("ServerSuccessfullyInitialized", Network.connections[i - 1], playerShips[i].networkView.viewID, pCount);
 			}
 			for (int i = 0; i < pCount; ++i) {
 				networkView.RPC("ServerSendAllyRef", RPCMode.All, playerShips[i].networkView.viewID);
 			}
 			networkView.RPC ("Initialize", RPCMode.All);
-			Debug.Log ("Initialisation complete");
+			//Debug.Log ("Initialisation complete");
 		}
 	}
 
