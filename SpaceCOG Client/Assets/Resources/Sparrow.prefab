@@ -99,7 +99,7 @@ AudioSource:
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: bff365c1512d6b943baedc84fe8adfc5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: .5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -164,6 +164,7 @@ MonoBehaviour:
   hp: 1
   bullet: {fileID: 100000, guid: c7db71e4ee42fbc4387d5b4166114147, type: 2}
   secondsPerShot: .5
+  explosion: {fileID: 8300000, guid: bff365c1512d6b943baedc84fe8adfc5, type: 3}
   target: {fileID: 0}
 --- !u!148 &14800000
 NetworkView:
