@@ -307,7 +307,7 @@ public class ServerGameScript : MonoBehaviour {
 	public void LocatePlayerScript(NetworkPlayer owner, NetworkViewID pScript, int shipChoice) {
 		if (pScript.isMine) {
 			ClientScript cs = (ClientScript) NetworkView.Find(pScript).gameObject.GetComponent("ClientScript");
-			Debug.Log (0 + " Found client script");
+			Debug.Log (0 + " Found client script " + cs);
 			player[0] = cs;
 			playerShipChoices[0] = shipChoice;
 			initCount++;
@@ -323,7 +323,12 @@ public class ServerGameScript : MonoBehaviour {
 			}
 		}
 		
+		
 		if (initCount == pCount) {
+			for(int i = 0; i < 4; ++i) {
+				if (player[i] != null)
+					Debug.Log("WOOGA: " + player[i].networkView.viewID);
+			}
 			InitializeGame();
 			initialized = true;
 			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID, pCount);

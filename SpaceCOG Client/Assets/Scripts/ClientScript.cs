@@ -38,18 +38,21 @@ public class ClientScript : MonoBehaviour {
 	}
 	
 	void UpdateSerializedVars() {
-		w = Input.GetKey("w");
-		a = Input.GetKey("a");
-		s = Input.GetKey ("s");
-		d = Input.GetKey ("d");
-		
-		mb1 = Input.GetMouseButton(0);
-		
-		// Cursor
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		float dist = 2000f;
-		if (targettingPlane.Raycast(ray, out dist)) {
-			cursor = ray.GetPoint(dist) - new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0f);
+		if(networkView.isMine) {
+			Debug.Log ("Script updater: " + networkView.viewID);
+			w = Input.GetKey("w");
+			a = Input.GetKey("a");
+			s = Input.GetKey ("s");
+			d = Input.GetKey ("d");
+			
+			mb1 = Input.GetMouseButton(0);
+			
+			// Cursor
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			float dist = 2000f;
+			if (targettingPlane.Raycast(ray, out dist)) {
+				cursor = ray.GetPoint(dist) - new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0f);
+			}
 		}
 	}
 }
