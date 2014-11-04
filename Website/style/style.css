@@ -1,0 +1,35 @@
+body {font-size:18px; font-family: Verdana, Geneva, sans-serif; background: url('images/background.png'); background-size: cover;}
+
+#body-wrapper {width:1200px; margin: auto auto;}
+
+ul {
+    list-style-type: none; 
+	background-color:rgba(24, 30, 37, 0.4);
+	border-top-style: solid;
+	border-top-width: 2px;
+    border-top-color: rgba(28, 109, 164, 0.4);
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+    border-bottom-color: rgba(28, 109, 164, 0.4);
+	height:45px;
+}
+
+li {
+    float: left;
+}
+
+a {
+    display: block;
+    width: 120px;
+	text-decoration:none;
+	color:#ffffff;
+	padding:10px;
+	margin-left:-5px;
+	background: url('images/buttonNormal.png');
+	background-size: cover;
+	text-align:center;
+}
+a:hover {
+	background: url('images/buttonHover.png');
+	background-size: cover;
+}
