@@ -17,9 +17,7 @@ public class bulletScript : MonoBehaviour {
 		if(master == null) {
 			master = GameObject.Find("WorldScriptObject");
 		}
-
 		Physics.IgnoreLayerCollision (8, 8);
-
 	}
 	
 	// Update is called once per frame
@@ -36,11 +34,7 @@ public class bulletScript : MonoBehaviour {
 	
 	void OnCollisionEnter (Collision col) {
 		if(networkView.isMine) {
-			if (col.gameObject.tag == "Player") {
-				((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
-				Network.Destroy (gameObject);
-			} else if (col.gameObject.tag == "Enemy") {
-				//Debug.Log ("Hit enemy");
+			if (col.gameObject.tag == "Player" || col.gameObject.tag == "Enemy") {
 				((ServerGameScript)master.GetComponent("ServerGameScript")).Damage(col.gameObject, damage);
 				Network.Destroy (gameObject);
 			}

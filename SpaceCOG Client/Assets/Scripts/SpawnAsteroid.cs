@@ -4,6 +4,7 @@ using System.Collections;
 public class SpawnAsteroid : MonoBehaviour {
 	
 	public GameObject ObjectToSpawn; 
+	
 	// Use this for initialization
 	void Start () {
 		for (int i = 0; i < 5000; i++) {
@@ -15,8 +16,4 @@ public class SpawnAsteroid : MonoBehaviour {
 		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

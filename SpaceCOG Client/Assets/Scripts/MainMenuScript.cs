@@ -22,7 +22,6 @@ public class MainMenuScript : MonoBehaviour {
 	public GameObject pelican;
 	public GameObject penguin;
 	
-	
 	public Button btnPrefab;
 	
 	private List<Button> serverButtons;

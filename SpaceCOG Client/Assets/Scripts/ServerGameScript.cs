@@ -327,7 +327,6 @@ public class ServerGameScript : MonoBehaviour {
 		if (initCount == pCount) {
 			for(int i = 0; i < 4; ++i) {
 				if (player[i] != null)
-					Debug.Log("WOOGA: " + player[i].networkView.viewID);
 			}
 			InitializeGame();
 			initialized = true;

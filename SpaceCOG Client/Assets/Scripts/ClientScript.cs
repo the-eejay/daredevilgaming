@@ -12,8 +12,7 @@ public class ClientScript : MonoBehaviour {
 	
 	// Mathematical Constructs
 	private static Plane targettingPlane;
-	
-	
+		
 	void Start() {
 		cursor = new Vector3();
 		targettingPlane = new Plane (Vector3.forward, Vector3.zero);

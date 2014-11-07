@@ -64,17 +64,6 @@ public class LocalGameScript : MonoBehaviour {
 		}
 		gameOverText.text = "";
 
-		/*
-		switch (((PlayerShipScript)ship.GetComponent ("PlayerShipScript")).name) {
-			case "Magpie": hpBar.maxValue = 100f;
-			break;
-			case "Pelican": hpBar.maxValue = 75f;
-			break;
-			case "Penguin" : hpBar.maxValue = 150f;
-			break;
-		}
-		*/
-
 	}
 	
 	void CentreCamera () {

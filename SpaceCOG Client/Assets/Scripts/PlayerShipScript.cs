@@ -17,22 +17,4 @@ public class PlayerShipScript : MonoBehaviour {
 	public string name;
 	public string description;
 	
-	// Use this for initialization
-	void Start () {
-		if(master == null) {
-			master = GameObject.Find("WorldScriptObject");
-		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
-	
-	void FixedUpdate () {
-	
-	}
-
-
-
 }
