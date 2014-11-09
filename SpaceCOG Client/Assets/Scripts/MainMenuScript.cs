@@ -13,10 +13,13 @@ public class MainMenuScript : MonoBehaviour {
 	private const int PORT_NO = 9001;
 	private const string HOST_IP = "127.0.0.1";
 	private int slots = 3;
+	
+	private bool qmFinding = false;
 
 	public GameObject GameListOverlay;
 	public GameObject GameNameOverlay;
 	public GameObject WaitingOverlay;
+	public GameObject QMOverlay;
 	
 	public GameObject magpie;
 	public GameObject pelican;
@@ -28,6 +31,7 @@ public class MainMenuScript : MonoBehaviour {
 
 	public Text shipNameText;
 	public Text loadingText;
+	public Text lookingText;
 
 	public Slider hpSlider;
 	public Slider dmgSlider;
@@ -46,6 +50,7 @@ public class MainMenuScript : MonoBehaviour {
 	public Button wLeave;
 	
 	private float lastListPoll;
+	private float firstListPoll;
 
 	private GameObject[] ships = new GameObject[3];
 	public int shipChooser = 0;
@@ -94,6 +99,7 @@ public class MainMenuScript : MonoBehaviour {
 		pelican.renderer.enabled = false;
 		penguin.renderer.enabled = false;
 
+		lookingText.enabled = false;
 	}
 	
 	public void JoinServer(int btn) {
@@ -117,8 +123,79 @@ public class MainMenuScript : MonoBehaviour {
 		
 	}
 	
+	///
+	///
+	/// ALANS INDIVIDUAL CONTRIBUTION
+	/// 
+	///
+	
+	public void QuickMatch () {
+	
+		if (!Network.isServer) {
+			MasterServer.ClearHostList();
+			MasterServer.RequestHostList("SpaceCOG Quickmatch");
+			firstListPoll = Time.time;
+			lastListPoll = Time.time;
+			
+			lookingText.enabled = true;
+			QMOverlay.SetActive(true);
+			qmFinding = true;
+			
+		}
+	}
+	 
+	///
+	/// END ALANS INDIVIDUAL CONTIRBUTION
+	/// 
+	
+	
 	// Update is called once per frame
 	void Update () {
+		if (qmFinding && Time.time - firstListPoll > 2.0f) {
+			HostData[] servers = MasterServer.PollHostList();
+			if (Time.time - lastListPoll > 1.0f) {
+				MasterServer.ClearHostList();
+				MasterServer.RequestHostList("SpaceCOG Quickmatch");
+				lastListPoll = Time.time;
+				Debug.Log ("List Refreshed.");
+			}
+			
+			Debug.Log ("Running Servers: " + servers.Length);
+			
+			if (servers.Length == 0) {
+				Debug.Log ("Attempting to host server...");
+				NetworkConnectionError e;
+				e = Network.InitializeServer (MAX_CONNECTIONS, PORT_NO, !Network.HavePublicAddress());
+				
+				if (e == NetworkConnectionError.NoError) {
+					Debug.Log ("Listening for connections...");
+					MasterServer.RegisterHost("SpaceCOG Quickmatch", "Quickmatch");
+					WaitingOverlay.SetActive(true);
+					wGameName.text = "Quickmatch";
+					wGameStatus.text = "3 slots still empty...";
+					qmFinding = false;
+					QMOverlay.SetActive(false);
+				} else {
+					Debug.Log ("Initialization Error: " + e.ToString ());
+				}
+				
+			} else {
+				NetworkConnectionError e;
+				e = Network.Connect (servers[0]);
+				
+				if (e != NetworkConnectionError.NoError) {
+					Debug.Log ("Connection Error: " + e.ToString ());
+				} else {
+					qmFinding = false;
+					QMOverlay.SetActive(false);
+					wGameName.text = "Quickmatch";
+				}
+				
+			}
+		
+		}
+	
+	
 		if (GameListOverlay.activeSelf) {
 			if (Time.time - lastListPoll > 5.0) {
 				Debug.Log("Refreshing list...");
@@ -248,6 +325,7 @@ public class MainMenuScript : MonoBehaviour {
 	public void LeaveLobby () {
 		Network.Disconnect();
 		WaitingOverlay.SetActive(false);
+		lookingText.enabled = false;
 	}
 
 	public void GameNameCancel () {

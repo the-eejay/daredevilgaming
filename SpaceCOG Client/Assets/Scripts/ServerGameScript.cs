@@ -325,9 +325,6 @@ public class ServerGameScript : MonoBehaviour {
 		
 		
 		if (initCount == pCount) {
-			for(int i = 0; i < 4; ++i) {
-				if (player[i] != null)
-			}
 			InitializeGame();
 			initialized = true;
 			((LocalGameScript)gameObject.GetComponent("LocalGameScript")).ServerSuccessfullyInitialized(playerShips[0].networkView.viewID, pCount);
