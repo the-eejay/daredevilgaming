@@ -25,6 +25,7 @@ public class ClientScript : MonoBehaviour {
 	}
 	
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) {
+		// Send wsad input to server
 		if (stream.isWriting) {
 			UpdateSerializedVars();
 		}

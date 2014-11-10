@@ -24,6 +24,7 @@ public class Upgrade : MonoBehaviour {
 		if (currency >= 20) {
 			player = GameObject.FindGameObjectWithTag ("Player");
 			shipScript = (PlayerShipScript)player.GetComponent ("PlayerShipScript");
+			// Pick a random colour to change the bullet to
 			shipScript.bullet.renderer.material.color = colours [Random.Range (0, colours.Length)];
 			currency -= 20;
 			PlayerPrefs.SetFloat ("Money", currency);

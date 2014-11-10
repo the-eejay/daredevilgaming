@@ -49,9 +49,7 @@ public class LocalGameScript : MonoBehaviour {
 		}
 		Time.timeScale = 1.0f;
 		// Launch server script if server
-		//if (Network.isServer) {
-			gameObject.AddComponent("ServerGameScript");
-		//}
+		gameObject.AddComponent("ServerGameScript");
 
 		targettingPlane = new Plane (Vector3.forward, Vector3.zero);
 		GameOverButton.SetActive (false);

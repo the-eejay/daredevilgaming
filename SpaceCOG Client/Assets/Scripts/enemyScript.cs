@@ -25,7 +25,7 @@ public class enemyScript : MonoBehaviour {
 	}
 
 	public void OnDestroy() {
-		//Debug.Log ("Enemy destroyed");
+		// Play explosion audio on death
 		transform.position = new Vector3 (0, 0, 0);
 		AudioSource.PlayClipAtPoint(explosion, transform.position, 0.25f);
 	}
