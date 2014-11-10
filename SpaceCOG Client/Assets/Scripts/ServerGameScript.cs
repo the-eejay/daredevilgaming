@@ -133,10 +133,7 @@ public class ServerGameScript : MonoBehaviour {
 		while (waveNumber < maxWaves) {
 			// Spawn a wave
 			for (int i = 0; i < waveNumber; i++) {
-				GameObject target;
-				if (livingPlayers > 0) {
-					target = GetRandomPlayerShip ();
-				}
+				GameObject target = GetRandomPlayerShip ();
 				//Debug.Log ("Target " + target.name);
 
 				// Alternate bombers and sparrows
