@@ -1,6 +1,6 @@
 Greetings,
 
-We are Daredevil Gaming, and we are excited to tell you about our currently in-development game, SpaceCOG.
+We are Daredevil Gaming, and we are excited to tell you about our currently (and forever) in-development game, SpaceCOG.
 
 SpaceCOG is a multiplayer space shooter game where you can team up with other players to take down the enemy fleet.  But be careful, because your team mates may just want you dead to take your share of the loot!
 
